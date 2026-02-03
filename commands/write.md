@@ -3,7 +3,7 @@ name: write
 description: Implement features based on the agent skills.
 disable-model-invocation: true
 argument-hint: feature|id [--skip-tests]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:pricinples), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing)
 ---
 
 ## Rule
@@ -18,7 +18,7 @@ To select skills for implementing the feature, consider the following rubric:
 |-----------------------------|------------------------------------------------------------------------------------------|
 | `coding:clean-architecture` | No `docs/architecture.md` exists or the feature requires significant structural changes. |
 | `coding:domain-modeling`    | The feature is related to business logic or domain entities.                             |
-| `coding:pricinples`         | Fully new feature no existing code, following principles is essential.                   |
+| `coding:principles`         | Fully new feature no existing code, following principles is essential.                   |
 | `coding:design-patterns`    | The feature needs changes multiple components that can benefit from design patterns.     |
 | `coding:refactoring`        | Need to change existing code to accommodate the new feature.                             |
 | `coding:testing`            | Each new feature or behavior change requires apply testing.                              |
