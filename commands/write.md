@@ -49,17 +49,45 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="completed-overview" type="string" description="The completed overview of the feature and current codebase context." required="true"/>
     <parameter name="active-skills" type="list" description="The active skills for implementation." required="true"/>
     <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
-    <condition if="$skip-tests">
+    <condition if="not $skip-tests">
         <step>1. review the feature requirements and create integration test cases</step>
         <step>2. add unit test cases if necessary</step>
         <step>3. depend on the test cases, break down the implementation into smaller tasks</step>
     </condition>
-    <condition if="not $skip-tests">
+    <condition if="$skip-tests">
         <step>4. break down the implementation into smaller tasks</step>
     </condition>
-    <step>4. for each task, determine which active skill to apply</step>
-    <step>5. sequence the tasks in a logical order for implementation</step>
+    <step>5. for each task, determine which active skill to apply</step>
+    <step>6. sequence the tasks in a logical order for implementation</step>
     <return>implementation plan for the feature</return>
+</function>
+
+<function name="execute-task">
+    <description>Execute a single task from the plan using TDD approach.</description>
+    <parameter name="task" type="string" description="The task to execute." required="true"/>
+    <parameter name="skill" type="string" description="The skill to apply for this task." required="true"/>
+    <parameter name="skip-tests" type="boolean" description="Whether to skip test-first approach." required="false" default="false"/>
+    <condition if="not $skip-tests">
+        <step>1. write failing test for the task (Red)</step>
+        <step>2. implement minimum code to pass the test (Green)</step>
+        <step>3. refactor the code while keeping tests passing (Refactor)</step>
+    </condition>
+    <condition if="$skip-tests">
+        <step>4. implement the task directly</step>
+        <step>5. refactor if necessary</step>
+    </condition>
+    <step>6. invoke the skill to verify completion rubric</step>
+    <return>completed task with skill verification result</return>
+</function>
+
+<function name="quality-report">
+    <description>Generate implementation quality report using active skills' completion rubrics.</description>
+    <parameter name="active-skills" type="list" description="The skills used in implementation." required="true"/>
+    <parameter name="task-results" type="list" description="The results from each executed task." required="true"/>
+    <step>1. for each active skill, invoke skill to verify completion rubric against implementation</step>
+    <step>2. collect all verification results and identify gaps</step>
+    <step>3. summarize overall implementation quality</step>
+    <return>implementation quality report with skill-based verification</return>
 </function>
 
 <procedure name="main">
@@ -75,7 +103,13 @@ The language-specific skills not listed, check all available skills before decid
     <condition if="over-engineering detected">
         <step>8. refine the plan to avoid over-engineering</step>
     </condition>
-    <return>implementation plan for the feature</return>
+    <step>9. exit plan mode and wait for user confirmation</step>
+    <loop for="task in $plan.tasks">
+        <step>10. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
+        <step>11. collect task result for quality report</step>
+    </loop>
+    <step>12. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <return>implementation quality report</return>
 </procedure>
 
 ## Task
