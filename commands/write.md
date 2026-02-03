@@ -93,11 +93,11 @@ The language-specific skills not listed, check all available skills before decid
 <procedure name="main">
     <parameter name="feature" type="string" description="The feature to implement." required="true"/>
     <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
-    <step>1. enter the plan mode</step>
-    <step>2. <execute name="overview" feature="$feature"/></step>
-    <step>3. use ask question tool to clarify scope of the feature</step>
-    <step>4. <execute name="active-skills" overview="$overview"/></step>
-    <step>5. deeply understand the codebase related to the feature</step>
+    <step>1. <execute name="overview" feature="$feature"/></step>
+    <step>2. use ask question tool to clarify scope of the feature</step>
+    <step>3. <execute name="active-skills" overview="$overview"/></step>
+    <step>4. deeply understand the codebase related to the feature</step>
+    <step>5. enter the plan mode</step>
     <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
     <step>7. review and finalize the implementation plan for minimal change instead of over-engineering</step>
     <condition if="over-engineering detected">

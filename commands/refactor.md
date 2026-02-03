@@ -92,11 +92,11 @@ The language-specific skills not listed, check all available skills before decid
 
 <procedure name="main">
     <parameter name="target" type="string" description="The path or module to refactor. Empty for whole project." required="false"/>
-    <step>1. enter the plan mode</step>
-    <step>2. <execute name="analyze-smells" target="$target"/></step>
-    <step>3. use ask question tool to confirm refactoring scope and priorities</step>
-    <step>4. <execute name="active-skills" smells="$smells"/></step>
-    <step>5. verify test coverage for the target area</step>
+    <step>1. <execute name="analyze-smells" target="$target"/></step>
+    <step>2. use ask question tool to confirm refactoring scope and priorities</step>
+    <step>3. <execute name="active-skills" smells="$smells"/></step>
+    <step>4. verify test coverage for the target area</step>
+    <step>5. enter the plan mode</step>
     <condition if="insufficient test coverage">
         <step>6. add tests for untested code before refactoring</step>
     </condition>
