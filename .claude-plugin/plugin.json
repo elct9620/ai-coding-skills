@@ -1,0 +1,10 @@
+{
+  "name": "coding",
+  "description": "Aotokitsuruya's coding skills",
+  "version": "0.1.0",
+  "author": {
+    "name": "Aotokitsuruya"
+  },
+  "license": "Apache-2.0",
+  "repository": "https://github.com/elct9620/coding-skills"
+}
