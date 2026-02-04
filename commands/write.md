@@ -39,8 +39,9 @@ The language-specific skills not listed, check all available skills before decid
 <function name="active-skills">
     <description>According to the feature requirements, determine which skills are needed to implement the feature.</description>
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
-    <step>1. analyze the overview with rubric of available skills</step>
-    <step>2. select the skills that are most relevant to the feature implementation</step>
+    <step>1. discover available skills from system-reminder</step>
+    <step>2. analyze the overview with rubric of available skills</step>
+    <step>3. select the skills that are most relevant to the feature implementation</step>
     <return>list of active skills needed for the feature implementation</return>
 </function>
 
