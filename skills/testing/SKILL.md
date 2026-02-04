@@ -16,6 +16,17 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 
 ## Core Principles
 
+### Integration-First Philosophy
+
+> Ensure components work together first, then verify individual component details
+
+| Scenario | Action |
+|----------|--------|
+| Starting new feature | Write integration/E2E test first |
+| Integration test passes | Add unit tests only for uncovered edge cases |
+| Edge case not covered by integration | Add unit test for specific case |
+| Component works alone but fails together | Missing integration test coverage |
+
 ### TDD Cycle (Red-Green-Refactor)
 
 ```

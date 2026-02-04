@@ -51,8 +51,8 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="active-skills" type="list" description="The active skills for implementation." required="true"/>
     <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
     <condition if="not $skip-tests">
-        <step>1. review the feature requirements and create integration test cases</step>
-        <step>2. add unit test cases if necessary</step>
+        <step>1. review the feature requirements and create integration test cases to verify components work together</step>
+        <step>2. add unit test cases for edge cases and complex logic if necessary</step>
         <step>3. depend on the test cases, break down the implementation into smaller tasks</step>
     </condition>
     <condition if="$skip-tests">
