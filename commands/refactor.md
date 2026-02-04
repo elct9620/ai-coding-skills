@@ -38,13 +38,16 @@ The language-specific skills not listed, check all available skills before decid
 </function>
 
 <function name="active-skills">
-    <description>According to the identified code smells, determine which skills are needed for refactoring.</description>
+    <description>According to the identified code smells, determine which skills are needed and activate them.</description>
     <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
     <step>1. discover available skills from system-reminder</step>
     <step>2. analyze the smells with rubric of available skills</step>
     <step>3. select the skills that address the identified problems</step>
     <step>4. always include `coding:refactoring` as the core skill</step>
-    <return>list of active skills needed for the refactoring</return>
+    <loop for="skill in $selected-skills">
+        <step>5. use Skill($skill) to activate and load its knowledge</step>
+    </loop>
+    <return>list of activated skills with their knowledge loaded</return>
 </function>
 
 <function name="create-refactoring-plan">
