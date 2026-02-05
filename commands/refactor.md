@@ -74,9 +74,6 @@ The language-specific skills not listed, check all available skills before decid
         <step>4. revert the change and analyze the failure</step>
         <step>5. break down into smaller steps if needed</step>
     </condition>
-    <condition if="tests pass">
-        <step>6. commit the change with descriptive message</step>
-    </condition>
     <step>7. invoke the skill to verify the refactoring quality</step>
     <return>completed refactoring step with verification result</return>
 </function>
@@ -115,6 +112,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>12. collect task result for quality report</step>
     </loop>
     <step>13. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>14. ask user if they want to commit the changes</step>
     <return>refactoring quality report</return>
 </procedure>
 

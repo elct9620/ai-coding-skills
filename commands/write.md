@@ -113,6 +113,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>11. collect task result for quality report</step>
     </loop>
     <step>12. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>13. ask user if they want to commit the changes</step>
     <return>implementation quality report</return>
 </procedure>
 
