@@ -48,6 +48,35 @@ The command as entry which defines the workflow, then adaptively select necessar
 
 For example, the `coding.md` command use `clean-architecture` when the structure is not defined and follow instructions to create necessary layers.
 
+## Command Usage Matrix
+
+Choose the appropriate command based on your task:
+
+| Command     | Purpose            | Arguments                    |
+|-------------|--------------------|------------------------------|
+| `/write`    | Implement features | `feature\|id [--skip-tests]` |
+| `/refactor` | Clean up code      | `[path\|module]`             |
+| `/fix`      | Fix bugs           | `bug\|issue\|error`          |
+
+### Skills per Command
+
+| Skill                     | /write | /refactor | /fix |
+|---------------------------|:------:|:---------:|:----:|
+| coding:testing            |   ✓    |     ✓     |  ✓*  |
+| coding:refactoring        |   ✓    |     ✓*    |  ✓   |
+| coding:clean-architecture |   ✓    |     ✓     |  ✓   |
+| coding:principles         |   ✓    |     ✓     |  ✓   |
+| coding:design-patterns    |   ✓    |     ✓     |  ✓   |
+| coding:domain-modeling    |   ✓    |     -     |  ✓   |
+
+*Core skill for this command (always activated)
+
+### When to Use
+
+- **`/write`**: Starting a new feature or adding new functionality
+- **`/refactor`**: Improving code quality without changing behavior
+- **`/fix`**: Diagnosing and fixing bugs with test verification
+
 ## Usage
 
 To use this coding skills, add to your marketplace or use `--plugin-dir` in Claude Code. Then choose the command which most fits the task.
