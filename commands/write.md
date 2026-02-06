@@ -1,7 +1,6 @@
 ---
 name: write
 description: Implement features based on the agent skills.
-disable-model-invocation: true
 argument-hint: feature|id [--skip-tests]
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing)
 ---
