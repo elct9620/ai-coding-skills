@@ -28,12 +28,14 @@ The language-specific skills not listed, check all available skills before decid
 <function name="analyze-smells">
     <description>Analyze the target path for code smells and technical debt.</description>
     <parameter name="target" type="string" description="The path or module to analyze. Empty for whole project." required="false"/>
-    <step>1. scan the target path for common code smells (Long Method, Large Class, Feature Envy, etc.)</step>
-    <step>2. identify duplication, dead code, and complex conditionals</step>
-    <step>3. check for SOLID principle violations</step>
-    <step>4. assess test coverage for the target area</step>
-    <step>5. categorize findings by severity (high, medium, low)</step>
-    <return>list of code smells with severity and location</return>
+    <step>1. use `git log` and `git diff` to review recent changes and past refactoring history for the target area</step>
+    <step>2. scan the target path for common code smells (Long Method, Large Class, Feature Envy, etc.)</step>
+    <step>3. identify duplication, dead code, and complex conditionals</step>
+    <step>4. check for SOLID principle violations</step>
+    <step>5. assess test coverage for the target area</step>
+    <step>6. exclude smells that were intentionally introduced or recently refactored based on git history</step>
+    <step>7. categorize findings by severity (high, medium, low)</step>
+    <return>list of code smells with severity, location, and git history context</return>
 </function>
 
 <function name="active-skills">
