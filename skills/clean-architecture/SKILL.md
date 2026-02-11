@@ -1,6 +1,6 @@
 ---
 name: clean-architecture
-description: Apply Clean Architecture with layered structure (Domain, Application, Infrastructure). Use when creating docs/architecture.md, designing new modules, or restructuring code into layers with proper dependency direction.
+description: Apply Clean Architecture with four concentric layers (Entities, Use Cases, Interface Adapters, Frameworks & Drivers). Use when creating docs/architecture.md, designing new modules, or restructuring code with proper dependency direction.
 ---
 
 ## Applicability Rubric
@@ -19,29 +19,32 @@ description: Apply Clean Architecture with layered structure (Domain, Applicatio
 ### Layer Structure
 
 ```
-┌─────────────────────────────────────┐
-│           Infrastructure            │  ← Frameworks, DB, External APIs
-├─────────────────────────────────────┤
-│            Application              │  ← Use Cases, DTOs, Services
-├─────────────────────────────────────┤
-│              Domain                 │  ← Entities, Value Objects, Domain Services
-└─────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│          Frameworks & Drivers               │  ← Web, DB, Devices, External Interfaces
+├─────────────────────────────────────────────┤
+│          Interface Adapters                 │  ← Controllers, Presenters, Gateways
+├─────────────────────────────────────────────┤
+│             Use Cases                       │  ← Application-specific Business Rules
+├─────────────────────────────────────────────┤
+│             Entities                        │  ← Enterprise-wide Business Rules
+└─────────────────────────────────────────────┘
 ```
 
 ### Dependency Rule
 
 Dependencies MUST point inward:
-- Infrastructure → Application → Domain
-- Domain has NO dependencies on outer layers
-- Use interfaces (ports) for dependency inversion
+- Frameworks & Drivers → Interface Adapters → Use Cases → Entities
+- Entities have NO dependencies on outer layers
+- Use interfaces (ports) at layer boundaries for dependency inversion
 
 ### Layer Responsibilities
 
 | Layer | Contains | Depends On |
 |-------|----------|------------|
-| Domain | Entities, Value Objects, Domain Services, Repository Interfaces | Nothing |
-| Application | Use Cases, Application Services, DTOs | Domain |
-| Infrastructure | Controllers, DB Adapters, External APIs, Framework Code | Application, Domain |
+| Entities | Enterprise-wide business rules, critical business data structures | Nothing |
+| Use Cases | Application-specific business rules, input/output port interfaces | Entities |
+| Interface Adapters | Controllers, Presenters, Gateways, DTOs, format converters | Use Cases, Entities |
+| Frameworks & Drivers | Web framework, DB, external APIs, UI, devices | Interface Adapters |
 
 ## Completion Rubric
 
@@ -57,17 +60,18 @@ Dependencies MUST point inward:
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
-| Domain layer purity | Contains only business logic | Has infrastructure concerns |
-| Application orchestration | Coordinates use cases properly | Mixed responsibilities |
-| Infrastructure isolation | External concerns separated | Leaked into inner layers |
-| Interface definition | Defined for external deps | Direct coupling |
+| Entities layer purity | Contains only enterprise business rules, no framework imports | Has framework or application concerns |
+| Use Case isolation | Each use case is a single application operation with clear input/output | Mixed responsibilities or coupled to adapters |
+| Interface Adapter correctness | Converts data between use case format and external format | Business logic leaking into adapters |
+| Framework/Driver isolation | External concerns contained in outermost layer | Framework details leaked into inner layers |
+| Boundary interfaces | Defined at each layer boundary for dependency inversion | Direct coupling across layers |
 
 ### After Implementation
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
-| No circular deps | Layers have one-way deps | Circular references exist |
-| Domain testability | Testable without infrastructure | Requires external deps |
+| No circular deps | Layers have one-way inward deps | Circular references exist |
+| Entities testability | Testable without any outer layer dependency | Requires framework or external deps |
 | Convention adherence | Follows project patterns | Inconsistent with codebase |
 
 ## Architecture Documentation
@@ -78,11 +82,11 @@ If `docs/architecture.md` doesn't exist, create it with:
 # Architecture Overview
 
 ## Layer Structure
-[Describe the layers used in this project]
+[Describe the four layers used in this project: Entities, Use Cases, Interface Adapters, Frameworks & Drivers]
 
 ## Directory Mapping
 [Map directories to architectural layers]
 
 ## Dependency Guidelines
-[Document dependency rules and conventions]
+[Document dependency rules: all dependencies point inward, use interfaces at boundaries]
 ```
