@@ -2,7 +2,7 @@
 name: refactor
 description: Clean up legacy code issues by identifying code smells and applying safe refactoring techniques.
 argument-hint: [path|module]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema)
 ---
 
 ## Rule
@@ -20,6 +20,7 @@ To select skills for cleaning up legacy code, consider the following rubric:
 | `coding:principles`         | SOLID/DRY violations, coupling issues, or responsibility problems.          |
 | `coding:design-patterns`    | Replace complex conditionals or duplicated logic with appropriate patterns. |
 | `coding:testing`            | Missing test coverage that blocks safe refactoring.                         |
+| `coding:schema`             | Restructuring database schemas, API contracts, or data access patterns.     |
 
 The language-specific skills not listed, check all available skills before deciding skills to use.
 

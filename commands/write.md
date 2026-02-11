@@ -2,7 +2,7 @@
 name: write
 description: Implement features based on the agent skills.
 argument-hint: feature|id [--skip-tests]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema)
 ---
 
 ## Rule
@@ -21,6 +21,7 @@ To select skills for implementing the feature, consider the following rubric:
 | `coding:design-patterns`    | The feature needs changes multiple components that can benefit from design patterns.     |
 | `coding:refactoring`        | Need to change existing code to accommodate the new feature.                             |
 | `coding:testing`            | Each new feature or behavior change requires apply testing.                              |
+| `coding:schema`             | The feature involves database changes, API contracts, or data serialization.             |
 
 The language-specific skills not listed, check all available skills before deciding skills to use.
 

@@ -2,7 +2,7 @@
 name: fix
 description: Fix bugs by diagnosing root cause, reproducing with tests, and applying minimal fixes.
 argument-hint: bug|issue|error
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture), Skill(coding:schema)
 ---
 
 ## Rule
@@ -21,6 +21,7 @@ To select skills for fixing bugs, consider the following rubric:
 | `coding:design-patterns`    | Bug caused by missing or misused patterns.                               |
 | `coding:domain-modeling`    | Bug in business logic or domain rules.                                   |
 | `coding:clean-architecture` | Bug related to layer violations or dependency issues.                    |
+| `coding:schema`             | Bug in database queries, migration failures, or API contract mismatches. |
 
 The language-specific skills not listed, check all available skills before deciding skills to use.
 

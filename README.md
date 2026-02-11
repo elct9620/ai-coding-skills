@@ -68,6 +68,7 @@ Choose the appropriate command based on your task:
 | coding:principles         |   ✓    |     ✓     |  ✓   |
 | coding:design-patterns    |   ✓    |     ✓     |  ✓   |
 | coding:domain-modeling    |   ✓    |     -     |  ✓   |
+| coding:schema             |   ✓    |     ✓     |  ✓   |
 
 *Core skill for this command (always activated)
 
