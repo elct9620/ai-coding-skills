@@ -2,7 +2,7 @@
 name: refactor
 description: Clean up legacy code issues by identifying code smells and applying safe refactoring techniques.
 argument-hint: [path|module]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), WebSearch, Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema)
 ---
 
 ## Rule
@@ -52,6 +52,16 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of activated skills with their knowledge loaded</return>
 </function>
 
+<function name="research">
+    <description>Research modern refactoring patterns and best practices for the identified code smells using web search.</description>
+    <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
+    <step>1. identify the technology stack and frameworks from the codebase</step>
+    <step>2. use WebSearch to find modern best practices and refactoring patterns for the tech stack</step>
+    <step>3. search for community consensus on handling similar legacy code issues</step>
+    <step>4. verify that recommended patterns align with the project architecture</step>
+    <return>research findings with modern patterns and community recommendations</return>
+</function>
+
 <function name="create-refactoring-plan">
     <description>Create a refactoring plan that maintains behavior while improving code quality.</description>
     <parameter name="smells" type="list" description="The identified code smells to address." required="true"/>
@@ -98,23 +108,26 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="analyze-smells" target="$target"/></step>
     <step>2. use ask question tool to confirm refactoring scope and priorities</step>
     <step>3. <execute name="active-skills" smells="$smells"/></step>
-    <step>4. verify test coverage for the target area</step>
-    <step>5. enter the plan mode</step>
+    <condition if="new tech stack with no existing patterns OR unfamiliar framework conventions">
+        <step>4. <execute name="research" smells="$smells"/></step>
+    </condition>
+    <step>5. verify test coverage for the target area</step>
+    <step>6. enter the plan mode</step>
     <condition if="insufficient test coverage">
-        <step>6. add tests for untested code before refactoring</step>
+        <step>7. add tests for untested code before refactoring</step>
     </condition>
-    <step>7. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
-    <step>8. review plan to ensure minimal changes and behavior preservation</step>
+    <step>8. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
+    <step>9. review plan to ensure minimal changes and behavior preservation</step>
     <condition if="plan too aggressive">
-        <step>9. reduce scope to focus on highest impact improvements</step>
+        <step>10. reduce scope to focus on highest impact improvements</step>
     </condition>
-    <step>10. exit plan mode and wait for user confirmation</step>
+    <step>11. exit plan mode and wait for user confirmation</step>
     <loop for="task in $plan.tasks">
-        <step>11. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
-        <step>12. collect task result for quality report</step>
+        <step>12. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
+        <step>13. collect task result for quality report</step>
     </loop>
-    <step>13. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>14. ask user if they want to commit the changes</step>
+    <step>14. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>15. ask user if they want to commit the changes</step>
     <return>refactoring quality report</return>
 </procedure>
 

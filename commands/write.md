@@ -2,7 +2,7 @@
 name: write
 description: Implement features based on the agent skills.
 argument-hint: feature|id [--skip-tests]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), WebSearch, Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema)
 ---
 
 ## Rule
@@ -46,6 +46,16 @@ The language-specific skills not listed, check all available skills before decid
         <step>4. use Skill($skill) to activate and load its knowledge</step>
     </loop>
     <return>list of activated skills with their knowledge loaded</return>
+</function>
+
+<function name="research">
+    <description>Research API documentation, library usage, and implementation examples for the feature using web search.</description>
+    <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
+    <step>1. extract required libraries, frameworks, and APIs from the feature overview</step>
+    <step>2. use WebSearch to find latest official documentation for the identified dependencies</step>
+    <step>3. search for implementation examples and common pitfalls</step>
+    <step>4. verify that found approaches align with project architecture</step>
+    <return>research findings with API references, examples, and integration guidance</return>
 </function>
 
 <function name="create-plan">
@@ -100,20 +110,23 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="overview" feature="$feature"/></step>
     <step>2. use ask question tool to clarify scope of the feature</step>
     <step>3. <execute name="active-skills" overview="$overview"/></step>
-    <step>4. deeply understand the codebase related to the feature</step>
-    <step>5. enter the plan mode</step>
-    <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
-    <step>7. review and finalize the implementation plan for minimal change instead of over-engineering</step>
-    <condition if="over-engineering detected">
-        <step>8. refine the plan to avoid over-engineering</step>
+    <condition if="no similar implementation in codebase OR involves new external library or API">
+        <step>4. <execute name="research" overview="$overview"/></step>
     </condition>
-    <step>9. exit plan mode and wait for user confirmation</step>
+    <step>5. deeply understand the codebase related to the feature</step>
+    <step>6. enter the plan mode</step>
+    <step>7. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
+    <step>8. review and finalize the implementation plan for minimal change instead of over-engineering</step>
+    <condition if="over-engineering detected">
+        <step>9. refine the plan to avoid over-engineering</step>
+    </condition>
+    <step>10. exit plan mode and wait for user confirmation</step>
     <loop for="task in $plan.tasks">
-        <step>10. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
-        <step>11. collect task result for quality report</step>
+        <step>11. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
+        <step>12. collect task result for quality report</step>
     </loop>
-    <step>12. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>13. ask user if they want to commit the changes</step>
+    <step>13. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>14. ask user if they want to commit the changes</step>
     <return>implementation quality report</return>
 </procedure>
 

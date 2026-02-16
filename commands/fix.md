@@ -2,7 +2,7 @@
 name: fix
 description: Fix bugs by diagnosing root cause, reproducing with tests, and applying minimal fixes.
 argument-hint: bug|issue|error
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture), Skill(coding:schema)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture), Skill(coding:schema)
 ---
 
 ## Rule
@@ -49,6 +49,16 @@ The language-specific skills not listed, check all available skills before decid
         <step>5. use Skill($skill) to activate and load its knowledge</step>
     </loop>
     <return>list of activated skills with their knowledge loaded</return>
+</function>
+
+<function name="research">
+    <description>Research error messages, known issues, and upstream fixes using web search.</description>
+    <parameter name="diagnosis" type="string" description="The diagnosis with root cause analysis." required="true"/>
+    <step>1. extract key error messages, library names, and version info from the diagnosis</step>
+    <step>2. use WebSearch to find similar error reports, known bugs, and official patches</step>
+    <step>3. search for related CVEs or security advisories if applicable</step>
+    <step>4. synthesize findings into actionable insights for the fix plan</step>
+    <return>research findings with known issues, patches, and recommended solutions</return>
 </function>
 
 <function name="create-reproduction-test">
@@ -119,23 +129,26 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="diagnose" bug="$bug"/></step>
     <step>2. use ask question tool to confirm understanding of the bug scope</step>
     <step>3. <execute name="active-skills" diagnosis="$diagnosis"/></step>
-    <step>4. deeply understand the codebase related to the bug</step>
-    <step>5. enter the plan mode</step>
-    <step>6. <execute name="create-reproduction-test" diagnosis="$diagnosis"/></step>
-    <step>7. <execute name="create-fix-plan" diagnosis="$diagnosis" reproduction-test="$reproduction-test" active-skills="$active-skills"/></step>
-    <step>8. review plan to ensure minimal fix without scope creep</step>
-    <condition if="scope creep detected">
-        <step>9. reduce scope to focus only on the bug fix</step>
+    <condition if="root cause unclear from local analysis OR involves unfamiliar external library">
+        <step>4. <execute name="research" diagnosis="$diagnosis"/></step>
     </condition>
-    <step>10. exit plan mode and wait for user confirmation</step>
-    <step>11. write reproduction test (Red)</step>
+    <step>5. deeply understand the codebase related to the bug</step>
+    <step>6. enter the plan mode</step>
+    <step>7. <execute name="create-reproduction-test" diagnosis="$diagnosis"/></step>
+    <step>8. <execute name="create-fix-plan" diagnosis="$diagnosis" reproduction-test="$reproduction-test" active-skills="$active-skills"/></step>
+    <step>9. review plan to ensure minimal fix without scope creep</step>
+    <condition if="scope creep detected">
+        <step>10. reduce scope to focus only on the bug fix</step>
+    </condition>
+    <step>11. exit plan mode and wait for user confirmation</step>
+    <step>12. write reproduction test (Red)</step>
     <loop for="task in $plan.tasks">
-        <step>12. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
-        <step>13. collect fix result for quality report</step>
+        <step>13. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
+        <step>14. collect fix result for quality report</step>
     </loop>
-    <step>14. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
-    <step>15. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
-    <step>16. ask user if they want to commit the changes</step>
+    <step>15. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
+    <step>16. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
+    <step>17. ask user if they want to commit the changes</step>
     <return>fix quality report</return>
 </procedure>
 
