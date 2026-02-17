@@ -52,14 +52,13 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of activated skills with their knowledge loaded</return>
 </function>
 
-<function name="research">
-    <description>Research modern refactoring patterns and best practices for the identified code smells using web search.</description>
+<function name="investigate">
+    <description>Investigate the standard conventions by checking official documentation for the framework or library in use.</description>
     <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
-    <step>1. identify the technology stack and frameworks from the codebase</step>
-    <step>2. use WebSearch to find modern best practices and refactoring patterns for the tech stack</step>
-    <step>3. search for community consensus on handling similar legacy code issues</step>
-    <step>4. verify that recommended patterns align with the project architecture</step>
-    <return>research findings with modern patterns and community recommendations</return>
+    <step>1. identify the specific framework/library whose conventions need confirmation</step>
+    <step>2. use WebSearch to check the official documentation or style guide for the recommended patterns</step>
+    <step>3. confirm the officially recommended conventions applicable to the refactoring</step>
+    <return>confirmed conventions based on official documentation</return>
 </function>
 
 <function name="create-refactoring-plan">
@@ -108,8 +107,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="analyze-smells" target="$target"/></step>
     <step>2. use ask question tool to confirm refactoring scope and priorities</step>
     <step>3. <execute name="active-skills" smells="$smells"/></step>
-    <condition if="new tech stack with no existing patterns OR unfamiliar framework conventions">
-        <step>4. <execute name="research" smells="$smells"/></step>
+    <condition if="unfamiliar framework conventions and need to confirm official recommended patterns">
+        <step>4. <execute name="investigate" smells="$smells"/></step>
     </condition>
     <step>5. verify test coverage for the target area</step>
     <step>6. enter the plan mode</step>

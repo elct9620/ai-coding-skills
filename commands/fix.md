@@ -51,14 +51,13 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of activated skills with their knowledge loaded</return>
 </function>
 
-<function name="research">
-    <description>Research error messages, known issues, and upstream fixes using web search.</description>
+<function name="investigate">
+    <description>Investigate the correct fix approach by checking official documentation for the involved library or framework.</description>
     <parameter name="diagnosis" type="string" description="The diagnosis with root cause analysis." required="true"/>
-    <step>1. extract key error messages, library names, and version info from the diagnosis</step>
-    <step>2. use WebSearch to find similar error reports, known bugs, and official patches</step>
-    <step>3. search for related CVEs or security advisories if applicable</step>
-    <step>4. synthesize findings into actionable insights for the fix plan</step>
-    <return>research findings with known issues, patches, and recommended solutions</return>
+    <step>1. identify the specific library/framework and version involved in the bug</step>
+    <step>2. use WebSearch to check the official documentation, changelog, or migration guide for the standard way to handle this issue</step>
+    <step>3. confirm the officially recommended fix approach</step>
+    <return>confirmed fix approach based on official documentation</return>
 </function>
 
 <function name="create-reproduction-test">
@@ -129,8 +128,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="diagnose" bug="$bug"/></step>
     <step>2. use ask question tool to confirm understanding of the bug scope</step>
     <step>3. <execute name="active-skills" diagnosis="$diagnosis"/></step>
-    <condition if="root cause unclear from local analysis OR involves unfamiliar external library">
-        <step>4. <execute name="research" diagnosis="$diagnosis"/></step>
+    <condition if="fix involves external library API and need to confirm correct approach from official docs">
+        <step>4. <execute name="investigate" diagnosis="$diagnosis"/></step>
     </condition>
     <step>5. deeply understand the codebase related to the bug</step>
     <step>6. enter the plan mode</step>

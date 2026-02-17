@@ -48,14 +48,13 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of activated skills with their knowledge loaded</return>
 </function>
 
-<function name="research">
-    <description>Research API documentation, library usage, and implementation examples for the feature using web search.</description>
+<function name="investigate">
+    <description>Investigate the correct usage by checking official documentation for the libraries or APIs involved.</description>
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
-    <step>1. extract required libraries, frameworks, and APIs from the feature overview</step>
-    <step>2. use WebSearch to find latest official documentation for the identified dependencies</step>
-    <step>3. search for implementation examples and common pitfalls</step>
-    <step>4. verify that found approaches align with project architecture</step>
-    <return>research findings with API references, examples, and integration guidance</return>
+    <step>1. identify the specific library/API whose usage needs confirmation</step>
+    <step>2. use WebSearch to check the official documentation for the current API signatures and standard usage</step>
+    <step>3. confirm the officially recommended implementation approach</step>
+    <return>confirmed usage patterns based on official documentation</return>
 </function>
 
 <function name="create-plan">
@@ -110,8 +109,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="overview" feature="$feature"/></step>
     <step>2. use ask question tool to clarify scope of the feature</step>
     <step>3. <execute name="active-skills" overview="$overview"/></step>
-    <condition if="no similar implementation in codebase OR involves new external library or API">
-        <step>4. <execute name="research" overview="$overview"/></step>
+    <condition if="involves external library or API and need to confirm correct usage from official docs">
+        <step>4. <execute name="investigate" overview="$overview"/></step>
     </condition>
     <step>5. deeply understand the codebase related to the feature</step>
     <step>6. enter the plan mode</step>
