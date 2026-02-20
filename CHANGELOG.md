@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/elct9620/ai-coding-skills/compare/v0.2.0...v0.3.0) (2026-02-20)
+
+
+### Features
+
+* **commands:** add WebSearch support for external research in all commands ([1a33f7b](https://github.com/elct9620/ai-coding-skills/commit/1a33f7be63652ea683d2fb692cc3693f5f311677))
+* **skills:** add boundary testing guidance to prevent testing third-party code ([e1b9692](https://github.com/elct9620/ai-coding-skills/commit/e1b96925fe46634d8e3672163407f27fc59cbc87))
+
 ## [0.2.0](https://github.com/elct9620/ai-coding-skills/compare/v0.1.0...v0.2.0) (2026-02-11)
 
 
