@@ -126,6 +126,7 @@ test("should calculate total with discount", () => {
 | Behavior focus | Tests behavior, not implementation | Tests internal details |
 | Documentation value | Tests serve as documentation | Tests are cryptic |
 | Fast feedback | Tests run quickly enough | Slow test suite |
+| Boundary focus | Asserts project's business outcomes | Asserts third-party library behavior |
 
 ### After Writing Tests
 
@@ -154,6 +155,7 @@ Examples:
 | Brittle Test | Breaks with unrelated changes | Test behavior, not implementation |
 | Mystery Guest | Uses external data/files | Make test self-contained |
 | Test Duplication | Same setup repeated | Use test fixtures/factories |
+| Library Testing | Verifies third-party behavior instead of project code | Assert business outcomes at your boundary |
 
 ## Mocking Decision Table
 
@@ -167,3 +169,14 @@ Examples:
 | Value objects | No | Simple, no side effects |
 | Simple collaborators | No | Over-isolation |
 | Everything | No | Over-mocking hides bugs |
+
+## Boundary Testing
+
+| Dependency | Pass (test your code) | Fail (test their code) |
+|------------|----------------------|------------------------|
+| ORM / Database | Repository returns correct business objects | ORM generates correct SQL |
+| HTTP Client | Service handles response/error correctly | Client sends well-formed requests |
+| Auth Library | Endpoint rejects unauthorized users | Token validation algorithm |
+| Queue / Messaging | Handler processes message with correct outcome | Message serialization format |
+| File Storage | Service returns file content or meaningful error | Storage SDK upload internals |
+| Validator Library | Input rejected/accepted per business rules | Validator regex implementation |
