@@ -128,10 +128,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="diagnose" bug="$bug"/></step>
     <step>2. use ask question tool to confirm understanding of the bug scope</step>
     <step>3. <execute name="active-skills" diagnosis="$diagnosis"/></step>
-    <condition if="fix involves external library API and need to confirm correct approach from official docs">
-        <step>4. <execute name="investigate" diagnosis="$diagnosis"/></step>
-    </condition>
-    <step>5. deeply understand the codebase related to the bug</step>
+    <step>4. <execute name="investigate" diagnosis="$diagnosis"/></step>
+    <step>5. deeply understand the project codebase related to the bug, stay within project boundaries and do not read library or framework source code</step>
     <step>6. enter the plan mode</step>
     <step>7. <execute name="create-reproduction-test" diagnosis="$diagnosis"/></step>
     <step>8. <execute name="create-fix-plan" diagnosis="$diagnosis" reproduction-test="$reproduction-test" active-skills="$active-skills"/></step>

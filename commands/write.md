@@ -109,10 +109,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="overview" feature="$feature"/></step>
     <step>2. use ask question tool to clarify scope of the feature</step>
     <step>3. <execute name="active-skills" overview="$overview"/></step>
-    <condition if="involves external library or API and need to confirm correct usage from official docs">
-        <step>4. <execute name="investigate" overview="$overview"/></step>
-    </condition>
-    <step>5. deeply understand the codebase related to the feature</step>
+    <step>4. <execute name="investigate" overview="$overview"/></step>
+    <step>5. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
     <step>6. enter the plan mode</step>
     <step>7. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
     <step>8. review and finalize the implementation plan for minimal change instead of over-engineering</step>
