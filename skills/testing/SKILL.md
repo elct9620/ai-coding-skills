@@ -26,6 +26,7 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 | Integration test passes | Add unit tests only for uncovered edge cases |
 | Edge case not covered by integration | Add unit test for specific case |
 | Component works alone but fails together | Missing integration test coverage |
+| Module has no integration test path | Code is likely dead — remove implementation and tests |
 
 ### TDD Cycle (Red-Green-Refactor)
 
@@ -136,6 +137,7 @@ test("should calculate total with discount", () => {
 | Adequate coverage | Meaningful coverage achieved | Critical paths untested |
 | Maintainability | Tests easy to maintain | Fragile or complex tests |
 | No test smells | Clean test code | Test code smells present |
+| No dead code coverage | All tested code has integration paths | Tests exist for unused code |
 
 ## Test Naming Convention
 
@@ -156,6 +158,7 @@ Examples:
 | Mystery Guest | Uses external data/files | Make test self-contained |
 | Test Duplication | Same setup repeated | Use test fixtures/factories |
 | Library Testing | Verifies third-party behavior instead of project code | Assert business outcomes at your boundary |
+| Dead Code Testing | Unit tests cover code with no integration path | Remove tests and implementation together |
 
 ## Mocking Decision Table
 
