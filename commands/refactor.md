@@ -16,7 +16,7 @@ To select skills for cleaning up legacy code, consider the following rubric:
 | Skill                       | When to use                                                                 |
 |-----------------------------|-----------------------------------------------------------------------------|
 | `coding:refactoring`        | Core skill for all refactoring operations, always required.                 |
-| `coding:clean-architecture` | Layer violations, module boundary issues, or structural reorganization.     |
+| `coding:clean-architecture` | Cross-class refactoring (Move Method, Extract Class), layer violations, module boundary issues, or structural reorganization. |
 | `coding:principles`         | SOLID/DRY violations, coupling issues, or responsibility problems.          |
 | `coding:design-patterns`    | Replace complex conditionals or duplicated logic with appropriate patterns. |
 | `coding:testing`            | Missing test coverage that blocks safe refactoring.                         |
@@ -31,12 +31,14 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="target" type="string" description="The path or module to analyze. Empty for whole project." required="false"/>
     <step>1. use `git log` and `git diff` to review recent changes and past refactoring history for the target area</step>
     <step>2. scan the target path for common code smells (Long Method, Large Class, Feature Envy, etc.)</step>
-    <step>3. identify duplication, dead code, and complex conditionals</step>
-    <step>4. check for SOLID principle violations</step>
-    <step>5. assess test coverage for the target area</step>
-    <step>6. exclude smells that were intentionally introduced or recently refactored based on git history</step>
-    <step>7. categorize findings by severity (high, medium, low)</step>
-    <return>list of code smells with severity, location, and git history context</return>
+    <step>3. for cross-class smells (Feature Envy, Shotgun Surgery), identify the architectural layer of each class involved (Entity, Use Case, Interface Adapter, Framework) before confirming the smell</step>
+    <step>4. exclude false positives where inner-layer coordination is normal (e.g., Use Case accessing Entity data is NOT Feature Envy, Repository handling serialization is NOT misplaced logic)</step>
+    <step>5. identify duplication, dead code, and complex conditionals</step>
+    <step>6. check for SOLID principle violations</step>
+    <step>7. assess test coverage for the target area</step>
+    <step>8. exclude smells that were intentionally introduced or recently refactored based on git history</step>
+    <step>9. categorize findings by severity (high, medium, low)</step>
+    <return>list of code smells with severity, location, architectural layer context, and git history context</return>
 </function>
 
 <function name="active-skills">
@@ -46,8 +48,9 @@ The language-specific skills not listed, check all available skills before decid
     <step>2. analyze the smells with rubric of available skills</step>
     <step>3. select the skills that address the identified problems</step>
     <step>4. always include `coding:refactoring` as the core skill</step>
+    <step>5. if any smell involves cross-class refactoring (Move Method, Extract Class), always include `coding:clean-architecture` to validate dependency direction</step>
     <loop for="skill in $selected-skills">
-        <step>5. use Skill($skill) to activate and load its knowledge</step>
+        <step>6. use Skill($skill) to activate and load its knowledge</step>
     </loop>
     <return>list of activated skills with their knowledge loaded</return>
 </function>
@@ -68,9 +71,10 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. prioritize smells by impact and risk (high impact, low risk first)</step>
     <step>2. group related smells that can be addressed together</step>
     <step>3. ensure each refactoring step preserves existing behavior</step>
-    <step>4. identify test verification points for each step</step>
-    <step>5. plan small, incremental changes with frequent commits</step>
-    <step>6. for each task, determine which active skill to apply</step>
+    <step>4. for Move Method or Extract Class tasks, verify the target location respects the project's architectural layer rules — dependencies must point inward, do not move logic from outer layer into inner layer</step>
+    <step>5. identify test verification points for each step</step>
+    <step>6. plan small, incremental changes with frequent commits</step>
+    <step>7. for each task, determine which active skill to apply</step>
     <return>refactoring plan with ordered tasks and verification points</return>
 </function>
 
