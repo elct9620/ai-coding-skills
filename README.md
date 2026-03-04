@@ -57,18 +57,19 @@ Choose the appropriate command based on your task:
 | `/write`    | Implement features | `feature\|id [--skip-tests]` |
 | `/refactor` | Clean up code      | `[path\|module]`             |
 | `/fix`      | Fix bugs           | `bug\|issue\|error`          |
+| `/review`   | Review changes     | `[path\|module\|--staged]`   |
 
 ### Skills per Command
 
-| Skill                     | /write | /refactor | /fix |
-|---------------------------|:------:|:---------:|:----:|
-| coding:testing            |   ✓    |     ✓     |  ✓*  |
-| coding:refactoring        |   ✓    |     ✓*    |  ✓   |
-| coding:clean-architecture |   ✓    |     ✓     |  ✓   |
-| coding:principles         |   ✓    |     ✓     |  ✓   |
-| coding:design-patterns    |   ✓    |     ✓     |  ✓   |
-| coding:domain-modeling    |   ✓    |     -     |  ✓   |
-| coding:schema             |   ✓    |     ✓     |  ✓   |
+| Skill                     | /write | /refactor | /fix | /review |
+|---------------------------|:------:|:---------:|:----:|:-------:|
+| coding:testing            |   ✓    |     ✓     |  ✓*  |   ✓*    |
+| coding:refactoring        |   ✓    |     ✓*    |  ✓   |    ✓    |
+| coding:clean-architecture |   ✓    |     ✓     |  ✓   |    ✓    |
+| coding:principles         |   ✓    |     ✓     |  ✓   |   ✓*    |
+| coding:design-patterns    |   ✓    |     ✓     |  ✓   |    ✓    |
+| coding:domain-modeling    |   ✓    |     -     |  ✓   |    -    |
+| coding:schema             |   ✓    |     ✓     |  ✓   |    ✓    |
 
 *Core skill for this command (always activated)
 
@@ -77,6 +78,7 @@ Choose the appropriate command based on your task:
 - **`/write`**: Starting a new feature or adding new functionality
 - **`/refactor`**: Improving code quality without changing behavior
 - **`/fix`**: Diagnosing and fixing bugs with test verification
+- **`/review`**: Reviewing recent changes for style consistency, test quality, and architecture alignment after `/write` or `/fix`
 
 ## Usage
 

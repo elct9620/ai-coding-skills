@@ -2,7 +2,7 @@
 name: refactor
 description: Clean up legacy code issues by identifying code smells and applying safe refactoring techniques.
 argument-hint: [path|module]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), WebSearch, Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema)
 ---
 
 ## Rule
