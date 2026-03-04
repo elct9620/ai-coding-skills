@@ -80,6 +80,14 @@ Choose the appropriate command based on your task:
 - **`/fix`**: Diagnosing and fixing bugs with test verification
 - **`/review`**: Reviewing recent changes for style consistency, test quality, and architecture alignment after `/write` or `/fix`
 
+### Recommended Workflow
+
+```
+/write or /fix → /review → /refactor (if needed)
+```
+
+After implementing features (`/write`) or fixing bugs (`/fix`), run `/review` to check quality. If the review report contains findings, use `/refactor` to address them.
+
 ## Usage
 
 To use this coding skills, add to your marketplace or use `--plugin-dir` in Claude Code. Then choose the command which most fits the task.

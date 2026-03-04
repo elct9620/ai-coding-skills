@@ -129,6 +129,9 @@ The language-specific skills not listed, check all available skills before decid
     <step>6. <execute name="check-test-quality" changes="$changes" active-skills="$active-skills"/></step>
     <step>7. <execute name="check-architecture" changes="$changes" active-skills="$active-skills"/></step>
     <step>8. <execute name="generate-review-report" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" active-skills="$active-skills"/></step>
+    <condition if="review report contains high or medium severity findings">
+        <step>9. suggest running `/refactor` with the identified targets to address the findings</step>
+    </condition>
     <return>review report with refactoring suggestions</return>
 </procedure>
 

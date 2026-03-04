@@ -124,6 +124,7 @@ The language-specific skills not listed, check all available skills before decid
     </loop>
     <step>13. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
     <step>14. ask user if they want to commit the changes</step>
+    <step>15. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>implementation quality report</return>
 </procedure>
 

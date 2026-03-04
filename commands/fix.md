@@ -146,6 +146,7 @@ The language-specific skills not listed, check all available skills before decid
     <step>15. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
     <step>16. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
     <step>17. ask user if they want to commit the changes</step>
+    <step>18. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>fix quality report</return>
 </procedure>
 
