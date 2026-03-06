@@ -59,6 +59,20 @@ description: Design database schemas and API contracts at system boundaries. Use
 | Range queries | B-tree | Date ranges, numeric ranges |
 | Multi-column filter | Composite | Frequently queried column combinations |
 
+#### Avoiding Redundant Indexes
+
+Before adding an index, check whether existing indexes already cover the query:
+
+| Redundant | Why | Covered By |
+|-----------|-----|------------|
+| INDEX on (a, b) when PK is (a, b) | PK already creates a B-tree index | Primary key |
+| INDEX on (a) when composite index (a, b) exists | Leading prefix of composite index covers single-column lookups | Composite index |
+| INDEX on (a, b, c) identical to PK (a, b, c) | Exact duplicate | Primary key |
+| UNIQUE constraint + separate INDEX on same columns | UNIQUE already creates an index | Unique constraint |
+| INDEX on (a) when UNIQUE on (a, b) exists | Leading prefix of unique index covers single-column lookups | Unique constraint's B-tree |
+
+**Rule of thumb**: Every index has write-cost overhead. Only add an index when you have a specific query pattern it serves that isn't already covered by existing PKs, unique constraints, or composite indexes with matching leading columns.
+
 ### API Contract Design
 
 #### Resource Design Principles

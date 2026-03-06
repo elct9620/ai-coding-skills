@@ -53,6 +53,43 @@ When embedding data from another aggregate, decide: do you need the **current** 
 
 Snapshots are Value Objects embedded in the aggregate. They never change even if the source changes later. Use snapshots for anything that affects business correctness if it were to change retroactively (prices, addresses, terms).
 
+### Polymorphic Value Objects
+
+When multiple Value Objects share a common concept (e.g., different discount types, different address formats), they must all implement the **same method signature**. The calling code should never need to type-check or use case/switch statements — polymorphism handles dispatch.
+
+| Principle | Right | Wrong |
+|-----------|-------|-------|
+| Same interface | All types implement `compute(context)` | Different methods per type |
+| No type checking | Call `discount.compute(order)` directly | `case discount.class` dispatch |
+| Uniform parameters | Pass a common context object | Each type needs different args |
+| Open for extension | New type = new class, no caller changes | New type = modify case statement |
+
+When different Value Object variants need different data to operate (e.g., a percentage discount needs the order total, but a BOGO discount needs line items), design the interface to accept a context that contains all relevant data. Each implementation extracts what it needs:
+
+```ruby
+# All discount types implement the same interface
+class PercentageDiscount
+  def compute(order)
+    order.subtotal * (rate / 100.0)
+  end
+end
+
+class BuyOneGetOneFreeDiscount
+  def compute(order)
+    # Same interface — extracts line items from the order context
+    eligible = order.line_items.select { |li| li.product_id == product_id }
+    eligible.sum { |li| (li.quantity / 2) * li.unit_price.amount }
+  end
+end
+
+# Caller — no case statement, no type checking
+class Order
+  def apply_discount(discount)
+    @discount_amount = discount.compute(self)
+  end
+end
+```
+
 ### Implementation Examples
 
 **Value Object** — immutable, validated at construction, compared by value:

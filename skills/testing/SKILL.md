@@ -89,6 +89,55 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 | Smoke tests | | | ✓ |
 | Regression prevention | | | ✓ |
 
+## TDD Phase Discipline
+
+Each TDD phase must be explicitly confirmed before moving to the next:
+
+| Phase | Action | Confirmation |
+|-------|--------|-------------|
+| **RED** | Write failing test | State: "Test fails because [reason]" |
+| **GREEN** | Write minimal fix | State: "All tests now pass" |
+| **REFACTOR** | Improve code | State: "Tests still pass after refactoring" |
+
+The GREEN phase is not just writing the fix — you must confirm that tests pass. Without this confirmation, the cycle is incomplete and regressions can slip through unnoticed.
+
+## Working with Legacy Code (No Existing Tests)
+
+When facing code with zero test coverage, testing requires a different entry strategy than greenfield TDD.
+
+### Characterization Tests
+
+A characterization test captures **what the code currently does**, not what it should do. The goal is to lock down existing behavior so you can refactor safely.
+
+```ruby
+# Step 1: Call the code and observe what happens
+test "characterize: payment processor charges card with 2.9% fee" do
+  processor = PaymentProcessor.new
+  result = processor.charge(card: valid_card, amount: 100.0)
+  # Record whatever the code actually returns
+  assert_equal 102.90, result.total_charged
+  assert_equal "approved", result.status
+end
+```
+
+### Dealing with Untestable Code
+
+Legacy code often has barriers to testing. Common patterns and workarounds:
+
+| Barrier | Symptom | Workaround |
+|---------|---------|------------|
+| Hard-coded dependency | `PaymentGateway.new` inside method | **Extract and Override**: subclass in test, override the method that creates the dependency |
+| Global state | Class methods, singletons | **Inject the global**: pass it as a parameter, reset between tests |
+| No dependency injection | Constructor creates all deps | **Introduce Seam**: extract a method for the dependency creation, override in test subclass |
+| Side effects in constructor | Network calls, file I/O at init | **Wrap and isolate**: create a test-only subclass that skips the side effects |
+
+### Legacy Code Testing Strategy
+
+1. **Write characterization tests first** — capture current behavior with integration-level tests
+2. **Identify seams** — find points where you can alter behavior without editing the code (subclass, extract method, wrap)
+3. **Make the change** — add new feature or fix bug using TDD
+4. **Verify no regressions** — all characterization tests still pass
+
 ## Test Structure (AAA Pattern)
 
 ```

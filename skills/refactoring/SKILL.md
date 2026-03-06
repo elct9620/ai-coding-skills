@@ -43,6 +43,7 @@ description: Safely restructure code without changing behavior using Extract Met
 - **Always have tests before refactoring**
 - **Small steps, frequent commits**
 - **If tests fail, revert immediately**
+- **Never rewrite from scratch** — a big-bang rewrite throws away years of bug fixes and domain knowledge. Instead, extract one piece at a time, test it, and ship it. If your refactoring plan requires "stop the world and replace everything," the plan is wrong — break it into smaller incremental steps.
 
 ## Common Refactoring Techniques
 

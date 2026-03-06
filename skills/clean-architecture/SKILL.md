@@ -80,6 +80,56 @@ Dependencies MUST point inward:
 | Entities testability | Testable without any outer layer dependency | Requires framework or external deps |
 | Convention adherence | Follows project patterns | Inconsistent with codebase |
 
+## Before/After Pattern
+
+When explaining layer violations or restructuring, always show both the problematic code (BEFORE) and the corrected code (AFTER). This makes the improvement concrete and reviewable.
+
+### Example: Controller with ORM Leak
+
+**BEFORE** — controller directly uses ORM (Frameworks & Drivers leaking into Interface Adapters):
+
+```ruby
+class OrdersController
+  def show
+    # BAD: ORM query directly in controller
+    order = DB[:orders].where(id: params[:id]).join(:line_items, order_id: :id).all
+    total = order.sum { |row| row[:price] * row[:quantity] }
+    render json: { order: order, total: total }
+  end
+end
+```
+
+**AFTER** — controller depends on interface, ORM isolated in infrastructure:
+
+```ruby
+# Use Case layer: defines the port (interface)
+class OrderRepository
+  def find_with_total(id) = raise NotImplementedError
+end
+
+# Infrastructure layer: implements the port
+class SqlOrderRepository < OrderRepository
+  def find_with_total(id)
+    rows = DB[:orders].where(id: id).join(:line_items, order_id: :id).all
+    Order.new(rows)  # maps to domain object
+  end
+end
+
+# Interface Adapter layer: controller uses the port
+class OrdersController
+  def initialize(order_repo:)
+    @order_repo = order_repo
+  end
+
+  def show
+    order = @order_repo.find_with_total(params[:id])
+    render json: OrderPresenter.new(order).as_json
+  end
+end
+```
+
+When demonstrating architectural improvements, the BEFORE block helps the user recognize their current situation, while the AFTER block shows the target. Without BEFORE, the guidance feels abstract.
+
 ## Architecture Documentation
 
 If `docs/architecture.md` doesn't exist, create it with:
