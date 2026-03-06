@@ -1,18 +1,25 @@
 ---
 name: principles
-description: Apply SOLID, KISS, DRY, YAGNI principles to code design. Use when building new features from scratch, making design decisions, or reviewing code for principle violations.
+description: Apply SOLID, KISS, DRY, YAGNI principles to code design decisions. Use when building new features from scratch and need to decide on class structure, interface boundaries, or dependency direction. Make sure to use this skill when the user faces design trade-offs, asks about SOLID principles, debates whether to abstract or keep things simple, or needs to evaluate competing design approaches — but not for code smell detection (use refactoring skill instead).
 ---
+
+## Related Skills
+
+- Detected a code smell (long method, feature envy)? → Use **refactoring** for specific techniques
+- Need a specific pattern (Strategy, Factory)? → Use **design-patterns** for selection and implementation
+- Deciding which architectural layer code belongs in? → Use **clean-architecture**
 
 ## Applicability Rubric
 
 | Condition | Pass | Fail |
 |-----------|------|------|
 | New feature from scratch | Building without existing reference | Modifying existing code |
-| Design decision needed | Choosing between approaches | Implementation is clear |
-| Code quality review | Evaluating design quality | No review needed |
-| No existing patterns | No codebase conventions apply | Can follow existing code |
+| Design trade-off | Choosing between competing approaches | Implementation path is clear |
+| Interface/boundary design | Defining class responsibilities or contracts | Internal implementation detail |
+| Dependency structure | Deciding coupling and injection strategy | No dependency decisions |
 
 **Apply when**: Any condition passes
+**Do NOT apply when**: The task is purely about restructuring existing code (use refactoring) or detecting code smells (use refactoring)
 
 ## Core Principles
 
@@ -97,11 +104,8 @@ description: Apply SOLID, KISS, DRY, YAGNI principles to code design. Use when b
 | Minimal complexity | Simplest working solution | Over-engineered |
 | Current focus | Solves only current problem | Solves hypothetical problems |
 
-## Anti-Patterns to Avoid
+## Principle Violations vs Code Smells
 
-| Anti-Pattern | Symptom | Remedy |
-|--------------|---------|--------|
-| God Class | Does everything, knows everything | Extract Class |
-| Shotgun Surgery | One change requires many edits | Move Method, consolidate |
-| Feature Envy | Method uses another class more | Move Method |
-| Primitive Obsession | Overuse of primitives | Introduce Value Object |
+When you detect **design principle violations** (wrong abstraction level, tight coupling, fat interfaces), apply this skill to fix the design.
+
+When you detect **code smells** (long methods, duplicated code, feature envy), use the **refactoring** skill instead — it has specific techniques and safe steps for each smell.

@@ -1,7 +1,14 @@
 ---
 name: refactoring
-description: Safely restructure code without changing behavior using Extract Method, Rename, Move Method techniques. Use when preparing code for new features or improving code quality incrementally.
+description: Safely restructure code without changing behavior using Extract Method, Rename, Move Method techniques. Use when preparing code for new features, improving code quality incrementally, cleaning up messy code, reducing duplication, or simplifying complex logic. Make sure to use this skill whenever the user mentions refactoring, cleaning up code, making code more readable, splitting large files or methods, or removing code smells.
 ---
+
+## Related Skills
+
+- Facing a design trade-off (DRY vs KISS)? → Use **principles** first to decide, then refactor
+- Code is in the wrong architectural layer? → Use **clean-architecture** to identify target, then refactor to move it
+- Need to choose a pattern (Strategy, Factory)? → Use **design-patterns** first, then refactor toward it
+- No tests before refactoring? → Use **testing** to add them first
 
 ## Applicability Rubric
 

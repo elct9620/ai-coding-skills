@@ -1,7 +1,13 @@
 ---
 name: clean-architecture
-description: Apply Clean Architecture with four concentric layers (Entities, Use Cases, Interface Adapters, Frameworks & Drivers). Use when creating docs/architecture.md, designing new modules, or restructuring code with proper dependency direction.
+description: Apply Clean Architecture with four concentric layers (Entities, Use Cases, Interface Adapters, Frameworks & Drivers). Use when creating docs/architecture.md, designing new modules, or restructuring code with proper dependency direction. Make sure to use this skill whenever the user discusses layer boundaries, dependency direction, where to put new code, separating business logic from frameworks, or organizing project directory structure around architectural layers.
 ---
+
+## Related Skills
+
+- Need to move code between layers? → Use **refactoring** for safe migration steps
+- Designing the domain layer's internal structure? → Use **domain-modeling** for entities and aggregates
+- Defining API contracts or DB schemas at boundaries? → Use **schema**
 
 ## Applicability Rubric
 

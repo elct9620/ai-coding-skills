@@ -1,7 +1,13 @@
 ---
 name: testing
-description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for every new feature, behavior change, or bug fix. Covers unit, integration, and E2E test selection.
+description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for every new feature, behavior change, or bug fix. Covers unit, integration, and E2E test selection. Make sure to use this skill whenever the user asks to add tests, fix a bug (tests should come first), implement a feature with test coverage, or asks about what kind of tests to write — even for small one-line changes or trivial-looking fixes.
 ---
+
+## Related Skills
+
+- Found a code smell while writing tests? → Use **refactoring** to fix it first
+- Need to design the class structure before testing? → Use **design-patterns** or **principles**
+- Adding a database migration or API endpoint? → Use **schema** alongside testing
 
 ## Applicability Rubric
 

@@ -1,7 +1,13 @@
 ---
 name: design-patterns
-description: Select and apply GoF design patterns: Factory, Builder, Strategy, Observer, Adapter, Decorator. Use when solving recurring design problems or structuring multi-component changes.
+description: Select and apply GoF design patterns: Factory, Builder, Strategy, Observer, Adapter, Decorator. Use when solving recurring design problems or structuring multi-component changes. Make sure to use this skill whenever the user needs to decouple components, wrap legacy APIs, handle multiple algorithm variants, build complex objects step by step, or asks which pattern fits their situation.
 ---
+
+## Related Skills
+
+- Modeling business concepts (Entity, Value Object)? → Use **domain-modeling** instead
+- Restructuring existing code toward a pattern? → Use **refactoring** for safe migration steps
+- Deciding if a pattern is even needed (YAGNI)? → Use **principles** to evaluate first
 
 ## Applicability Rubric
 

@@ -1,7 +1,13 @@
 ---
 name: schema
-description: Design database schemas and API contracts at system boundaries. Use when creating or modifying database tables, API endpoints, or data serialization formats.
+description: Design database schemas and API contracts at system boundaries. Use when creating or modifying database tables, API endpoints, or data serialization formats. Make sure to use this skill whenever the user adds database migrations, designs REST/GraphQL APIs, creates DTOs, defines request/response shapes, or works on data serialization — even for adding a single column or endpoint.
 ---
+
+## Related Skills
+
+- Designing the domain objects that the schema persists? → Use **domain-modeling**
+- Schema change requires code restructuring? → Use **refactoring**
+- Unsure which architectural layer the DTO belongs in? → Use **clean-architecture**
 
 ## Applicability Rubric
 
