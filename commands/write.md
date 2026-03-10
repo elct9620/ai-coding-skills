@@ -118,13 +118,14 @@ The language-specific skills not listed, check all available skills before decid
         <step>9. refine the plan to avoid over-engineering</step>
     </condition>
     <step>10. exit plan mode and wait for user confirmation</step>
+    <step>11. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>11. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
-        <step>12. collect task result for quality report</step>
+        <step>12. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
+        <step>13. collect task result for quality report and update task status</step>
     </loop>
-    <step>13. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>14. ask user if they want to commit the changes</step>
-    <step>15. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
+    <step>14. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>15. ask user if they want to commit the changes</step>
+    <step>16. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>implementation quality report</return>
 </procedure>
 

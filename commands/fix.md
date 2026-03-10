@@ -138,15 +138,16 @@ The language-specific skills not listed, check all available skills before decid
         <step>10. reduce scope to focus only on the bug fix</step>
     </condition>
     <step>11. exit plan mode and wait for user confirmation</step>
-    <step>12. write reproduction test (Red)</step>
+    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>13. write reproduction test (Red)</step>
     <loop for="task in $plan.tasks">
-        <step>13. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
-        <step>14. collect fix result for quality report</step>
+        <step>14. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
+        <step>15. collect fix result for quality report and update task status</step>
     </loop>
-    <step>15. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
-    <step>16. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
-    <step>17. ask user if they want to commit the changes</step>
-    <step>18. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
+    <step>16. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
+    <step>17. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
+    <step>18. ask user if they want to commit the changes</step>
+    <step>19. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>fix quality report</return>
 </procedure>
 

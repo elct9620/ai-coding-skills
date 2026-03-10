@@ -123,12 +123,13 @@ The language-specific skills not listed, check all available skills before decid
         <step>10. reduce scope to focus on highest impact improvements</step>
     </condition>
     <step>11. exit plan mode and wait for user confirmation</step>
+    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>12. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
-        <step>13. collect task result for quality report</step>
+        <step>13. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
+        <step>14. collect task result for quality report and update task status</step>
     </loop>
-    <step>14. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>15. ask user if they want to commit the changes</step>
+    <step>15. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>16. ask user if they want to commit the changes</step>
     <return>refactoring quality report</return>
 </procedure>
 
