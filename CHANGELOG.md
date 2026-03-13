@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.3.0](https://github.com/elct9620/ai-coding-skills/compare/v0.2.0...v0.3.0) (2026-03-13)
+
+
+### Features
+
+* **commands:** add architecture validation gate to refactor command ([9a239f6](https://github.com/elct9620/ai-coding-skills/commit/9a239f676897bc648425a7a67941f0664776635d))
+* **commands:** add review command for post-implementation quality checks ([dca6b7c](https://github.com/elct9620/ai-coding-skills/commit/dca6b7cb254deeb35a4d2e83e2820238bbc64c9a))
+* **commands:** add TaskCreate step after plan approval for progress tracking ([8b81054](https://github.com/elct9620/ai-coding-skills/commit/8b810543091692048bbf96c16dcded0a1db4c621))
+* **commands:** add WebSearch support for external research in all commands ([1a33f7b](https://github.com/elct9620/ai-coding-skills/commit/1a33f7be63652ea683d2fb692cc3693f5f311677))
+* **commands:** add workflow chaining guidance between commands ([ad98d3e](https://github.com/elct9620/ai-coding-skills/commit/ad98d3e2ea779c6efd12a02305dbc9392662ebb8))
+* **skills:** add boundary testing guidance to prevent testing third-party code ([e1b9692](https://github.com/elct9620/ai-coding-skills/commit/e1b96925fe46634d8e3672163407f27fc59cbc87))
+* **skills:** add dead code detection guidance to testing skill ([678be10](https://github.com/elct9620/ai-coding-skills/commit/678be106562fb98f0077cf4bffe1daff60c330c7))
+* **skills:** add security skill for vulnerability prevention ([610b34e](https://github.com/elct9620/ai-coding-skills/commit/610b34e1fd80cc52e69f936df83ff183252e5c8f))
+* **skills:** address eval-identified gaps in 5 skills ([3b7aff6](https://github.com/elct9620/ai-coding-skills/commit/3b7aff6d0628e466bed2d12b296be383c6fae1bb))
+* **skills:** improve triggering accuracy, cross-references, and domain-modeling depth ([2e853ed](https://github.com/elct9620/ai-coding-skills/commit/2e853ed7019d2ae03dfccc802d2de04e19704bc2))
+
+
+### Bug Fixes
+
+* **commands:** make investigate mandatory and add project boundary constraints ([3c7d6f2](https://github.com/elct9620/ai-coding-skills/commit/3c7d6f2a04d5fc7df8470fe19cedd79e77df13bf))
+* **skills:** align testing skill with integration-first philosophy ([83b02b2](https://github.com/elct9620/ai-coding-skills/commit/83b02b24c0705bd83bd16faee4943c25ea41e4fd))
+
 ## [0.2.0](https://github.com/elct9620/ai-coding-skills/compare/v0.1.0...v0.2.0) (2026-02-11)
 
 
