@@ -24,7 +24,8 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 
 ### Integration-First Philosophy
 
-> Ensure components work together first, then verify individual component details
+> Ensure components work together first, then verify individual component details.
+> Unit tests are supplementary — only add them for edge cases that integration tests cannot practically cover.
 
 | Scenario | Action |
 |----------|--------|
@@ -52,17 +53,20 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
    (repeat)
 ```
 
-### Testing Pyramid
+### Testing Trophy
+
+> Inspired by Kent C. Dodds' Testing Trophy — integration tests provide the best balance of confidence and cost. This replaces the traditional pyramid to reflect an integration-first approach.
 
 ```
         ╱╲
        ╱  ╲
-      ╱ E2E╲        Few, slow, high confidence
+      ╱ E2E╲          Few, slow, highest confidence
      ╱──────╲
-    ╱Integration╲   Some, medium speed
-   ╱────────────╲
-  ╱    Unit       ╲  Many, fast, focused
- ╱─────────────────╲
+    ╱          ╲
+   ╱ Integration╲     Most tests live here
+  ╱──────────────╲
+  ╲    Unit      ╱     Few, only for edge cases
+   ╲────────────╱
 ```
 
 ## Test Types
