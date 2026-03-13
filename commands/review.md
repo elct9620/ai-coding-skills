@@ -2,7 +2,7 @@
 name: review
 description: Review recent changes for style consistency, test quality, and architectural alignment, then propose refactoring suggestions.
 argument-hint: [path|module|--staged]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -21,6 +21,7 @@ To select skills for reviewing changes, consider the following rubric:
 | `coding:design-patterns`    | Changes involve patterns that may be misused or missing.                       |
 | `coding:clean-architecture` | Changes cross architectural layers or affect dependency direction.             |
 | `coding:schema`             | Changes involve database schemas, API contracts, or data serialization.        |
+| `coding:security`           | Changes handle user input, auth, secrets, or cross trust boundaries.           |
 
 The language-specific skills not listed, check all available skills before deciding skills to use.
 

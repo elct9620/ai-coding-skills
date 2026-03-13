@@ -19,6 +19,7 @@ I use Ruby, TypeScript/JavaScript, and Golang the most. And love Clean Architect
 | Principles   | SOLID, KISS, DRY        |
 | Coding       | Design Patterns         |
 | Coding       | Refactoring             |
+| Coding       | Security                |
 
 ## Structure
 
@@ -70,6 +71,7 @@ Choose the appropriate command based on your task:
 | coding:design-patterns    |   ✓    |     ✓     |  ✓   |    ✓    |
 | coding:domain-modeling    |   ✓    |     -     |  ✓   |    -    |
 | coding:schema             |   ✓    |     ✓     |  ✓   |    ✓    |
+| coding:security           |   ✓    |     ✓     |  ✓   |    ✓    |
 
 *Core skill for this command (always activated)
 
