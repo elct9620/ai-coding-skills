@@ -1,29 +1,74 @@
 ---
 name: security
-description: Prevent security vulnerabilities including OWASP Top 10, injection attacks, broken authentication, and insecure data handling. Use when writing code that handles user input, authentication, authorization, database queries, external API calls, file operations, or secret management. Make sure to use this skill whenever the user works on login/signup flows, processes form data, builds API endpoints, handles file uploads, manages secrets or credentials, or writes code that crosses trust boundaries — even for seemingly simple changes like adding a query parameter or a new form field.
+description: Prevent security vulnerabilities through threat modeling, trust boundary analysis, and defense in depth. Use when writing code that crosses trust boundaries, handles authentication or authorization, processes external input, manages secrets, or stores sensitive data. Make sure to use this skill whenever the user works on login flows, processes data from external sources, builds interfaces between systems, manages credentials, or writes code that moves data across trust zones — even for seemingly simple changes like accepting a new parameter or calling an external service.
 ---
 
 ## Related Skills
 
-- Designing API contracts or database schemas? → Use **schema** to ensure minimal exposure and proper constraints
-- Structuring authentication/authorization layers? → Use **clean-architecture** for proper boundary separation
+- Designing API contracts or database schemas? → Use **schema** to enforce minimal exposure and proper constraints
+- Structuring layers around trust boundaries? → Use **clean-architecture** for proper boundary separation
 - Writing tests for security-sensitive code? → Use **testing** to verify security behavior
 - Handling domain rules around access control? → Use **domain-modeling** for authorization aggregates
+- Applying least privilege or single responsibility to security design? → Use **principles** for SOLID guidance
 
 ## Applicability Rubric
 
 | Condition | Pass | Fail |
 |-----------|------|------|
-| User input handling | Code receives external input (forms, query params, headers, file uploads) | No external input processed |
-| Authentication/authorization | Login, signup, session, token, or permission logic | No auth-related code |
-| Data persistence with external input | Storing user-supplied data in database or file system | Internal-only data operations |
-| Secret/credential management | API keys, passwords, tokens, encryption keys involved | No sensitive data handled |
-| Cross-trust-boundary communication | Calling external APIs, rendering user content, executing commands | Communication within single trust boundary |
-| File or process operations | File read/write, command execution, path construction with input | No file/process operations |
+| Trust boundary crossing | Data moves between zones of different trust levels (including stored data re-entering logic) | All data stays within a single trust zone |
+| Identity or access decision | Code decides who someone is or what they can do | No identity or permission logic |
+| Secret or credential handling | API keys, passwords, tokens, encryption keys involved | No sensitive credentials handled |
+| Sensitive data storage or transmission | PII, financial data, health data processed | No sensitive data involved |
 
 **Apply when**: Any condition passes
 
 ## Core Principles
+
+### Golden Rule
+
+> **Every security decision is a trust decision.** Before writing any security-sensitive code, ask: "Who am I trusting, with what, and what happens if that trust is violated?"
+
+### STRIDE Threat Thinking
+
+> Systematically analyze threats before writing security-sensitive code. STRIDE is a thinking process, not a checklist.
+> Reference: Microsoft Security Development Lifecycle (SDL).
+
+```
+┌──────────────────────────────┐
+│ 1. IDENTIFY                  │
+│    What components change?    │
+│    (processes, data stores,   │
+│     data flows, boundaries)   │
+└─────────────┬────────────────┘
+              ↓
+┌──────────────────────────────┐
+│ 2. QUESTION                  │
+│    For each component, ask    │
+│    the 6 STRIDE questions     │
+└─────────────┬────────────────┘
+              ↓
+┌──────────────────────────────┐
+│ 3. VERIFY                    │
+│    Does a mitigation exist    │
+│    in the code for each       │
+│    applicable threat?         │
+└─────────────┬────────────────┘
+              ↓
+┌──────────────────────────────┐
+│ 4. IMPLEMENT                 │
+│    Add missing mitigations    │
+│    before proceeding          │
+└──────────────────────────────┘
+```
+
+| Category | Threatened Property | Question to Ask |
+|----------|-------------------|-----------------|
+| **S**poofing | Authentication | Can an attacker pretend to be another user or system? |
+| **T**ampering | Integrity | Can data be modified without detection? |
+| **R**epudiation | Non-repudiation | Can a user deny performing an action with no audit trail? |
+| **I**nformation Disclosure | Confidentiality | Can sensitive data leak through errors, logs, or side channels? |
+| **D**enial of Service | Availability | Can an attacker exhaust resources or degrade service? |
+| **E**levation of Privilege | Authorization | Can an unprivileged user gain higher access? |
 
 ### Trust Boundaries
 
@@ -31,9 +76,9 @@ description: Prevent security vulnerabilities including OWASP Top 10, injection 
 
 ```
 ┌─────────────────────────────────┐
-│         Your Application        │
+│         Your System             │
 │  ┌───────────────────────────┐  │
-│  │    Business Logic         │  │
+│  │    Core Logic             │  │
 │  │    (trusted zone)         │  │
 │  └─────────┬─────────────────┘  │
 │            │ validate here      │
@@ -45,102 +90,135 @@ description: Prevent security vulnerabilities including OWASP Top 10, injection 
              │ untrusted
      ┌───────▼────────┐
      │  External World │
-     │  (users, APIs,  │
-     │   files, CLI)   │
+     │  (users, other  │
+     │   systems, I/O) │
      └────────────────┘
 ```
 
-| Source | Examples | Action |
-|--------|----------|--------|
-| User input | Form fields, query params, headers, cookies | Validate type, length, format; reject on failure |
-| File uploads | Images, documents, CSV | Validate MIME type, size limit, sanitize filename |
-| External APIs | Third-party responses, webhooks | Validate schema, verify signatures |
-| Database reads | Data previously stored from user input | Re-validate before use in sensitive contexts (e.g., rendering HTML) |
-| Environment/config | ENV vars, config files | Validate at startup, fail fast on missing required values |
+| Zone Transition | Validation Required |
+|----------------|-------------------|
+| External → Boundary | Validate type, format, length, range; reject on failure |
+| Boundary → Core | Data is already validated; safe to process |
+| Core → External | Encode or sanitize for the target context |
+| System A → System B | Treat as external; re-validate at receiving boundary |
+| Stored data → Output | Re-validate if data was originally from an untrusted source |
 
-### Injection Prevention
+### Defense in Depth
 
-| Attack | Vector | Defense |
-|--------|--------|---------|
-| SQL Injection | String concatenation in queries | Parameterized queries / prepared statements — never interpolate |
-| XSS (Cross-Site Scripting) | Rendering unsanitized user content | Context-aware output encoding; use framework auto-escaping |
-| Command Injection | User input in shell commands | Avoid shell execution; use array-based APIs (e.g., `subprocess.run([...])`) |
-| Path Traversal | User input in file paths | Validate against allowlist; resolve and check canonical path |
-| LDAP/XML/Template Injection | User input in structured queries or templates | Use safe APIs; never build queries by string interpolation |
+> No single security control should be the sole line of defense. Layer protections so that a failure in one layer does not compromise the system.
 
-### Injection Prevention Checklist
+| Layer | Purpose | Example |
+|-------|---------|---------|
+| Boundary validation | Reject malformed input early | Type checking, length limits, format validation |
+| Business logic enforcement | Apply domain-level constraints | Authorization checks, ownership verification |
+| Data layer protection | Prevent direct manipulation | Instruction/data separation, access control at storage level |
+| Output encoding | Prevent data from being interpreted as instructions | Context-aware encoding on output |
+| Monitoring & audit | Detect and respond to failures | Security event logging, anomaly detection |
 
-| Context | Safe | Unsafe |
-|---------|------|--------|
-| SQL | `WHERE id = ?` with param binding | `WHERE id = #{params[:id]}` |
-| HTML | Framework auto-escaping enabled | `innerHTML = userInput` |
-| Shell | `Process.spawn("cmd", arg1, arg2)` | `system("cmd #{user_input}")` |
-| File path | `File.join(UPLOAD_DIR, SecureRandom.hex)` | `File.join(UPLOAD_DIR, params[:filename])` |
-| URL | Allowlist of permitted hosts | Redirect to `params[:url]` without validation |
-| Regex | Anchored patterns `\A...\z` | Unanchored `^...$` (allows multiline bypass) |
+### Core Security Principles
 
-### Authentication & Session Security
+| # | Principle | Description | STRIDE Link |
+|---|-----------|-------------|-------------|
+| 1 | **Fail secure** | When a control fails, deny access rather than grant it | S, E |
+| 2 | **Least privilege** | Grant minimum permissions needed; deny by default | E |
+| 3 | **Separate instructions from data** | Never let external data be interpreted as executable instructions | T, E |
+| 4 | **Don't roll your own crypto** | Use established, vetted implementations for authentication, encryption, and hashing | S, T, I |
+| 5 | **Minimize exposure** | Collect, store, and transmit only what is necessary; strip everything else | I |
+| 6 | **Verify, then trust** | Authenticate identity and authorize actions at the enforcement point, on every request | S, E |
+| 7 | **Keep secrets secret** | Credentials never in source code, logs, or error messages; support rotation | I |
 
-| Concern | Requirement | Violation Sign |
-|---------|-------------|----------------|
-| Password storage | Use bcrypt/scrypt/argon2 with salt | Storing plaintext or using MD5/SHA1 |
-| Session management | Secure, HttpOnly, SameSite cookies; regenerate ID on login | Session fixation, no expiry, missing flags |
-| Token handling | Short-lived JWTs; refresh token rotation; server-side revocation | Long-lived tokens, no revocation mechanism |
-| Rate limiting | Limit login attempts per account and IP | Unlimited authentication attempts |
-| Multi-factor | Support MFA for sensitive operations | Single factor for high-value actions |
+### Injection as Trust Violation
 
-### Authorization
+> Injection flaws dominate the CWE Top 25 (2024). They are all violations of Principle #3 — mixing instructions with data. The table below shows how this manifests across contexts.
 
-| Principle | Description | Violation Sign |
-|-----------|-------------|----------------|
-| Least privilege | Grant minimum permissions needed | Broad roles, admin-by-default |
-| Server-side enforcement | Always check on server, never trust client | Client-only permission checks |
-| Resource-level checks | Verify user owns/can access specific resource | Only checking "is logged in" |
-| Deny by default | Explicitly grant access, deny everything else | Allowlisting missing, implicit allow |
+| Context | Instruction | Data | Defense |
+|---------|------------|------|---------|
+| Query language | Query structure | Parameter values | Parameterized queries / prepared statements |
+| Markup/template | Template structure | User-supplied content | Context-aware output encoding; use framework defaults |
+| System command | Command and arguments | User-supplied values | Array-based APIs; avoid shell interpretation |
+| File system | Base path | User-supplied path segment | Resolve canonical path; validate against allowlist |
+| Serialization | Object structure | Serialized payload | Use safe formats; never deserialize untrusted input into executable objects |
 
-### Secrets Management
+## Security Decision Tables
 
-| Rule | Do | Don't |
-|------|------|-------|
-| Storage | Environment variables or secret manager (Vault, AWS SM) | Hardcoded in source code or config files |
-| Version control | `.gitignore` secrets; use `.env.example` for templates | Commit `.env`, API keys, or private keys |
-| Rotation | Support key rotation without downtime | Single non-rotatable key |
-| Logging | Redact secrets from logs and error messages | Log full request headers or credentials |
-| Default credentials | Force change on first use | Ship with admin/admin |
+### Authentication Strategy Selection
 
-### Secure Defaults
+| Factor | Use platform/framework auth | Use managed identity service | Build custom |
+|--------|---------------------------|----------------------------|-------------|
+| Team has security expertise | Optional | Optional | Required |
+| Compliance requirements | Standard | Strict | Specialized |
+| Time to market | Fast | Medium | Slow |
+| Maintenance burden | Low | Medium | High |
+| Risk of getting it wrong | Low | Low | **Very high** |
 
-| Area | Secure Default | Insecure Default |
-|------|----------------|-----------------|
-| CORS | Restrictive origin allowlist | `Access-Control-Allow-Origin: *` |
-| Content-Type | Explicit `Content-Type` with charset | Missing or `text/html` for API responses |
-| HTTPS | Enforce TLS; HSTS header | Allow HTTP in production |
-| Error responses | Generic error message to client | Stack traces or internal details exposed |
-| File permissions | Restrictive (0600/0644) | World-readable/writable |
-| Cookie flags | `Secure; HttpOnly; SameSite=Lax` | No flags set |
-| CSP | Content-Security-Policy header | No CSP or `unsafe-inline` |
+**Default choice**: Use platform/framework auth. Only escalate when constraints demand it.
 
-### Dependency Security
+### Secret Storage Selection
 
-| Practice | Description |
-|----------|-------------|
-| Lock files | Always commit lock files (Gemfile.lock, package-lock.json, go.sum) |
-| Audit regularly | Run `npm audit`, `bundle audit`, `govulncheck` in CI |
-| Pin versions | Use exact versions or tight ranges for production dependencies |
-| Minimal dependencies | Fewer deps = smaller attack surface |
-| Update promptly | Patch known vulnerabilities within days, not months |
+| Secret Type | Environment variables | Secret manager service | Hardware security module |
+|-------------|----------------------|----------------------|------------------------|
+| Development credentials | Suitable | Overkill | Overkill |
+| Production API keys | Acceptable | Recommended | Optional |
+| Encryption keys | Insufficient | Recommended | Preferred |
+| Signing keys (release/deploy) | Insufficient | Acceptable | Recommended |
+| User credentials (passwords) | Never store directly | Hash with bcrypt/scrypt/argon2 | N/A |
 
-## Common Vulnerability Patterns
+### Sensitive Data Handling
 
-| Pattern | Risk | Detection | Fix |
-|---------|------|-----------|-----|
-| Mass assignment | Unauthorized field modification | Controller accepts all params | Allowlist permitted attributes explicitly |
-| Insecure direct object reference (IDOR) | Access to other users' resources | ID from URL without ownership check | Scope queries to current user |
-| Open redirect | Phishing via trusted domain | Redirect URL from user input | Allowlist redirect destinations |
-| CSRF | Unauthorized state changes | No CSRF token on state-changing requests | Framework CSRF protection enabled |
-| Sensitive data in URL | Credentials in logs/history | Tokens or secrets in query parameters | Use headers or POST body |
-| Verbose errors | Information disclosure | Stack traces in production responses | Generic errors; detailed logging server-side only |
-| Missing rate limiting | Brute force, DoS | No throttling on sensitive endpoints | Rate limit by IP and account |
+| Decision | Collect | Store | Transmit | Log |
+|----------|---------|-------|----------|-----|
+| PII (names, emails) | Only if needed | Encrypt at rest | Encrypt in transit | Redact |
+| Credentials | At auth boundary only | Hash, never plaintext | Encrypt in transit | Never |
+| Financial data | Only if needed | Encrypt at rest | Encrypt in transit | Redact |
+| Health data | Only with consent | Encrypt at rest | Encrypt in transit | Never |
+| Internal system tokens | Auto-generated | Rotate regularly | Encrypt in transit | Redact |
+
+## Security Code Review Process
+
+> Apply this process when reviewing changes that touch security-sensitive code.
+
+| Step | Action | Question to Ask |
+|------|--------|----------------|
+| 1. Identify trust boundaries | Map where external data enters through changed code | What data crosses a trust boundary in this change? |
+| 2. Apply STRIDE | For each changed component, run the 6 STRIDE questions | Which threats apply to this component? |
+| 3. Check instruction/data separation | Verify external data is never treated as instructions | Is any external input concatenated into queries, commands, templates, or paths? |
+| 4. Verify access controls | Confirm identity and permission checks on every protected path | Can an unauthenticated or unauthorized caller reach this code? |
+| 5. Trace sensitive data | Follow sensitive data from input to storage to output | Does any sensitive data leak into logs, errors, or unencrypted channels? |
+| 6. Validate defense layers | Confirm no single control is the sole protection | If this one check fails, what stops the attacker? |
+| 7. Check for regressions | Confirm no existing security controls were weakened | Were any validations removed, permissions relaxed, or controls bypassed? |
+
+## Working with Unsecured Legacy Code
+
+When facing code with known security gaps, prioritize systematically rather than attempting to fix everything at once.
+
+### Security Triage
+
+| Priority | Criteria | Action |
+|----------|----------|--------|
+| **Critical** | Actively exploitable; data exposure imminent | Fix immediately; consider taking the feature offline |
+| **High** | Trust boundary violation with no mitigation | Fix before next release |
+| **Medium** | Defense in depth gap (one layer missing) | Plan fix within current cycle |
+| **Low** | Best practice gap with existing compensating controls | Track and address incrementally |
+
+### Security Characterization
+
+Before fixing legacy security issues, understand the current state — similar to characterization tests for refactoring.
+
+1. **Map trust boundaries** — identify all points where external data enters the system
+2. **Catalog existing controls** — document what validation, authentication, and authorization already exists
+3. **Identify gaps** — compare existing controls against STRIDE analysis
+4. **Prioritize by triage** — apply the triage table above to determine fix order
+5. **Fix incrementally** — add one security control at a time, verify it works, then proceed
+
+### Common Legacy Security Patterns
+
+| Pattern | Risk | Incremental Fix |
+|---------|------|-----------------|
+| No input validation at boundary | Injection, data corruption | Add boundary validation layer; route all input through it |
+| Hardcoded credentials | Credential exposure | Extract to environment/secret manager; rotate compromised credentials |
+| Missing access controls | Unauthorized access | Add deny-by-default access layer; enable per-entry-point |
+| Plaintext sensitive data | Data breach | Encrypt at rest; migrate existing data in batches |
+| No audit trail | Repudiation, undetected breaches | Add security event logging at trust boundaries |
 
 ## Completion Rubric
 
@@ -148,28 +226,27 @@ description: Prevent security vulnerabilities including OWASP Top 10, injection 
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
-| Trust boundaries identified | Know where external data enters | Unclear what input is external |
-| Threat awareness | Understand which attacks apply to this change | No consideration of threats |
-| Auth model understood | Know who can access what | Authorization requirements unclear |
-| Secrets plan | Know how credentials will be stored and accessed | No plan for secret management |
+| Trust boundaries identified | Know where external data enters the system | Unclear what input is external |
+| STRIDE threats considered | Systematically checked each category for the change | No threat analysis performed |
+| Access model understood | Know who can access what and how identity is verified | Authorization requirements unclear |
+| Secrets plan | Know how credentials will be stored, accessed, and rotated | No plan for secret management |
 
 ### During
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
 | Input validated at boundary | All external input validated before use | Validation missing or done too late |
-| Parameterized queries | No string interpolation in queries | Dynamic query construction with user input |
-| Output encoded | User content encoded for output context | Raw user content rendered |
-| Auth enforced server-side | Permission checks on every protected endpoint | Client-only or missing auth checks |
-| Secrets not hardcoded | Credentials from env/secret manager | API keys or passwords in source code |
-| Error messages safe | No internal details in client-facing errors | Stack traces or SQL errors exposed |
-| Secure defaults applied | HTTPS, secure cookies, CSP, CORS restricted | Security headers missing or permissive |
+| Instructions separated from data | No external data concatenated into executable contexts | External data mixed with instructions |
+| Access enforced at enforcement point | Permission checks on every protected path | Client-only or missing access checks |
+| Secrets not in source | Credentials from environment or secret manager | Credentials in source code, logs, or errors |
+| Defense in depth applied | Multiple layers protect sensitive operations | Single point of failure in security controls |
+| Fail-secure behavior | Errors deny access rather than grant it | Failures result in open access |
 
 ### After
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
-| No secrets in code | `git log` and diff clean of credentials | Secrets committed at any point |
-| Dependency audit clean | No known vulnerabilities in dependencies | Unpatched CVEs in dependency tree |
-| Security tests exist | Tests verify auth, input rejection, boundary enforcement | No tests for security behavior |
-| OWASP Top 10 reviewed | Changes checked against relevant OWASP categories | No security review performed |
+| No secrets in code or history | Repository clean of credentials | Secrets committed at any point |
+| Security tests exist | Tests verify access control, input rejection, boundary enforcement | No tests for security behavior |
+| STRIDE analysis complete | Threats identified and mitigations verified for each component | No record of threat consideration |
+| Audit trail in place | Security-relevant events are logged without exposing sensitive data | No visibility into security events |
