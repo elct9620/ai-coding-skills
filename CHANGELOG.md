@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.1](https://github.com/elct9620/ai-coding-skills/compare/v0.3.0...v0.3.1) (2026-03-14)
+
+
+### Bug Fixes
+
+* **skills:** strengthen TDD phase confirmation and relax AAA for compact tests ([24ced62](https://github.com/elct9620/ai-coding-skills/commit/24ced62c59fe74328b0ef39ea2bf63c7e5ab7cfb))
+
 ## [0.3.0](https://github.com/elct9620/ai-coding-skills/compare/v0.2.0...v0.3.0) (2026-03-13)
 
 
