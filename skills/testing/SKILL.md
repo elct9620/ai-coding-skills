@@ -39,19 +39,21 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 
 ```
 ┌─────────┐
-│   RED   │ ← Write failing test
+│   RED   │ ← Write failing test → confirm: "Test fails because [reason]"
 └────┬────┘
      ↓
 ┌─────────┐
-│  GREEN  │ ← Write minimal code to pass
+│  GREEN  │ ← Write minimal code → confirm: "All tests now pass"
 └────┬────┘
      ↓
 ┌─────────┐
-│REFACTOR │ ← Improve code, keep tests green
+│REFACTOR │ ← Improve code → confirm: "Tests still pass after refactoring"
 └────┬────┘
      ↓
    (repeat)
 ```
+
+Each phase transition requires an explicit confirmation statement. Skipping the confirmation — especially at GREEN — breaks the feedback loop that makes TDD valuable. Without "all tests pass," you cannot be sure the fix actually works.
 
 ### Testing Trophy
 
@@ -157,6 +159,8 @@ test("should calculate total with discount", () => {
   expect(total).toBe(90);
 });
 ```
+
+For simple validation tests (e.g., `assert_raises`, single-expression assertions), the AAA structure may be implicit — forcing explicit comments on a one-liner adds noise rather than clarity. AAA is most valuable when the test has meaningful setup or multi-step actions.
 
 ## Completion Rubric
 
