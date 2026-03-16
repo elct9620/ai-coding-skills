@@ -197,12 +197,15 @@ end
 
 ## Aggregate Design Steps
 
-Aggregates are the hardest part to get right. Follow these steps:
+Aggregates are the hardest part to get right. Let them **emerge from use case requirements** rather than designing them upfront:
 
-1. **Identify the invariant** — What business rule must always be true?
-2. **Find the minimum boundary** — What's the smallest set of objects needed to enforce it?
-3. **Choose the root** — Which entity is the entry point for all modifications?
-4. **Reference other aggregates by ID only** — Never hold direct object references across aggregate boundaries
+1. **Start from the use case** — What operation does the user need to perform?
+2. **Discover the invariant** — What business rule must hold true for this operation to succeed?
+3. **Find the minimum boundary** — What's the smallest set of objects needed to enforce it?
+4. **Choose the root** — Which entity is the entry point for all modifications?
+5. **Reference other aggregates by ID only** — Never hold direct object references across aggregate boundaries
+
+Aggregate boundaries should be **discovered incrementally** as use cases reveal which objects must change together. Avoid designing the full aggregate structure before writing the first test.
 
 ### Aggregate Sizing Heuristic
 

@@ -72,7 +72,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>4. break down the implementation into smaller tasks</step>
     </condition>
     <step>5. for each task, determine which active skill to apply</step>
-    <step>6. sequence the tasks in a logical order for implementation</step>
+    <step>6. sequence the tasks outside-in: start from user-facing layers (controllers, presenters, API endpoints), then work inward to use cases, and finally to entities and infrastructure — defer schema and storage decisions until the domain model shape is clear from use case needs</step>
     <return>implementation plan for the feature</return>
 </function>
 
