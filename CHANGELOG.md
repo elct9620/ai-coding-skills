@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.2](https://github.com/elct9620/ai-coding-skills/compare/v0.3.1...v0.3.2) (2026-03-16)
+
+
+### Bug Fixes
+
+* **skills:** enforce outside-in implementation order instead of implicit inside-out ([f172bd1](https://github.com/elct9620/ai-coding-skills/commit/f172bd1ab28fc9fdbf2074dda7570dd7df3657c8))
+
 ## [0.3.1](https://github.com/elct9620/ai-coding-skills/compare/v0.3.0...v0.3.1) (2026-03-14)
 
 
