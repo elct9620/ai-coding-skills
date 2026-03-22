@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/elct9620/ai-coding-skills/compare/v0.3.2...v0.4.0) (2026-03-22)
+
+
+### Features
+
+* **commands:** add roadmap command for spec-to-implementation tracking ([c3c042c](https://github.com/elct9620/ai-coding-skills/commit/c3c042c6f52f8a1b4653d2ffb432a4cf9ddd39d7))
+
 ## [0.3.2](https://github.com/elct9620/ai-coding-skills/compare/v0.3.1...v0.3.2) (2026-03-16)
 
 
