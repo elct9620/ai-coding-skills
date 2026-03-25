@@ -266,6 +266,17 @@ Bounded Contexts define where a model applies. The same real-world concept may h
 
 "Customer" in Sales cares about preferences, in Shipping it's a "Recipient" with an address, in Billing it's a "Payer" with payment info. Don't force one model to serve all contexts.
 
+### Directory Structure
+
+Each bounded context maps to its own directory or package. A shared `domain/` directory blurs the boundaries that contexts exist to enforce — keep them separate so the compiler or module system catches cross-context coupling.
+
+| Principle | Right | Wrong |
+|-----------|-------|-------|
+| One context per directory | `sales/`, `shipping/` | `domain/` with all contexts mixed |
+| Context name as directory | Directory named after the context | Generic `domain/`, `models/`, `entities/` |
+
+**Single-context projects** are the exception — when the entire application lives within one bounded context, a single directory for the domain layer is fine (this is the typical Clean Architecture scenario).
+
 ### Migrating from Monolith to Bounded Contexts
 
 Splitting a monolithic model into bounded contexts is incremental work. Don't try to do it all at once.
