@@ -75,15 +75,15 @@ Before adding an index, check whether existing indexes already cover the query:
 
 ### API Contract Design
 
-#### Resource Design Principles
+#### API Design Principles
 
-| Principle | Description |
-|-----------|-------------|
-| Resource-oriented | Model endpoints around resources, not actions |
-| Consistent naming | Use plural nouns, consistent casing conventions |
-| Proper status codes | Match HTTP status codes to outcomes |
-| Pagination | Always paginate collection endpoints |
-| Error format | Consistent error response structure across all endpoints |
+| Principle | REST | GraphQL / RPC |
+|-----------|------|---------------|
+| Structure | Model endpoints around resources | Model around operations or queries |
+| Naming | Plural nouns, consistent casing | Verb-based or domain-aligned naming |
+| Status/errors | Match HTTP status codes to outcomes | Use typed error responses |
+| Pagination | Paginate collection endpoints | Use cursor-based pagination |
+| Consistency | Uniform error format across endpoints | Uniform error format across operations |
 
 #### Versioning Strategy
 

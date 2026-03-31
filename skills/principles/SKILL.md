@@ -55,57 +55,14 @@ description: Apply SOLID, KISS, DRY, YAGNI principles to code design decisions. 
 
 ## Completion Rubric
 
-### Single Responsibility
+Use the **Violation Sign** column in the SOLID table above as the primary checklist. Additionally verify:
 
 | Criterion | Pass | Fail |
 |-----------|------|------|
-| Clear purpose | One responsibility per class/function | Multiple unrelated responsibilities |
-| Describable | Can describe in one sentence | Needs paragraph to explain |
-| Change isolation | Changes for only one reason | Changes for multiple reasons |
+| Describable | Each class/function describable in one sentence | Needs a paragraph to explain |
+| Simplest solution | Chosen approach is the simplest that works | Over-engineered for hypothetical needs |
+| Dependencies injected | High-level modules depend on abstractions | Direct instantiation of concretions |
 
-### Open/Closed
+## Scope Boundary
 
-| Criterion | Pass | Fail |
-|-----------|------|------|
-| Extension over modification | New behavior via extension | Modifying existing code |
-| Abstraction usage | Variation points use abstractions | Hardcoded variations |
-| Core stability | Core logic unchanged | Core frequently modified |
-
-### Liskov Substitution
-
-| Criterion | Pass | Fail |
-|-----------|------|------|
-| Contract adherence | Subtypes honor base contracts | Subtypes break expectations |
-| No type checking | Client uses base type only | instanceof/type checks in client |
-| Precondition consistency | Preconditions not strengthened | Stricter preconditions |
-| Postcondition consistency | Postconditions not weakened | Weaker postconditions |
-
-### Interface Segregation
-
-| Criterion | Pass | Fail |
-|-----------|------|------|
-| Focused interfaces | Interfaces are cohesive | Fat interfaces |
-| Client-specific | Clients use all methods | Unused method implementations |
-| No bloat | No "fat" interfaces | Interface has unrelated methods |
-
-### Dependency Inversion
-
-| Criterion | Pass | Fail |
-|-----------|------|------|
-| Abstraction dependency | High-level depends on abstractions | Depends on concretions |
-| Bidirectional abstraction | Both levels use abstractions | Direct low-level dependency |
-| Injection | Dependencies injected | Dependencies created internally |
-
-### Simplicity Check
-
-| Criterion | Pass | Fail |
-|-----------|------|------|
-| Junior-friendly | Understandable by junior dev | Requires expert knowledge |
-| Minimal complexity | Simplest working solution | Over-engineered |
-| Current focus | Solves only current problem | Solves hypothetical problems |
-
-## Principle Violations vs Code Smells
-
-When you detect **design principle violations** (wrong abstraction level, tight coupling, fat interfaces), apply this skill to fix the design.
-
-When you detect **code smells** (long methods, duplicated code, feature envy), use the **refactoring** skill instead — it has specific techniques and safe steps for each smell.
+This skill addresses **design-level decisions** (abstraction level, coupling, interface shape). For **code-level restructuring** (long methods, duplicated code, feature envy), use the **refactoring** skill — it has specific techniques and safe steps for each smell.

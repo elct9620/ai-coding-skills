@@ -44,49 +44,21 @@ description: Select and apply GoF design patterns: Factory, Builder, Strategy, O
 | Structural | Object composition | Adapter, Decorator, Facade |
 | Behavioral | Object interaction | Strategy, Observer, Command |
 
-## Common Patterns Quick Reference
+## Pattern Quick Reference
 
-### Creational Patterns
-
-| Pattern | Use When | Example |
-|---------|----------|---------|
-| Factory Method | Object creation varies by context | `createLogger(type)` |
-| Builder | Complex object construction | Fluent configuration |
-| Singleton | Single instance needed globally | Configuration manager |
-
-### Structural Patterns
-
-| Pattern | Use When | Example |
-|---------|----------|---------|
-| Adapter | Interface incompatibility | Wrap legacy API |
-| Decorator | Add behavior dynamically | Logging wrapper |
-| Facade | Simplify complex subsystem | Unified API client |
-| Composite | Tree structures | UI components |
-
-### Behavioral Patterns
-
-| Pattern | Use When | Example |
-|---------|----------|---------|
-| Strategy | Algorithm varies at runtime | Payment methods |
-| Observer | One-to-many notifications | Event system |
-| Command | Encapsulate operations | Undo/redo actions |
-| State | Behavior changes with state | Order status |
-
-## Pattern Decision Table
-
-| Need | Situation | Pattern |
-|------|-----------|---------|
-| Create objects | Varying types by context | Factory Method |
-| Create objects | Many optional parameters | Builder |
-| Create objects | Exactly one instance | Singleton |
-| Structure objects | Incompatible interface | Adapter |
-| Structure objects | Add responsibilities dynamically | Decorator |
-| Structure objects | Simplify complex subsystem | Facade |
-| Structure objects | Tree hierarchies | Composite |
-| Define behavior | Algorithm varies at runtime | Strategy |
-| Define behavior | One-to-many notifications | Observer |
-| Define behavior | Operations that can be undone | Command |
-| Define behavior | Behavior changes with state | State |
+| Category | Pattern | Use When | Example |
+|----------|---------|----------|---------|
+| Creational | Factory Method | Object creation varies by context | `createLogger(type)` |
+| Creational | Builder | Complex object with many optional parts | Fluent configuration |
+| Creational | Singleton | Single instance needed globally | Configuration manager |
+| Structural | Adapter | Interface incompatibility | Wrap legacy API |
+| Structural | Decorator | Add behavior dynamically | Logging wrapper |
+| Structural | Facade | Simplify complex subsystem | Unified API client |
+| Structural | Composite | Tree structures | UI components |
+| Behavioral | Strategy | Algorithm varies at runtime | Payment methods |
+| Behavioral | Observer | One-to-many notifications | Event system |
+| Behavioral | Command | Encapsulate operations | Undo/redo actions |
+| Behavioral | State | Behavior changes with state | Order status |
 
 ## Completion Rubric
 

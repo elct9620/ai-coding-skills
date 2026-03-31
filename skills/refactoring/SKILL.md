@@ -133,11 +133,11 @@ description: Safely restructure code without changing behavior using Extract Met
 
 ## Code Smells to Watch For
 
-| Smell | Indication | Refactoring |
-|-------|------------|-------------|
-| Long Method | Method > 20 lines | Extract Method |
-| Large Class | Class > 200 lines | Extract Class |
-| Long Parameter List | > 3 parameters | Introduce Parameter Object |
-| Duplicated Code | Same code in multiple places | Extract Method/Class |
-| Feature Envy | Method uses other class's data | Move Method |
+| Smell | Signal | Refactoring |
+|-------|--------|-------------|
+| Long Method | Hard to describe in one sentence | Extract Method |
+| Large Class | Multiple unrelated responsibilities | Extract Class |
+| Long Parameter List | Parameters that always travel together | Introduce Parameter Object |
+| Duplicated Code | Same logic in multiple places | Extract Method/Class |
+| Feature Envy | Method uses another class's data more than its own | Move Method |
 | Data Clumps | Same data groups appear together | Extract Class |

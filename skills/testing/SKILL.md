@@ -33,7 +33,7 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 | Integration test passes | Add unit tests only for uncovered edge cases |
 | Edge case not covered by integration | Add unit test for specific case |
 | Component works alone but fails together | Missing integration test coverage |
-| Module has no integration test path | Code is likely dead — remove implementation and tests |
+| Module has no integration test path | Verify the module serves a real user need; if it does, add the missing integration path |
 
 ### TDD Cycle (Red-Green-Refactor)
 
