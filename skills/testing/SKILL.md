@@ -223,14 +223,28 @@ Examples:
 | Library Testing | Verifies third-party behavior instead of project code | Assert business outcomes at your boundary |
 | Dead Code Testing | Unit tests cover code with no integration path | Remove tests and implementation together |
 
-## Mocking Decision Table
+## Test Double Decision Table
 
-| Target | Mock? | Reason |
-|--------|-------|--------|
-| External services (APIs, DB) | Yes | Isolation, speed |
-| Time/dates | Yes | Determinism |
-| Random values | Yes | Reproducibility |
-| File system (unit tests) | Yes | Speed, isolation |
+Before choosing a test double, check whether the test environment already provides the real dependency or a faithful simulation. **Prefer real over fake, fake over stub, stub over mock** — the closer to production behavior, the more confidence the test provides.
+
+### Environment-Aware Decision Flow
+
+| Step | Question | If Yes | If No |
+|------|----------|--------|-------|
+| 1 | Test environment provides the real service? (e.g., Testcontainers, Docker Compose, in-memory DB) | **Use it directly** — no test double needed | Go to step 2 |
+| 2 | A faithful simulation exists? (e.g., fake SMTP server, WireMock, SQLite for Postgres) | **Use the simulation** — closer to real behavior | Go to step 3 |
+| 3 | The dependency is slow, non-deterministic, or has side effects? | **Stub or mock** at the boundary | Use the real dependency |
+
+### When to Use Test Doubles
+
+| Target | Double? | Reason |
+|--------|---------|--------|
+| DB with test container available | No | Real DB behavior catches schema/query issues |
+| External API with simulation (WireMock, VCR) | Prefer simulation | Captures real response shapes and edge cases |
+| External API with no simulation | Stub | Isolation, speed |
+| Time/dates | Stub | Determinism |
+| Random values | Stub | Reproducibility |
+| File system (unit tests) | Stub | Speed, isolation |
 | The thing being tested | No | Defeats purpose |
 | Value objects | No | Simple, no side effects |
 | Simple collaborators | No | Over-isolation |
