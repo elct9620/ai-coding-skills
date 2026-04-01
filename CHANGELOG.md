@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.0](https://github.com/elct9620/ai-coding-skills/compare/v0.4.0...v0.5.0) (2026-03-31)
+
+
+### Features
+
+* **commands:** add --deep scan and simplify roadmap table format ([3cee65a](https://github.com/elct9620/ai-coding-skills/commit/3cee65accc7164d2392537ea7c6bee06422ff4f3))
+* **skills:** add directory structure guidance to domain-modeling bounded context ([7fcfe10](https://github.com/elct9620/ai-coding-skills/commit/7fcfe10a9b1acd103eaa12e2b0cad0571e9f565a))
+
+
+### Bug Fixes
+
+* **skills:** prefer real services over stubs when test environment supports simulation ([d92a1dd](https://github.com/elct9620/ai-coding-skills/commit/d92a1dd66706fafa65bd3f13f8e1a9ad457566b6))
+* **skills:** resolve cross-skill contradictions in guidance tables ([54dd2d0](https://github.com/elct9620/ai-coding-skills/commit/54dd2d0b688f7814da8503beb37e797abd158cbb))
+
 ## [0.4.0](https://github.com/elct9620/ai-coding-skills/compare/v0.3.2...v0.4.0) (2026-03-22)
 
 
