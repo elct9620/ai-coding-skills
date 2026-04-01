@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/elct9620/ai-coding-skills/compare/v0.5.0...v0.6.0) (2026-04-01)
+
+
+### Features
+
+* **commands:** add --deep flag to review for holistic codebase scanning ([4374230](https://github.com/elct9620/ai-coding-skills/commit/43742302094a1dee6514d045fd133e0ded9ff1ec))
+
 ## [0.5.0](https://github.com/elct9620/ai-coding-skills/compare/v0.4.0...v0.5.0) (2026-03-31)
 
 
