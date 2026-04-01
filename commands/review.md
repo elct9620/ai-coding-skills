@@ -1,7 +1,8 @@
 ---
 name: review
 description: Review recent changes for style consistency, test quality, and architectural alignment, then propose refactoring suggestions.
-argument-hint: [path|module|--staged]
+argument-hint: [path|module|--staged] [--deep]
+# --deep scans the entire target scope holistically, not just recent diffs
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
@@ -28,22 +29,33 @@ The language-specific skills not listed, check all available skills before decid
 ## Definition
 
 <function name="collect-changes">
-    <description>Collect the change scope using git diff/show and categorize affected files.</description>
+    <description>Collect the review scope. In deep mode, collects all files under the target instead of just recent diffs.</description>
     <parameter name="target" type="string" description="A path, module, or --staged flag. Empty defaults to the latest commit." required="false"/>
-    <step>1. determine the diff source based on the target argument:</step>
-    <condition if="$target == '--staged'">
-        <step>2a. use `git diff --staged` to collect staged changes</step>
+    <parameter name="deep" type="boolean" description="When true, scan all files under the target path (or project root if empty)." required="false"/>
+
+    <condition if="$deep">
+        <step>1. use Glob to collect all source and test files under $target (or project root if empty)</step>
+        <step>2. categorize files into: source, test, config, docs</step>
+        <step>3. use `git log --oneline -10` on the scope to understand recent evolution</step>
+        <return>categorized list of all files in scope with recent evolution context</return>
     </condition>
-    <condition if="$target is a path or module">
-        <step>2b. use `git diff HEAD -- $target` and `git log --oneline -5 -- $target` to collect recent changes for the path</step>
+
+    <condition if="not $deep">
+        <step>1. determine the diff source based on the target argument:</step>
+        <condition if="$target == '--staged'">
+            <step>2a. use `git diff --staged` to collect staged changes</step>
+        </condition>
+        <condition if="$target is a path or module">
+            <step>2b. use `git diff HEAD -- $target` and `git log --oneline -5 -- $target` to collect recent changes for the path</step>
+        </condition>
+        <condition if="$target is empty">
+            <step>2c. use `git show HEAD` to collect the latest commit changes</step>
+        </condition>
+        <step>3. list all changed files from the diff output</step>
+        <step>4. categorize files into: source, test, config, docs</step>
+        <step>5. use `git log --oneline -5` on the changed files to understand recent context</step>
+        <return>categorized list of changed files with diff content and recent context</return>
     </condition>
-    <condition if="$target is empty">
-        <step>2c. use `git show HEAD` to collect the latest commit changes</step>
-    </condition>
-    <step>3. list all changed files from the diff output</step>
-    <step>4. categorize files into: source, test, config, docs</step>
-    <step>5. use `git log --oneline -5` on the changed files to understand recent context</step>
-    <return>categorized list of changed files with diff content and recent context</return>
 </function>
 
 <function name="active-skills">
@@ -120,9 +132,11 @@ The language-specific skills not listed, check all available skills before decid
 
 <procedure name="main">
     <parameter name="target" type="string" description="A path, module, or --staged flag. Empty defaults to the latest commit." required="false"/>
-    <step>1. <execute name="collect-changes" target="$target"/></step>
-    <condition if="no changes found">
-        <step>2. report no changes to review and exit</step>
+    <parameter name="deep" type="boolean" description="When true, scan the entire target scope holistically instead of just recent diffs." required="false"/>
+    <step>1. <execute name="collect-changes" target="$target" deep="$deep"/></step>
+    <condition if="no changes found and not $deep">
+        <step>2. report no recent changes found and suggest: "No recent changes to review. Run `/review [path] --deep` to perform a holistic review of the codebase or module."</step>
+        <return>suggestion to use --deep</return>
     </condition>
     <step>3. <execute name="active-skills" changes="$changes"/></step>
     <step>4. scan unchanged neighboring code to establish codebase conventions</step>
@@ -132,6 +146,9 @@ The language-specific skills not listed, check all available skills before decid
     <step>8. <execute name="generate-review-report" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" active-skills="$active-skills"/></step>
     <condition if="review report contains high or medium severity findings">
         <step>9. suggest running `/refactor` with the identified targets to address the findings</step>
+    </condition>
+    <condition if="review report has no findings and not $deep">
+        <step>9. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/review [path] --deep` for a broader holistic review."</step>
     </condition>
     <return>review report with refactoring suggestions</return>
 </procedure>
