@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.6.1](https://github.com/elct9620/ai-coding-skills/compare/v0.6.0...v0.6.1) (2026-04-11)
+
+
+### Bug Fixes
+
+* **commands:** mirror Verification Discipline hint in /fix reproduction-test step ([8a3ae03](https://github.com/elct9620/ai-coding-skills/commit/8a3ae03de37fd610ddae5bc5a07ea182f9b7e968))
+* **skills:** add Pure CA vs CA+DDD style decision to prevent `domain/` misuse ([4d2931b](https://github.com/elct9620/ai-coding-skills/commit/4d2931b2f48f106d895edc1bb4f5f98496a601f0))
+* **skills:** add Verification Discipline to prevent `node -e` probing during implementation ([916b5e5](https://github.com/elct9620/ai-coding-skills/commit/916b5e58c255166004b0fa522cf6b4959bd1f652))
+
 ## [0.6.0](https://github.com/elct9620/ai-coding-skills/compare/v0.5.0...v0.6.0) (2026-04-01)
 
 
