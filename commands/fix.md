@@ -65,7 +65,7 @@ The language-specific skills not listed, check all available skills before decid
     <description>Design a failing test that reproduces the bug (Red phase of TDD).</description>
     <parameter name="diagnosis" type="string" description="The diagnosis with root cause analysis." required="true"/>
     <step>1. identify the expected behavior vs actual behavior</step>
-    <step>2. determine the minimal test case that exposes the bug</step>
+    <step>2. determine the minimal test case that exposes the bug — if you feel the urge to verify the bug's actual behavior with `node -e` / `ruby -e` / `python -c`, encode that probe as a test assertion instead; see `coding:testing` Verification Discipline</step>
     <step>3. choose appropriate test level (unit, integration, or E2E)</step>
     <step>4. design test with clear assertion that will pass when bug is fixed</step>
     <return>reproduction test specification that fails with current code</return>
