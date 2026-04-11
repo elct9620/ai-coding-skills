@@ -7,18 +7,24 @@ description: Model business domains using DDD patterns: Entity, Value Object, Ag
 
 - Need to persist domain objects? → Use **schema** for database table design
 - Deciding how to structure classes around patterns? → Use **design-patterns**
-- Domain model needs to live in a specific layer? → Use **clean-architecture** for placement
+- Deciding *where* the domain layer lives and whether DDD is warranted at all? → Use **clean-architecture** first; it owns the style decision (Pure CA vs CA+DDD)
+
+## Relationship to Clean Architecture
+
+DDD is **layered on top of** Clean Architecture's Entities layer, not an alternative to it. CA decides *where* business rules live (the innermost layer); DDD decides *how* they are structured (Entity, Value Object, Aggregate, Domain Event).
+
+This skill assumes the decision to use DDD has already been made. If the system is small, CRUD-heavy, and has no real invariants or aggregates, **plain CA without DDD is a better fit** — the Entities layer is just `entities/` holding simple business objects. Consult **clean-architecture** for that decision before reaching for this skill.
 
 ## Applicability Rubric
 
 | Condition | Pass | Fail |
 |-----------|------|------|
-| Business logic involved | Feature contains business rules | Pure technical/UI change |
-| Domain entity work | Working with entities/aggregates | Infrastructure-only change |
-| New business concept | Defining new domain terms | Using existing concepts |
-| Complex process modeling | Multi-step business workflow | Simple CRUD operation |
+| Rich invariants | Business rules span multiple fields/objects and must hold together | Field-level validation only |
+| Aggregate candidates | Objects that must change together to maintain a rule | Independent CRUD records |
+| Ubiquitous language tension | Same word means different things to different teams/features | One obvious vocabulary |
+| Complex process modeling | Multi-step workflow with state transitions | Simple create/read/update |
 
-**Apply when**: Any condition passes
+**Apply when**: At least one condition passes. If none pass, the domain is likely too thin for DDD — use plain Clean Architecture instead and keep entities simple.
 
 ## Core Principles
 
@@ -268,14 +274,22 @@ Bounded Contexts define where a model applies. The same real-world concept may h
 
 ### Directory Structure
 
-Each bounded context maps to its own directory or package. A shared `domain/` directory blurs the boundaries that contexts exist to enforce — keep them separate so the compiler or module system catches cross-context coupling.
+Directory naming depends on how many bounded contexts the project has. Pick once at project start — mixing styles creates confusion.
 
-| Principle | Right | Wrong |
-|-----------|-------|-------|
-| One context per directory | `sales/`, `shipping/` | `domain/` with all contexts mixed |
-| Context name as directory | Directory named after the context | Generic `domain/`, `models/`, `entities/` |
+| Project shape | Directory layout | Why |
+|---------------|------------------|-----|
+| **Single bounded context** | One `domain/` directory holding DDD building blocks | The whole app speaks one ubiquitous language; a context-named directory adds no information |
+| **Multiple bounded contexts** | One directory per context (`sales/`, `shipping/`, `billing/`) each with its own domain model | Generic `domain/` at the root would mix vocabularies and let cross-context coupling leak in unnoticed |
 
-**Single-context projects** are the exception — when the entire application lives within one bounded context, a single directory for the domain layer is fine (this is the typical Clean Architecture scenario).
+For the multi-context case, avoid these anti-patterns:
+
+| Anti-pattern | Why it hurts |
+|--------------|--------------|
+| Shared root `domain/` holding every context | Blurs boundaries the contexts exist to enforce |
+| Generic `models/` or `entities/` at the root | Same problem, plus loses DDD vocabulary |
+| Mixing context directories with a shared `domain/` | Developers can't tell which rules belong where |
+
+**Not doing DDD at all?** If the project is pure Clean Architecture with no aggregates or ubiquitous-language tension, the directory should be `entities/`, not `domain/`. See **clean-architecture** for the style decision and naming guide — this section only applies once DDD has been chosen.
 
 ### Migrating from Monolith to Bounded Contexts
 

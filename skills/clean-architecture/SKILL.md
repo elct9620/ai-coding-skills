@@ -77,6 +77,50 @@ Implement **outside-in** — start from the user-facing layer, work inward:
 | Interface Adapters | Controllers, Presenters, Gateways, DTOs, format converters | Use Cases, Entities |
 | Frameworks & Drivers | Web framework, DB, external APIs, UI, devices | Interface Adapters |
 
+## Entities Layer: Naming and Internal Structure
+
+The Entities layer is a **conceptual layer**, not a specific directory name. Before writing code, decide how the Entities layer will be expressed in the project. This decision depends on one question: **does this system benefit from DDD, or does plain Clean Architecture already model it clearly enough?**
+
+### Do we need DDD on top of CA?
+
+DDD adds vocabulary (Aggregate, Value Object, Bounded Context, Ubiquitous Language) and modelling cost. It pays off when the domain has rich invariants, non-trivial workflows, or multiple teams speaking different languages about the same nouns. It is overhead when the system is mostly CRUD with thin rules.
+
+| Signal | Pure CA is enough | CA + DDD helps |
+|--------|-------------------|----------------|
+| Business rules | Mostly validation and CRUD | Multi-step invariants, state machines |
+| Ubiquitous language | One obvious vocabulary | Same word means different things to different teams |
+| Aggregates | Nothing that must change together under a rule | Clear consistency boundaries with enforced invariants |
+| Team / scale | Single team, small surface area | Multiple teams or subdomains |
+| Change driver | Technical features | Domain experts drive requirements |
+
+When in doubt, start with **pure CA**. Introducing DDD later is a refactor; ripping out premature DDD is a harder refactor because the vocabulary spreads into tests and conversations.
+
+### Three styles, three directory layouts
+
+| Style | When | Entities layer looks like | Example |
+|-------|------|---------------------------|---------|
+| **Pure CA** | Small system, thin domain, single team | `entities/` holding plain business objects | Internal admin tool, CRUD-heavy API |
+| **CA + DDD, single context** | One bounded context, rich invariants | `domain/` holding DDD building blocks (Entity, Value Object, Aggregate) | E-commerce checkout, workflow engine |
+| **CA + DDD, multiple contexts** | Distinct subdomains with their own vocabulary | One directory per context (`sales/`, `shipping/`, `billing/`), each with its own domain model | Marketplace platform, ERP |
+
+```
+Pure CA                    CA + DDD (single)          CA + DDD (multi-context)
+src/                       src/                       src/
+├── entities/              ├── domain/                ├── sales/
+│   ├── user.rb            │   ├── order.rb           │   ├── domain/
+│   └── invoice.rb         │   ├── line_item.rb       │   └── use_cases/
+├── use_cases/             │   └── money.rb           ├── shipping/
+├── adapters/              ├── use_cases/             │   ├── domain/
+└── infrastructure/        ├── adapters/              │   └── use_cases/
+                           └── infrastructure/        └── billing/
+                                                          ├── domain/
+                                                          └── use_cases/
+```
+
+**Do not mix the styles by accident.** The most common mistake is defaulting to `domain/` because DDD vocabulary feels more "professional", even when the project has no aggregates and no ubiquitous-language conflicts. If you cannot name an aggregate or an invariant the directory is enforcing, use `entities/` and plain CA — it is not a downgrade, it is the right fit.
+
+When DDD is the right call, use the **domain-modeling** skill to shape the internal structure (Entity vs Value Object, aggregate boundaries, domain events). CA decides *where* the layer lives; DDD decides *what lives inside it*.
+
 ## Completion Rubric
 
 ### Before Implementation
@@ -87,6 +131,7 @@ Implement **outside-in** — start from the user-facing layer, work inward:
 | Architecture doc | Created/updated when needed | No documentation |
 | Dependency verification | All deps point inward | Outward deps exist |
 | Outside-in approach | Start from user need or outer layer | Jump straight to entity/schema design |
+| Style selection | Pure CA vs CA+DDD chosen with rationale | Defaulted to `domain/` without checking if DDD is warranted |
 
 ### During Implementation
 
