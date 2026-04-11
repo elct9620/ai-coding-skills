@@ -107,6 +107,36 @@ Each TDD phase must be explicitly confirmed before moving to the next:
 
 The GREEN phase is not just writing the fix — you must confirm that tests pass. Without this confirmation, the cycle is incomplete and regressions can slip through unnoticed.
 
+## Verification Discipline
+
+When you are about to implement a feature and think *"let me try a one-liner to see if this approach works"* or *"let me check what this API returns for the edge case first"* — stop. That uncertainty is a missing test case. Encode the assumption as an assertion in the test file, run the test, and let it answer.
+
+### Why ad-hoc execution is the wrong oracle
+
+| Problem | Consequence |
+|---------|-------------|
+| Bypasses the test environment | Results don't reflect the real module graph, env vars, or fixtures |
+| Requires shell authorization | Every invocation interrupts the user to approve arbitrary execution |
+| Leaves no regression net | The knowledge evaporates the moment the shell exits |
+
+### The right reflex
+
+> **Wrong:** Run `node -e "..."` / `ruby -e "..."` / `python -c "..."` to check behavior → then write code based on the result.
+>
+> **Right:** Add a test that asserts the expected behavior → run the test → iterate until it passes.
+
+The assertions stay in the repo as regression coverage; the shell output does not.
+
+### Exceptions
+
+| Situation | What applies instead |
+|-----------|----------------------|
+| Project has no test environment | `-e` is acceptable — nothing to encode the assumption into |
+| Third-party library behavior | Read the official docs; don't reverse-engineer. See also **Boundary Testing** for where library behavior belongs in tests |
+| Non-code environment checks (`node -v`, `git log`, `which ...`) | Outside this rule — use the appropriate tool freely |
+
+The dividing line: if the thing you want to verify is about your code's correctness, it belongs in a test.
+
 ## Working with Legacy Code (No Existing Tests)
 
 When facing code with zero test coverage, testing requires a different entry strategy than greenfield TDD.

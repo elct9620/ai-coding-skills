@@ -82,7 +82,7 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="skill" type="string" description="The skill to apply for this task." required="true"/>
     <parameter name="skip-tests" type="boolean" description="Whether to skip test-first approach." required="false" default="false"/>
     <condition if="not $skip-tests">
-        <step>1. write failing test for the task (Red)</step>
+        <step>1. write failing test for the task (Red) — if you feel the urge to verify language/API behavior with `node -e` / `ruby -e` / `python -c` before writing code, that urge is telling you to add a test case for that assumption instead; see `coding:testing` Verification Discipline</step>
         <step>2. implement minimum code to pass the test (Green)</step>
         <step>3. refactor the code while keeping tests passing (Refactor)</step>
     </condition>
