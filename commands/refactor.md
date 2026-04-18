@@ -71,7 +71,7 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="active-skills" type="list" description="The active skills for refactoring." required="true"/>
     <step>1. prioritize smells by impact and risk (high impact, low risk first)</step>
     <step>2. group related smells that can be addressed together</step>
-    <step>3. ensure each refactoring step preserves existing behavior</step>
+    <step>3. ensure each refactoring step preserves the semantic contract — return-value meaning, completion timing, error model, and observable side effects at return — not merely the type signature; if the requested change would shift any of these (e.g. sync to deferred execution), stop and confirm with the user that this is a behavior change rather than a refactor before planning further</step>
     <step>4. for Move Method or Extract Class tasks, verify the target location respects the project's architectural layer rules — dependencies must point inward, do not move logic from outer layer into inner layer</step>
     <step>5. identify test verification points for each step</step>
     <step>6. plan small, incremental changes with frequent commits</step>
@@ -102,7 +102,7 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. compare original smells with current code state</step>
     <step>2. list resolved smells and remaining issues</step>
     <step>3. for each active skill, invoke skill to verify completion rubric</step>
-    <step>4. confirm all tests still pass (behavior preserved)</step>
+    <step>4. confirm all tests still pass AND that the assertions actually exercise the semantic contract (return-value meaning, observable side effects at return, error model); a green test suite that only pins return values is not evidence of behavior preservation</step>
     <step>5. summarize code quality improvements</step>
     <return>refactoring quality report with before/after comparison</return>
 </function>
@@ -110,27 +110,28 @@ The language-specific skills not listed, check all available skills before decid
 <procedure name="main">
     <parameter name="target" type="string" description="The path or module to refactor. Empty for whole project." required="false"/>
     <step>1. <execute name="analyze-smells" target="$target"/></step>
-    <step>2. use ask question tool to confirm refactoring scope and priorities</step>
-    <step>3. <execute name="active-skills" smells="$smells"/></step>
-    <step>4. <execute name="investigate" smells="$smells"/></step>
-    <step>5. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
-    <step>6. enter the plan mode</step>
+    <step>2. check whether the user's request is actually a refactor: if it would change the semantic contract (return-value meaning, completion timing, error model, delivery or ordering guarantees) while keeping signatures intact, name it as a behavior change and confirm scope with the user before continuing — do not proceed under the refactor frame</step>
+    <step>3. use ask question tool to confirm refactoring scope and priorities</step>
+    <step>4. <execute name="active-skills" smells="$smells"/></step>
+    <step>5. <execute name="investigate" smells="$smells"/></step>
+    <step>6. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
+    <step>7. enter the plan mode</step>
     <condition if="insufficient test coverage">
-        <step>7. add tests for untested code before refactoring</step>
+        <step>8. add tests for untested code before refactoring</step>
     </condition>
-    <step>8. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
-    <step>9. review plan to ensure minimal changes and behavior preservation</step>
+    <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
+    <step>10. review plan to ensure minimal changes and behavior preservation</step>
     <condition if="plan too aggressive">
-        <step>10. reduce scope to focus on highest impact improvements</step>
+        <step>11. reduce scope to focus on highest impact improvements</step>
     </condition>
-    <step>11. exit plan mode and wait for user confirmation</step>
-    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>12. exit plan mode and wait for user confirmation</step>
+    <step>13. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>13. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
-        <step>14. collect task result for quality report and update task status</step>
+        <step>14. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
+        <step>15. collect task result for quality report and update task status</step>
     </loop>
-    <step>15. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>16. ask user if they want to commit the changes</step>
+    <step>16. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <step>17. ask user if they want to commit the changes</step>
     <return>refactoring quality report</return>
 </procedure>
 

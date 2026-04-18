@@ -91,7 +91,7 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="active-skills" type="list" description="The activated skills." required="true"/>
     <step>1. identify which changed source files have corresponding test files</step>
     <step>2. check for missing integration test coverage on new or changed behaviors</step>
-    <step>3. detect test smells: over-mocking, testing implementation details, fragile assertions, test duplication</step>
+    <step>3. detect test smells: over-mocking, testing implementation details, fragile assertions, test duplication, and assertions that pin only return values for functions with observable side effects (such a test cannot detect semantic-contract drift — e.g. sync-to-deferred execution or a shift in what the return value means — because the return type stays identical while the meaning changes)</step>
     <step>4. check boundary testing: edge cases, error paths, nil/null handling</step>
     <step>5. check for dead code testing (tests for removed or unreachable code)</step>
     <step>6. verify tests follow AAA pattern and have clear assertions</step>
