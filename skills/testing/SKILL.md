@@ -145,6 +145,8 @@ When facing code with zero test coverage, testing requires a different entry str
 
 A characterization test captures **what the code currently does**, not what it should do. The goal is to lock down existing behavior so you can refactor safely.
 
+**Assert the semantic contract, not just return values.** A test that only pins the return value leaves the function free to change *what that value means* — e.g., completion timing, which side effects are committed before returning, or how failures are surfaced — without the test noticing. A characterization test should also assert the externally observable state that callers rely on at the moment of return, so that shifts in meaning (sync becoming deferred, strict becoming best-effort, thrown errors becoming swallowed) are caught instead of silently locked in.
+
 ```ruby
 # Step 1: Call the code and observe what happens
 test "characterize: payment processor charges card with 2.9% fee" do

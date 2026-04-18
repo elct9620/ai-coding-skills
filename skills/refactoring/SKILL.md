@@ -45,6 +45,20 @@ description: Safely restructure code without changing behavior using Extract Met
 - **If tests fail, revert immediately**
 - **Never rewrite from scratch** — a big-bang rewrite throws away years of bug fixes and domain knowledge. Instead, extract one piece at a time, test it, and ship it. If your refactoring plan requires "stop the world and replace everything," the plan is wrong — break it into smaller incremental steps.
 
+### Preserve the Semantic Contract, Not Just the Signature
+
+Behavior is more than the type signature. A change that leaves names and types untouched can still alter what a return value promises, when effects become observable, or how failures are reported. If callers would need to reason differently about the function after the change, it is a behavior change rather than a refactor, even when the compiler is satisfied.
+
+The semantic contract includes at least:
+
+- Meaning of return values and out-parameters — what a given value promises happened.
+- Completion timing — whether effects are visible by the time the call returns (sync vs. deferred/async).
+- Observable side effects at return — which external state has been committed before returning.
+- Error model — how failure is surfaced (exception, false, partial result, retried later).
+- Ordering, atomicity, and delivery guarantees — all-or-nothing vs. partial, exactly-once vs. at-least-once, and similar.
+
+If any of these shift, update the contract explicitly (rename, change return type, document the new guarantee, migrate callers) rather than hiding the change inside a refactor.
+
 ## Common Refactoring Techniques
 
 ### Code Organization
@@ -120,7 +134,7 @@ description: Safely restructure code without changing behavior using Extract Met
 | Single focus | One refactoring at a time | Multiple simultaneous changes |
 | Test validation | Tests run after each change | No test verification |
 | Incremental commits | Commit after each step | Large uncommitted changes |
-| Behavior preservation | No behavior changes | Behavior modified |
+| Behavior preservation | Return-value meaning, completion timing, side-effect ordering, and error model all unchanged | Semantic contract shifted even though the signature stayed the same |
 
 ### After Refactoring
 
