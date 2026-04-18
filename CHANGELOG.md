@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.6.2](https://github.com/elct9620/ai-coding-skills/compare/v0.6.1...v0.6.2) (2026-04-18)
+
+
+### Bug Fixes
+
+* **commands:** gate refactor and review on semantic contract drift ([fc5cced](https://github.com/elct9620/ai-coding-skills/commit/fc5cceda5110ad2744dbe87d280f46d45f4a4687))
+* **skills:** add semantic contract preservation to refactoring and testing ([55e8790](https://github.com/elct9620/ai-coding-skills/commit/55e8790592146224abfe8997cd31f1028de74eaf))
+
 ## [0.6.1](https://github.com/elct9620/ai-coding-skills/compare/v0.6.0...v0.6.1) (2026-04-11)
 
 
