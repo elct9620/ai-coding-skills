@@ -53,6 +53,15 @@ description: Apply SOLID, KISS, DRY, YAGNI principles to code design decisions. 
 - Avoid speculative generality
 - Solve today's problem, not tomorrow's
 
+### Commenting
+
+- Library / shared module public API: doc comment states intent and when to reach for it
+- Application code: names and call sites carry the intent
+- Private method: comment only when a value references something external (RFC code, control byte, ticket ID)
+- A comment that restates the code in prose: extract a method whose name carries the meaning
+
+Module type (application vs library) decides which default applies — see **clean-architecture** Module Type.
+
 ## Completion Rubric
 
 Use the **Violation Sign** column in the SOLID table above as the primary checklist. Additionally verify:

@@ -77,6 +77,18 @@ Implement **outside-in** — start from the user-facing layer, work inward:
 | Interface Adapters | Controllers, Presenters, Gateways, DTOs, format converters | Use Cases, Entities |
 | Frameworks & Drivers | Web framework, DB, external APIs, UI, devices | Interface Adapters |
 
+## Module Type
+
+Pick once per package. Audience determines whether the source is the documentation or whether signatures must carry it.
+
+| Module type | Audience | Public symbols |
+|-------------|----------|----------------|
+| Application | Operators, end users | Source is the documentation |
+| Library / shared module | Other developers via IDE | Signatures carry doc comments stating intent |
+| Monorepo with both | Both | Decide per package, not per file |
+
+Feeds the **principles** Commenting rules.
+
 ## Entities Layer: Naming and Internal Structure
 
 The Entities layer is a **conceptual layer**, not a specific directory name. Before writing code, decide how the Entities layer will be expressed in the project. This decision depends on one question: **does this system benefit from DDD, or does plain Clean Architecture already model it clearly enough?**

@@ -27,7 +27,7 @@ description: Design database schemas and API contracts at system boundaries. Use
 | Principle | Description | Violation Sign |
 |-----------|-------------|----------------|
 | Single Source of Truth | Each fact stored exactly once | Same data duplicated across tables without clear denormalization rationale |
-| Explicit Contracts | API shapes and DB schemas defined clearly | Implicit structures, untyped fields, or missing documentation |
+| Explicit Contracts | Schemas defined clearly, with non-obvious values (status codes, control bytes, enum semantics) described inline at the boundary | Implicit structures, untyped fields, or values that require service code to interpret |
 | Boundary Alignment | Schema matches system boundary responsibilities | Schema leaks internal details or couples unrelated concerns |
 | Minimal Exposure | Expose only what consumers need | Internal fields visible in API responses, over-fetching by default |
 

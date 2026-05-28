@@ -102,7 +102,7 @@ If any of these shift, update the contract explicitly (rename, change return typ
 
 1. Find all usages
 2. Rename (use IDE refactoring if available)
-3. Update documentation/comments
+3. Remove comments the new name has made redundant
 4. Run tests
 5. Commit
 
@@ -155,3 +155,4 @@ If any of these shift, update the contract explicitly (rename, change return typ
 | Duplicated Code | Same logic in multiple places | Extract Method/Class |
 | Feature Envy | Method uses another class's data more than its own | Move Method |
 | Data Clumps | Same data groups appear together | Extract Class |
+| Explanatory Comment | Comment restates the code in prose | Extract Method with an intent-revealing name |
