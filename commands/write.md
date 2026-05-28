@@ -2,7 +2,7 @@
 name: write
 description: Implement features based on the agent skills.
 argument-hint: feature|id [--skip-tests]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -37,12 +37,22 @@ The language-specific skills not listed, check all available skills before decid
     <return>summary of the feature and current codebase context</return>
 </function>
 
-<function name="active-skills">
-    <description>According to the feature requirements, determine which skills are needed and activate them.</description>
+<function name="design-analyze">
+    <description>Produce a Design Analysis Memo that frames the direction of the work before skills are activated. Surfaces forces, options grounded in this codebase, and a soft recommendation the user confirms or redirects.</description>
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
+    <step>1. use Skill(coding:design-forces) to load the diagnosis protocol</step>
+    <step>2. follow the protocol: read recorded patterns (`docs/architecture.md` Patterns section, `docs/decisions/`), read framework posture and codebase signals, ask up to 3 targeted questions for unanswered forces, generate 4–6 options, write the memo</step>
+    <step>3. present the memo to the user and confirm the chosen direction before active-skills runs</step>
+    <return>Design Analysis Memo with the user-confirmed direction (selected option + recording proposal if any)</return>
+</function>
+
+<function name="active-skills">
+    <description>According to the feature requirements and the confirmed memo direction, determine which skills are needed and activate them.</description>
+    <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
+    <parameter name="memo" type="string" description="The Design Analysis Memo with the confirmed direction." required="true"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the overview with rubric of available skills</step>
-    <step>3. select the skills that are most relevant to the feature implementation</step>
+    <step>2. analyze the overview with rubric of available skills, biased by the memo's chosen direction (a framework-default direction may need fewer heavy skills; a CA+DDD direction will activate `clean-architecture` and `domain-modeling`)</step>
+    <step>3. select the skills that are most relevant to the chosen direction</step>
     <loop for="skill in $selected-skills">
         <step>4. use Skill($skill) to activate and load its knowledge</step>
     </loop>
@@ -109,24 +119,28 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
     <step>1. <execute name="overview" feature="$feature"/></step>
     <step>2. use ask question tool to clarify scope of the feature</step>
-    <step>3. <execute name="active-skills" overview="$overview"/></step>
-    <step>4. <execute name="investigate" overview="$overview"/></step>
-    <step>5. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
-    <step>6. enter the plan mode</step>
-    <step>7. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
-    <step>8. review and finalize the implementation plan for minimal change instead of over-engineering</step>
+    <step>3. <execute name="design-analyze" overview="$overview"/></step>
+    <step>4. <execute name="active-skills" overview="$overview" memo="$memo"/></step>
+    <step>5. <execute name="investigate" overview="$overview"/></step>
+    <step>6. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
+    <step>7. enter the plan mode</step>
+    <step>8. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
+    <step>9. review and finalize the implementation plan for minimal change instead of over-engineering</step>
     <condition if="over-engineering detected">
-        <step>9. refine the plan to avoid over-engineering</step>
+        <step>10. refine the plan to avoid over-engineering</step>
     </condition>
-    <step>10. exit plan mode and wait for user confirmation</step>
-    <step>11. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>11. exit plan mode and wait for user confirmation</step>
+    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>12. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
-        <step>13. collect task result for quality report and update task status</step>
+        <step>13. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
+        <step>14. collect task result for quality report and update task status</step>
     </loop>
-    <step>14. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>15. ask user if they want to commit the changes</step>
-    <step>16. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
+    <step>15. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <condition if="$memo proposed a Patterns-section entry or ADR">
+        <step>16. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
+    </condition>
+    <step>17. ask user if they want to commit the changes</step>
+    <step>18. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>implementation quality report</return>
 </procedure>
 

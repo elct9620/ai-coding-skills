@@ -2,7 +2,7 @@
 name: refactor
 description: Clean up legacy code issues by identifying code smells and applying safe refactoring techniques.
 argument-hint: [path|module]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -42,11 +42,21 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of code smells with severity, location, architectural layer context, and git history context</return>
 </function>
 
-<function name="active-skills">
-    <description>According to the identified code smells, determine which skills are needed and activate them.</description>
+<function name="design-analyze">
+    <description>Produce a Design Analysis Memo to frame the refactoring direction before skills are activated. Surfaces forces, options grounded in this codebase (including doing less, opening a seam, extracting a scaffold), and a soft recommendation the user confirms.</description>
     <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
+    <step>1. use Skill(coding:design-forces) to load the diagnosis protocol</step>
+    <step>2. follow the protocol with refactoring-specific framing: read recorded patterns (`docs/architecture.md`, `docs/decisions/`), read framework posture and codebase signals, ask up to 3 targeted questions, generate 4–6 options (seam-only, restructure-in-place, extract scaffold, defer with trigger, etc.), write the memo</step>
+    <step>3. present the memo to the user and confirm the chosen direction before active-skills runs</step>
+    <return>Design Analysis Memo with the user-confirmed direction</return>
+</function>
+
+<function name="active-skills">
+    <description>According to the identified code smells and the confirmed memo direction, determine which skills are needed and activate them.</description>
+    <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
+    <parameter name="memo" type="string" description="The Design Analysis Memo with the confirmed direction." required="true"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the smells with rubric of available skills</step>
+    <step>2. analyze the smells with rubric of available skills, biased by the memo's chosen direction</step>
     <step>3. select the skills that address the identified problems</step>
     <step>4. always include `coding:refactoring` as the core skill</step>
     <step>5. if any smell involves cross-class refactoring (Move Method, Extract Class), always include `coding:clean-architecture` to validate dependency direction</step>
@@ -112,26 +122,30 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="analyze-smells" target="$target"/></step>
     <step>2. check whether the user's request is actually a refactor: if it would change the semantic contract (return-value meaning, completion timing, error model, delivery or ordering guarantees) while keeping signatures intact, name it as a behavior change and confirm scope with the user before continuing — do not proceed under the refactor frame</step>
     <step>3. use ask question tool to confirm refactoring scope and priorities</step>
-    <step>4. <execute name="active-skills" smells="$smells"/></step>
-    <step>5. <execute name="investigate" smells="$smells"/></step>
-    <step>6. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
-    <step>7. enter the plan mode</step>
+    <step>4. <execute name="design-analyze" smells="$smells"/></step>
+    <step>5. <execute name="active-skills" smells="$smells" memo="$memo"/></step>
+    <step>6. <execute name="investigate" smells="$smells"/></step>
+    <step>7. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
+    <step>8. enter the plan mode</step>
     <condition if="insufficient test coverage">
-        <step>8. add tests for untested code before refactoring</step>
+        <step>9. add tests for untested code before refactoring</step>
     </condition>
-    <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
-    <step>10. review plan to ensure minimal changes and behavior preservation</step>
+    <step>10. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
+    <step>11. review plan to ensure minimal changes and behavior preservation</step>
     <condition if="plan too aggressive">
-        <step>11. reduce scope to focus on highest impact improvements</step>
+        <step>12. reduce scope to focus on highest impact improvements</step>
     </condition>
-    <step>12. exit plan mode and wait for user confirmation</step>
-    <step>13. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>13. exit plan mode and wait for user confirmation</step>
+    <step>14. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>14. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
-        <step>15. collect task result for quality report and update task status</step>
+        <step>15. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
+        <step>16. collect task result for quality report and update task status</step>
     </loop>
-    <step>16. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
-    <step>17. ask user if they want to commit the changes</step>
+    <step>17. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <condition if="$memo proposed a Patterns-section entry or ADR">
+        <step>18. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
+    </condition>
+    <step>19. ask user if they want to commit the changes</step>
     <return>refactoring quality report</return>
 </procedure>
 

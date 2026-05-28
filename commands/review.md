@@ -3,7 +3,7 @@ name: review
 description: Review recent changes for style consistency, test quality, and architectural alignment, then propose refactoring suggestions.
 argument-hint: [path|module|--staged] [--deep]
 # --deep scans the entire target scope holistically, not just recent diffs
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -112,11 +112,25 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of architecture findings with severity and location</return>
 </function>
 
+<function name="check-pattern-alignment">
+    <description>Check whether the changes align with patterns recorded in this project. Flags drift from recorded shapes and surfaces revisit triggers that may have fired.</description>
+    <parameter name="changes" type="object" description="The categorized changes." required="true"/>
+    <step>1. read `docs/architecture.md` Patterns section and any files under `docs/decisions/`</step>
+    <condition if="no recorded patterns exist">
+        <step>2. return an empty finding list — nothing to align against yet</step>
+    </condition>
+    <step>3. for each recorded pattern whose "When to apply" overlaps the changed surface, compare the actual implementation against the pattern's recorded Shape and canonical example</step>
+    <step>4. flag drift with severity (high: implementation contradicts the pattern's Shape; medium: deviation in form but invariants intact; low: stylistic divergence from the canonical example)</step>
+    <step>5. for each recorded pattern, check whether any "Revisit if" trigger appears to have fired (e.g. team fragmentation grew, blast radius increased, change rate accelerated) — flag as informational so the team can re-run design-forces deliberately, not as a review failure</step>
+    <return>list of pattern-alignment findings with severity, location, and trigger-fired notes</return>
+</function>
+
 <function name="generate-review-report">
     <description>Merge all findings, deduplicate, sort by severity, and produce refactoring suggestions for /refactor consumption.</description>
     <parameter name="style-findings" type="list" description="Findings from style consistency check." required="true"/>
     <parameter name="test-findings" type="list" description="Findings from test quality check." required="true"/>
     <parameter name="architecture-findings" type="list" description="Findings from architecture check." required="true"/>
+    <parameter name="pattern-findings" type="list" description="Findings from pattern alignment check." required="true"/>
     <parameter name="active-skills" type="list" description="The skills used in the review." required="true"/>
     <step>1. merge all findings into a single list</step>
     <step>2. deduplicate findings that overlap across checks</step>
@@ -143,12 +157,13 @@ The language-specific skills not listed, check all available skills before decid
     <step>5. <execute name="check-style-consistency" changes="$changes" active-skills="$active-skills"/></step>
     <step>6. <execute name="check-test-quality" changes="$changes" active-skills="$active-skills"/></step>
     <step>7. <execute name="check-architecture" changes="$changes" active-skills="$active-skills"/></step>
-    <step>8. <execute name="generate-review-report" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" active-skills="$active-skills"/></step>
+    <step>8. <execute name="check-pattern-alignment" changes="$changes"/></step>
+    <step>9. <execute name="generate-review-report" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
     <condition if="review report contains high or medium severity findings">
-        <step>9. suggest running `/refactor` with the identified targets to address the findings</step>
+        <step>10. suggest running `/refactor` with the identified targets to address the findings</step>
     </condition>
     <condition if="review report has no findings and not $deep">
-        <step>9. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/review [path] --deep` for a broader holistic review."</step>
+        <step>11. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/review [path] --deep` for a broader holistic review."</step>
     </condition>
     <return>review report with refactoring suggestions</return>
 </procedure>

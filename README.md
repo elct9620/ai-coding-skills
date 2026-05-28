@@ -34,6 +34,7 @@ This repository is designed as Claude Code Plugin which contains following compo
        |- review.md   # Post-implementation quality checks
        |- roadmap.md  # Spec-to-implementation tracking
     |- skills/     # Individual skills with specific knowledge
+       |- design-forces/
        |- testing/
        |- clean-architecture/
        |- domain-modeling/
@@ -66,6 +67,7 @@ Choose the appropriate command based on your task:
 
 | Skill                     | /write | /refactor | /fix | /review |
 |---------------------------|:------:|:---------:|:----:|:-------:|
+| coding:design-forces      |  ✓†    |    ✓†     | ✓‡   |   ✓§    |
 | coding:testing            |   ✓    |     ✓     |  ✓*  |   ✓*    |
 | coding:refactoring        |   ✓    |     ✓*    |  ✓   |    ✓    |
 | coding:clean-architecture |   ✓    |     ✓     |  ✓   |    ✓    |
@@ -76,6 +78,9 @@ Choose the appropriate command based on your task:
 | coding:security           |   ✓    |     ✓     |  ✓   |    ✓    |
 
 *Core skill for this command (always activated)
+†Runs before active-skills selection to frame the direction
+‡Runs only when the bug crosses layers or involves a design decision
+§Used to check changes against patterns recorded in `docs/architecture.md`
 
 > `/roadmap` is a standalone tracking command and does not use coding skills.
 

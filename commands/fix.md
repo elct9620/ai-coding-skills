@@ -2,7 +2,7 @@
 name: fix
 description: Fix bugs by diagnosing root cause, reproducing with tests, and applying minimal fixes.
 argument-hint: bug|issue|error
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:domain-modeling), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -39,11 +39,21 @@ The language-specific skills not listed, check all available skills before decid
     <return>diagnosis with root cause analysis, affected files, and bug category</return>
 </function>
 
-<function name="active-skills">
-    <description>According to the diagnosis, determine which skills are needed and activate them.</description>
+<function name="design-analyze">
+    <description>Produce a Design Analysis Memo when the bug is non-trivial — when the fix likely involves a design decision, not just a code error. Surfaces forces and options before active-skills runs.</description>
     <parameter name="diagnosis" type="string" description="The diagnosis with root cause analysis." required="true"/>
+    <step>1. use Skill(coding:design-forces) to load the diagnosis protocol</step>
+    <step>2. follow the protocol: read recorded patterns, framework posture, codebase signals, ask up to 3 targeted questions, generate options for how to address the root cause (minimal patch, extract a seam, restructure the area, defer with a follow-up), write the memo</step>
+    <step>3. present the memo to the user and confirm the chosen direction before active-skills runs</step>
+    <return>Design Analysis Memo with the user-confirmed direction</return>
+</function>
+
+<function name="active-skills">
+    <description>According to the diagnosis (and the memo direction when present), determine which skills are needed and activate them.</description>
+    <parameter name="diagnosis" type="string" description="The diagnosis with root cause analysis." required="true"/>
+    <parameter name="memo" type="string" description="The Design Analysis Memo when the bug warranted one; empty otherwise." required="false"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the diagnosis with rubric of available skills</step>
+    <step>2. analyze the diagnosis with rubric of available skills, biased by the memo's chosen direction when present</step>
     <step>3. always include `coding:testing` as the core skill</step>
     <step>4. select additional skills based on bug category and root cause</step>
     <loop for="skill in $selected-skills">
@@ -128,27 +138,30 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="bug" type="string" description="The bug description, error message, or issue reference." required="true"/>
     <step>1. <execute name="diagnose" bug="$bug"/></step>
     <step>2. use ask question tool to confirm understanding of the bug scope</step>
-    <step>3. <execute name="active-skills" diagnosis="$diagnosis"/></step>
-    <step>4. <execute name="investigate" diagnosis="$diagnosis"/></step>
-    <step>5. deeply understand the project codebase related to the bug, stay within project boundaries and do not read library or framework source code</step>
-    <step>6. enter the plan mode</step>
-    <step>7. <execute name="create-reproduction-test" diagnosis="$diagnosis"/></step>
-    <step>8. <execute name="create-fix-plan" diagnosis="$diagnosis" reproduction-test="$reproduction-test" active-skills="$active-skills"/></step>
-    <step>9. review plan to ensure minimal fix without scope creep</step>
-    <condition if="scope creep detected">
-        <step>10. reduce scope to focus only on the bug fix</step>
+    <condition if="bug is non-trivial — crosses architectural layers, spans multiple files, or the fix involves a design decision (not just a code error)">
+        <step>3. <execute name="design-analyze" diagnosis="$diagnosis"/></step>
     </condition>
-    <step>11. exit plan mode and wait for user confirmation</step>
-    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
-    <step>13. write reproduction test (Red)</step>
+    <step>4. <execute name="active-skills" diagnosis="$diagnosis" memo="$memo"/></step>
+    <step>5. <execute name="investigate" diagnosis="$diagnosis"/></step>
+    <step>6. deeply understand the project codebase related to the bug, stay within project boundaries and do not read library or framework source code</step>
+    <step>7. enter the plan mode</step>
+    <step>8. <execute name="create-reproduction-test" diagnosis="$diagnosis"/></step>
+    <step>9. <execute name="create-fix-plan" diagnosis="$diagnosis" reproduction-test="$reproduction-test" active-skills="$active-skills"/></step>
+    <step>10. review plan to ensure minimal fix without scope creep</step>
+    <condition if="scope creep detected">
+        <step>11. reduce scope to focus only on the bug fix</step>
+    </condition>
+    <step>12. exit plan mode and wait for user confirmation</step>
+    <step>13. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>14. write reproduction test (Red)</step>
     <loop for="task in $plan.tasks">
-        <step>14. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
-        <step>15. collect fix result for quality report and update task status</step>
+        <step>15. <execute name="execute-fix" task="$task" skill="$task.skill"/></step>
+        <step>16. collect fix result for quality report and update task status</step>
     </loop>
-    <step>16. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
-    <step>17. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
-    <step>18. ask user if they want to commit the changes</step>
-    <step>19. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
+    <step>17. <execute name="regression-check" affected-areas="$diagnosis.affected-areas"/></step>
+    <step>18. <execute name="quality-report" diagnosis="$diagnosis" active-skills="$active-skills" fix-results="$fix-results" regression-result="$regression-result"/></step>
+    <step>19. ask user if they want to commit the changes</step>
+    <step>20. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
     <return>fix quality report</return>
 </procedure>
 
