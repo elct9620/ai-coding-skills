@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.7.0](https://github.com/elct9620/ai-coding-skills/compare/v0.6.2...v0.7.0) (2026-05-28)
+
+
+### Features
+
+* **skills:** add commenting discipline keyed to module type ([1d53ba4](https://github.com/elct9620/ai-coding-skills/commit/1d53ba4c39f6baa5d2bdbc3a5f58c2d72db6a69b))
+* **skills:** add design-forces to weigh options before architectural commitment ([53685b6](https://github.com/elct9620/ai-coding-skills/commit/53685b613094a30592ddbaf8a769dcb74fda7d2c))
+
 ## [0.6.2](https://github.com/elct9620/ai-coding-skills/compare/v0.6.1...v0.6.2) (2026-04-18)
 
 
