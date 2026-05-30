@@ -66,9 +66,9 @@ The Entities layer is a **conceptual layer**, not a fixed directory name. How it
 - Thin domain (mostly validation and CRUD) → `entities/` holding plain business objects. This is not a downgrade; it is the right fit when there is no aggregate or invariant a richer structure would enforce.
 - Thick domain (multi-step invariants, consistency boundaries) → consider **DDD**'s approach for partitioning the layer's internals, and **domain-modeling** for the tactical building blocks (Entity, Value Object, Aggregate). CA decides *where* the layer lives; domain modelling decides *what lives inside it*.
 
-## Before/After: showing a layer violation
+## Before/After: a layer violation
 
-When explaining a layer violation or restructuring, show both the problematic code (BEFORE) and the corrected code (AFTER). Without the BEFORE, the guidance feels abstract; the reader can't recognise their own situation in it.
+When explaining a layer violation, show the problematic code (BEFORE) beside the corrected one (AFTER) — the contrast is what makes it recognisable.
 
 **BEFORE** — controller directly uses ORM (Frameworks & Drivers leaking into Interface Adapters):
 

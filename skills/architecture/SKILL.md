@@ -30,33 +30,22 @@ Resist mapping a framework to a named style by reflex ("Rails, so DCI"; "Spring,
 2. Apply the recorded structure as-is.
 3. Re-open the decision **only** if a recorded revisit trigger has fired.
 
-No fresh analysis. This is what makes a structural decision persist across features instead of being re-litigated every time. (A design-forces memo reaches the same conclusion via its Confirming Memo; this skill honours the record directly when invoked without one.)
+No fresh analysis — this is what makes a structural decision persist across features instead of being re-litigated every time.
 
 ### Mode B — decide the structure (fresh)
 
 When there is no record covering this area, or a revisit trigger has fired, the question is **not** "is `docs/architecture.md` missing?" — it is **"is this now complex enough to need structural planning?"**
 
-Read the force signals (from the design-forces memo if present, otherwise a light read of the same signals):
+Read the force signals — from the design-forces memo if present, otherwise a light read of the same lenses. Rule complexity, change rate, blast radius, and team fragmentation push toward structure; delivery pressure and code maturity pull back.
 
-| Force | What pushes toward adding structure |
-|-------|--------------------------------------|
-| Rule complexity | Multi-step invariants, state machines, consistency boundaries — not field validation |
-| Change rate | The shape will churn; isolation pays for itself over time |
-| Blast radius | Failure is costly or visible; isolation contains it |
-| Team fragmentation | More than one team or vocabulary touches the same nouns |
-| Delivery pressure | Pulls the *other* way — is the investment recoverable in the time available? |
-| Code maturity | Does the surrounding code even support the structure landing cleanly yet? |
+- **Forces are quiet** → stay with the default: framework as-is, no extra structure.
+- **Forces are loud** → they surface as a concrete symptom. Recognise it, then read the technique that answers it (the reference explains how):
 
-- **Forces are quiet** → stay with the default: framework as-is, no extra structure. This is the right answer far more often than the instinct to "set up the architecture" suggests.
-- **Forces are loud** → they show up as a concrete symptom in the code or the work. Recognise the symptom, then go read the technique that speaks to it. Each reference solves a specific kind of problem:
+  - **Changes keep rippling outward** — touch one thing and you keep breaking code others depend on → `references/clean-architecture.md`
+  - **The same word means different things in different places** — subdomains crammed into one model, teams tripping over each other's invariants → `references/ddd.md`
+  - **A use case's behaviour is scattered** — one scenario's logic spans several objects with no place that tells its story → `references/dci.md`
 
-**Changes keep rippling outward.** Touch the framework, the database, or one module and you keep having to edit elsewhere — a small change breaks code other people depend on. That is change amplification. Clean Architecture's idea — controlling which way dependencies point, so they all point inward toward the stable business rules — is what addresses it. → `references/clean-architecture.md`
-
-**The same words mean different things in different places.** Distinct subdomains are crammed into one model, teams trip over each other's invariants, or "order" means one thing to sales and another to shipping. DDD's strategic side — partitioning the system along those meanings so each region keeps one language and one set of consistency boundaries — addresses it. → `references/ddd.md`
-
-**A use case's behaviour is scattered and hard to follow.** The logic of one scenario spans several objects with no single place that tells its story, or data classes bloat because every use case piles methods onto them. DCI — separating slow-changing data from fast-changing behaviour, casting behaviour onto data as roles within a context — addresses it. → `references/dci.md`
-
-These are starting points, not an exhaustive list, and they compose (CA controls dependency direction, DDD partitions the domain, DCI organises behaviour). If the symptom matches none of them, reason from the forces and principles directly — the technique that fits may simply not be named here.
+These are starting points, not a menu; they compose, and a symptom matching none means reasoning from forces and principles directly.
 
 After committing, **record the decision** so Mode A applies next time (see Recording below).
 
@@ -84,11 +73,8 @@ If `docs/architecture.md` does not exist and a structure was chosen, create it w
 
 | Criterion | Pass |
 |-----------|------|
-| Recorded structure honoured | Mode A path taken when `docs/architecture.md` covers the area; no needless re-analysis |
-| Default respected | Mode B starts from "no extra structure"; structure added only on a loud force, not on a missing doc |
-| No framework reflex | Technique chosen from the symptom in the work, not from a framework→style lookup |
-| Force-justified | The chosen technique names the specific symptom (loud force) it resolves |
+| Record respected | An existing structure in `docs/architecture.md` is followed without re-analysis; a fresh decision leaves a record sized to it (Patterns entry, style declaration, or ADR) |
+| Structure earned | Default is no extra structure; it is added only on a loud force named as a symptom — never from a missing doc or a framework→style reflex |
 | Boundaries follow the model | Context/module partitioning aligns with aggregate boundaries from domain-modeling |
 | Dependency direction sound | If a layered/CA technique was chosen, dependencies point inward; no circular references |
-| Recorded when fresh | A Mode B decision left a Patterns entry, style declaration, or ADR sized to the decision |
 | Principles as baseline | KISS / SOLID / DRY / YAGNI treated as how the structure is built, never as something it defers |
