@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/elct9620/ai-coding-skills/compare/v0.7.0...v0.8.0) (2026-05-30)
+
+
+### Miscellaneous Chores
+
+* release 0.8.0 ([4725744](https://github.com/elct9620/ai-coding-skills/commit/4725744d3c4bbaf7a4ddcee5a12b7a3a4b2faf14))
+
 ## [0.7.0](https://github.com/elct9620/ai-coding-skills/compare/v0.6.2...v0.7.0) (2026-05-28)
 
 
