@@ -2,7 +2,7 @@
 name: refactor
 description: Clean up legacy code issues by identifying code smells and applying safe refactoring techniques.
 argument-hint: [path|module]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:refactoring), Skill(coding:clean-architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:refactoring), Skill(coding:architecture), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -16,7 +16,7 @@ To select skills for cleaning up legacy code, consider the following rubric:
 | Skill                       | When to use                                                                 |
 |-----------------------------|-----------------------------------------------------------------------------|
 | `coding:refactoring`        | Core skill for all refactoring operations, always required.                 |
-| `coding:clean-architecture` | Cross-class refactoring (Move Method, Extract Class), layer violations, module boundary issues, or structural reorganization. |
+| `coding:architecture`       | Cross-class refactoring (Move Method, Extract Class), layer violations, module boundary issues, or structural reorganization. |
 | `coding:principles`         | SOLID/DRY violations, coupling issues, or responsibility problems.          |
 | `coding:design-patterns`    | Replace complex conditionals or duplicated logic with appropriate patterns. |
 | `coding:testing`            | Missing test coverage that blocks safe refactoring.                         |
@@ -59,7 +59,7 @@ The language-specific skills not listed, check all available skills before decid
     <step>2. analyze the smells with rubric of available skills, biased by the memo's chosen direction</step>
     <step>3. select the skills that address the identified problems</step>
     <step>4. always include `coding:refactoring` as the core skill</step>
-    <step>5. if any smell involves cross-class refactoring (Move Method, Extract Class), always include `coding:clean-architecture` to validate dependency direction</step>
+    <step>5. if any smell involves cross-class refactoring (Move Method, Extract Class), include `coding:architecture` to validate the structure and dependency direction against the recorded or chosen shape</step>
     <loop for="skill in $selected-skills">
         <step>6. use Skill($skill) to activate and load its knowledge</step>
     </loop>

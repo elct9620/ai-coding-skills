@@ -6,7 +6,7 @@ description: Safely restructure code without changing behavior using Extract Met
 ## Related Skills
 
 - Facing a design trade-off (DRY vs KISS)? → Use **principles** first to decide, then refactor
-- Code is in the wrong architectural layer? → Use **clean-architecture** to identify target, then refactor to move it
+- Code is in the wrong architectural layer? → Use **architecture** to identify target, then refactor to move it
 - Need to choose a pattern (Strategy, Factory)? → Use **design-patterns** first, then refactor toward it
 - No tests before refactoring? → Use **testing** to add them first
 

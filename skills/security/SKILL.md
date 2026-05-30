@@ -6,7 +6,7 @@ description: Prevent security vulnerabilities through threat modeling, trust bou
 ## Related Skills
 
 - Designing API contracts or database schemas? → Use **schema** to enforce minimal exposure and proper constraints
-- Structuring layers around trust boundaries? → Use **clean-architecture** for proper boundary separation
+- Structuring layers around trust boundaries? → Use **architecture** for proper boundary separation
 - Writing tests for security-sensitive code? → Use **testing** to verify security behavior
 - Handling domain rules around access control? → Use **domain-modeling** for authorization aggregates
 - Applying least privilege or single responsibility to security design? → Use **principles** for SOLID guidance

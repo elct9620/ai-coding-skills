@@ -6,7 +6,7 @@ description: Surface design forces and lay out the option space — including fr
 ## Related Skills
 
 - Memo recommends modelling rules explicitly? → **domain-modeling**
-- Memo recommends layered structure? → **clean-architecture**
+- Memo recommends a layered or partitioned structure? → **architecture**
 - Memo recommends introducing a Strategy / Polymorphism for a recurring variation? → **design-patterns**
 - Memo says open a seam in legacy code first? → **refactoring**
 - Memo flags a trust boundary? → **security** + **schema** + deeper **testing**

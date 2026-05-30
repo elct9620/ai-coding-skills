@@ -36,7 +36,7 @@ This repository is designed as Claude Code Plugin which contains following compo
     |- skills/     # Individual skills with specific knowledge
        |- design-forces/
        |- testing/
-       |- clean-architecture/
+       |- architecture/
        |- domain-modeling/
        |- design-patterns/
        |- refactoring/
@@ -49,7 +49,7 @@ This repository is designed as Claude Code Plugin which contains following compo
 
 The command as entry which defines the workflow, then adaptively select necessary skills to complete the task.
 
-For example, the `/write` command use `clean-architecture` when the structure is not defined and follow instructions to create necessary layers.
+For example, the `/write` command uses `architecture` to follow a structure already recorded in `docs/architecture.md`, or — when the design forces call for it — to decide a structural shape (Clean Architecture, DDD, DCI, or another). It defaults to adding no extra structure when the forces are quiet.
 
 ## Command Usage Matrix
 
@@ -70,7 +70,7 @@ Choose the appropriate command based on your task:
 | coding:design-forces      |  ✓†    |    ✓†     | ✓‡   |   ✓§    |
 | coding:testing            |   ✓    |     ✓     |  ✓*  |   ✓*    |
 | coding:refactoring        |   ✓    |     ✓*    |  ✓   |    ✓    |
-| coding:clean-architecture |   ✓    |     ✓     |  ✓   |    ✓    |
+| coding:architecture       |   ✓    |     ✓     |  ✓   |    ✓    |
 | coding:principles         |   ✓    |     ✓     |  ✓   |   ✓*    |
 | coding:design-patterns    |   ✓    |     ✓     |  ✓   |    ✓    |
 | coding:domain-modeling    |   ✓    |     -     |  ✓   |    -    |

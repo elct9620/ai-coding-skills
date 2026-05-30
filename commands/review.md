@@ -3,7 +3,7 @@ name: review
 description: Review recent changes for style consistency, test quality, and architectural alignment, then propose refactoring suggestions.
 argument-hint: [path|module|--staged] [--deep]
 # --deep scans the entire target scope holistically, not just recent diffs
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:clean-architecture), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -20,7 +20,7 @@ To select skills for reviewing changes, consider the following rubric:
 | `coding:principles`         | Core skill - always required for checking style and principle consistency.      |
 | `coding:refactoring`        | Changes contain code smells or structural issues worth refactoring.            |
 | `coding:design-patterns`    | Changes involve patterns that may be misused or missing.                       |
-| `coding:clean-architecture` | Changes cross architectural layers or affect dependency direction.             |
+| `coding:architecture`       | Changes cross architectural layers, affect dependency direction, or deviate from the recorded structure. |
 | `coding:schema`             | Changes involve database schemas, API contracts, or data serialization.        |
 | `coding:security`           | Changes handle user input, auth, secrets, or cross trust boundaries.           |
 

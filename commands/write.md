@@ -2,7 +2,7 @@
 name: write
 description: Implement features based on the agent skills.
 argument-hint: feature|id [--skip-tests]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:clean-architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
+allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
 
 ## Rule
@@ -15,7 +15,7 @@ To select skills for implementing the feature, consider the following rubric:
 
 | Skill                       | When to use                                                                              |
 |-----------------------------|------------------------------------------------------------------------------------------|
-| `coding:clean-architecture` | No `docs/architecture.md` exists or the feature requires significant structural changes. |
+| `coding:architecture`       | Following a structure recorded in `docs/architecture.md`, or the memo's forces call for a structural decision (layers, modules, contexts). Defaults to no extra structure when forces are quiet. |
 | `coding:domain-modeling`    | The feature is related to business logic or domain entities.                             |
 | `coding:principles`         | Fully new feature no existing code, following principles is essential.                   |
 | `coding:design-patterns`    | The feature needs changes multiple components that can benefit from design patterns.     |
@@ -51,7 +51,7 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
     <parameter name="memo" type="string" description="The Design Analysis Memo with the confirmed direction." required="true"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the overview with rubric of available skills, biased by the memo's chosen direction (a framework-default direction may need fewer heavy skills; a CA+DDD direction will activate `clean-architecture` and `domain-modeling`)</step>
+    <step>2. analyze the overview with rubric of available skills, biased by the memo's chosen direction (a no-extra-structure direction may need fewer heavy skills; a direction that calls for layers or partitioning will activate `architecture` and, where the domain is thick, `domain-modeling`)</step>
     <step>3. select the skills that are most relevant to the chosen direction</step>
     <loop for="skill in $selected-skills">
         <step>4. use Skill($skill) to activate and load its knowledge</step>

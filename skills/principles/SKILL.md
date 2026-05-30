@@ -7,7 +7,7 @@ description: Apply SOLID, KISS, DRY, YAGNI principles to code design decisions. 
 
 - Detected a code smell (long method, feature envy)? → Use **refactoring** for specific techniques
 - Need a specific pattern (Strategy, Factory)? → Use **design-patterns** for selection and implementation
-- Deciding which architectural layer code belongs in? → Use **clean-architecture**
+- Deciding which architectural layer or structure code belongs in? → Use **architecture**
 
 ## Applicability Rubric
 
@@ -60,7 +60,7 @@ description: Apply SOLID, KISS, DRY, YAGNI principles to code design decisions. 
 - Private method: comment only when a value references something external (RFC code, control byte, ticket ID)
 - A comment that restates the code in prose: extract a method whose name carries the meaning
 
-Module type (application vs library) decides which default applies — see **clean-architecture** Module Type.
+Module type (application vs library) decides which default applies — see **architecture** Module Type.
 
 ## Completion Rubric
 

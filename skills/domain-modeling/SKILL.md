@@ -7,13 +7,15 @@ description: Model business domains using DDD patterns: Entity, Value Object, Ag
 
 - Need to persist domain objects? → Use **schema** for database table design
 - Deciding how to structure classes around patterns? → Use **design-patterns**
-- Deciding *where* the domain layer lives and whether DDD is warranted at all? → Use **clean-architecture** first; it owns the style decision (Pure CA vs CA+DDD)
+- Deciding how the system is structured — layers, modules, where the domain layer lives? → Use **architecture**. Structure follows the model, so the aggregate boundaries you settle here are what it mirrors.
 
-## Relationship to Clean Architecture
+## Relationship to architecture
 
-DDD is **layered on top of** Clean Architecture's Entities layer, not an alternative to it. CA decides *where* business rules live (the innermost layer); DDD decides *how* they are structured (Entity, Value Object, Aggregate, Domain Event).
+Domain modelling and architecture are **different kinds of problem**. This skill decides *what the domain concepts are* — Entity, Value Object, Aggregate, Domain Event. **architecture** decides *how the system is structured* around them.
 
-This skill assumes the decision to use DDD has already been made. If the system is small, CRUD-heavy, and has no real invariants or aggregates, **plain CA without DDD is a better fit** — the Entities layer is just `entities/` holding simple business objects. Consult **clean-architecture** for that decision before reaching for this skill.
+The link runs in one direction: **structure follows the model**. A bounded context's boundary normally aligns with the aggregate boundaries defined here, so this tactical work comes first and the strategic layout mirrors it — which is why architecture defers context partitioning to these boundaries rather than inventing its own.
+
+This skill is for when the domain is thick enough to model explicitly — rich invariants, real aggregates, ubiquitous-language tension. If the system is small and CRUD-heavy with no invariants worth enforcing, the tactical vocabulary is overhead; keep the domain objects plain. Whether to add surrounding structure at all is **architecture**'s force judgement, not a precondition for this skill.
 
 ## Applicability Rubric
 
@@ -24,7 +26,7 @@ This skill assumes the decision to use DDD has already been made. If the system 
 | Ubiquitous language tension | Same word means different things to different teams/features | One obvious vocabulary |
 | Complex process modeling | Multi-step workflow with state transitions | Simple create/read/update |
 
-**Apply when**: At least one condition passes. If none pass, the domain is likely too thin for DDD — use plain Clean Architecture instead and keep entities simple.
+**Apply when**: At least one condition passes. If none pass, the domain is likely too thin for DDD's tactical vocabulary — keep the domain objects plain and let **architecture** decide the surrounding structure.
 
 ## Core Principles
 
@@ -289,7 +291,7 @@ For the multi-context case, avoid these anti-patterns:
 | Generic `models/` or `entities/` at the root | Same problem, plus loses DDD vocabulary |
 | Mixing context directories with a shared `domain/` | Developers can't tell which rules belong where |
 
-**Not doing DDD at all?** If the project is pure Clean Architecture with no aggregates or ubiquitous-language tension, the directory should be `entities/`, not `domain/`. See **clean-architecture** for the style decision and naming guide — this section only applies once DDD has been chosen.
+**Not doing DDD at all?** If the project has no aggregates or ubiquitous-language tension, the directory should be `entities/`, not `domain/`, and this section does not apply. See **architecture** for the structural decision and naming guide — this section only applies once the domain is being modelled tactically.
 
 ### Migrating from Monolith to Bounded Contexts
 

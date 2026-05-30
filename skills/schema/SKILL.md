@@ -7,7 +7,7 @@ description: Design database schemas and API contracts at system boundaries. Use
 
 - Designing the domain objects that the schema persists? → Use **domain-modeling**
 - Schema change requires code restructuring? → Use **refactoring**
-- Unsure which architectural layer the DTO belongs in? → Use **clean-architecture**
+- Unsure which architectural layer the DTO belongs in? → Use **architecture**
 
 ## Applicability Rubric
 
