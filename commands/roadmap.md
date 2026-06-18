@@ -12,9 +12,15 @@ The `<execute name="main">ARGUMENTS</execute>` is entry point for this command.
 
 ## ROADMAP.md Format
 
-ROADMAP.md acts as a spec-to-implementation index. It mirrors the feature structure from SPEC.md but adds implementation tracking. The table format keeps everything scannable at a glance.
+ROADMAP.md acts as a spec-to-implementation index. It tracks the project's feature list — the features the spec commits to — and records the implementation status of each, one row per feature, so the whole thing stays scannable at a glance.
+
+A spec is organized by layers (intent, behaviors, terminology), not by feature, and its shape changes with size: a small project keeps everything inline in SPEC.md, a larger one splits each feature into its own detail document. A roadmap row maps to a feature wherever it lives — an inline section, a group of behaviors, or a linked detail document — and follows the spec's own feature order. Supporting content such as purpose, terminology, or cross-cutting error scenarios is not a feature and gets no row.
+
+The roadmap's sectioning mirrors the spec's context boundaries, never its feature granularity. When the spec keeps everything in one context, the roadmap is a single flat table with no headings. When the spec partitions features by bounded context or domain — grouping them under context headings in Scope, or splitting detail documents into context groups — give each context its own `## [Context]` heading with its own flat feature table, in the spec's order. Either way, a feature is never its own section.
 
 The description paragraph below the heading summarizes the project's purpose and key features, giving readers immediate context without needing to read the full spec.
+
+**Single context — one flat table:**
 
 ```markdown
 # Roadmap
@@ -24,14 +30,37 @@ billing with Stripe integration, and team-based task management.
 
 | Feature | Entry Points | Notes |
 |---------|-------------|-------|
-| ✅ [User Authentication](SPEC.md#user-authentication) | [src/auth/handler.rb](src/auth/handler.rb), [src/auth/token.rb](src/auth/token.rb) | JWT-based, refresh token rotation |
+| ✅ [User Authentication](SPEC.md#user-authentication) | [src/auth/](src/auth/) | JWT-based, refresh token rotation |
 | 📌 [Task Management](SPEC.md#task-management) | — | Not started |
 | ⏳ [Billing](docs/billing.md) | [src/billing/](src/billing/) | Plan validation only; payment and cancel missing |
 ```
 
+**Partitioned by bounded context — one `## [Context]` section per context, each a flat table:**
+
+```markdown
+# Roadmap
+
+A subscription billing service. Account owners manage plans and payment;
+finance admins review monthly invoices.
+
+## Subscriptions
+
+| Feature | Entry Points | Notes |
+|---------|-------------|-------|
+| ✅ [Plan Catalog](docs/plan-catalog.md) | [src/subscriptions/plan.rb](src/subscriptions/plan.rb) | List and find-by-id, both tested |
+| ⏳ [Subscription Lifecycle](docs/subscription-lifecycle.md) | [src/subscriptions/subscription.rb](src/subscriptions/subscription.rb) | Subscribe and upgrade done; cancel missing |
+
+## Billing
+
+| Feature | Entry Points | Notes |
+|---------|-------------|-------|
+| ⏳ [Payment](docs/payment.md) | [src/billing/payment.rb](src/billing/payment.rb) | Implemented; no test exercises it (unverified) |
+| 📌 [Invoicing](docs/invoicing.md) | — | Not started |
+```
+
 **Column rules:**
-- **Feature**: status emoji followed by a markdown link whose text matches the SPEC.md section name and whose href points to the spec source — either `SPEC.md#section-anchor` when defined inline, or the detail document path (e.g. `docs/billing.md`) when the spec has been split out
-- **Entry Points**: comma-separated markdown links to code paths; link directories with trailing `/` (e.g. `[src/billing/](src/billing/)`) and files directly (e.g. `[src/auth/handler.rb](src/auth/handler.rb)`); use `—` if none
+- **Feature**: status emoji followed by a markdown link whose text matches the feature name and whose href points to the spec source — either `SPEC.md#section-anchor` when defined inline, or the detail document path (e.g. `docs/billing.md`) when the spec has been split out
+- **Entry Points**: a single markdown link to where a reader starts reading the feature's code — the directory (trailing `/`, e.g. `[src/billing/](src/billing/)`) when the feature owns it, or one representative file (e.g. `[src/billing/payment.rb](src/billing/payment.rb)`) when it shares a directory with other features. Keep it to one link; enumerating several files just re-expands the directory and defeats the purpose of a single starting point. Use `—` if none
 - **Notes**: quick context for navigating the feature — technology choices, current gaps, key implementation details; helps locate relevant code when debugging or onboarding; use `—` if nothing to note
 
 ### Status Emoji
@@ -40,30 +69,36 @@ billing with Stripe integration, and team-based task management.
 |-------|---------|------|
 | 📌 | pending | No implementation found |
 | ⏳ | in progress | Some behaviors implemented |
-| ✅ | completed | All spec behaviors verified by tests |
+| ✅ | completed | Every spec behavior is exercised by a test |
 
 ### Status Transitions
 
 | From | To | When |
 |------|----|------|
 | 📌 pending | ⏳ in progress | Implementation begins |
-| ⏳ in progress | ✅ completed | All spec behaviors verified by tests |
+| ⏳ in progress | ✅ completed | Every spec behavior is exercised by a test |
 | ✅ completed | ⏳ in progress | Spec updated with new or changed behaviors |
 | ⏳ in progress | 📌 pending | Implementation rolled back or restarted |
 
 Status may regress when the spec evolves — this is expected and should be noted.
 
+By default this command reads code and tests rather than running them, so "exercised by a test" is judged by reading: a behavior qualifies when a test calls it. Whether that test passes is stronger evidence — to confirm it, read a test or coverage report when the project produces one, or ask the user for permission to run the suite (running is outside the command's default tools, so it needs the user's approval). When passing cannot be confirmed, still mark ✅ on read coverage but note in the row that the result is unverified.
+
 ## Definition
 
 <function name="locate-spec">
-    <description>Find and parse the project's specification to extract the feature list.</description>
+    <description>Find the spec and extract its feature list — the features that become roadmap rows.</description>
     <step>1. search for SPEC.md in the project root and common locations (docs/, spec/)</step>
-    <step>2. if SPEC.md acts as table-of-contents, follow links to detail documents (e.g. docs/billing.md)</step>
-    <step>3. for each feature, determine the spec reference:</step>
-    <step>   - feature defined inline in SPEC.md → use SPEC.md#section-anchor</step>
-    <step>   - feature extracted to a detail document → use the detail document path (e.g. docs/billing.md)</step>
-    <step>4. for each feature, extract the key behaviors or acceptance criteria from the spec</step>
-    <return>list of features with spec references (as linkable paths) and expected behaviors</return>
+    <step>2. identify the feature list. A spec is organized by layers, not by feature, and names its features differently depending on size — find them in whichever of these shapes the spec uses:</step>
+    <step>   - a scope or feature-list section enumerates them directly → take that list and its order</step>
+    <step>   - features written inline as their own sections → each such section is a feature</step>
+    <step>   - table-of-contents mode (SPEC.md links out to detail documents) → each linked detail document is a feature</step>
+    <step>   - a small spec with one behavior table and no per-feature split → treat the whole spec as a single feature, or the few groupings it names</step>
+    <step>3. ignore non-feature content: purpose, users, terminology, patterns, and cross-cutting error scenarios do not become rows</step>
+    <step>4. note whether the spec partitions features by bounded context or domain (grouped under context headings in Scope, or split into context groups of detail documents) — if so, record each feature's context and the context order so the roadmap can mirror it as `## [Context]` sections; otherwise the roadmap stays a single flat table</step>
+    <step>5. for each feature, determine its spec reference — SPEC.md#section-anchor when defined inline, or the detail document path (e.g. docs/billing.md) when split out</step>
+    <step>6. for each feature, extract the behaviors or acceptance criteria that define when it is done</step>
+    <return>ordered feature list (with bounded-context grouping when present), each feature with a spec reference (linkable path) and expected behaviors</return>
 </function>
 
 <function name="locate-roadmap">
@@ -95,7 +130,7 @@ Status may regress when the spec evolves — this is expected and should be note
     </condition>
 
     <step>8. determine status:</step>
-    <step>   - all behaviors covered with passing tests → completed</step>
+    <step>   - every behavior exercised by a test → completed</step>
     <step>   - some behaviors implemented → in progress</step>
     <step>   - no implementation found → pending</step>
     <step>9. collect the directories and files that serve as entry points for this feature</step>
@@ -112,7 +147,7 @@ Status may regress when the spec evolves — this is expected and should be note
     <step>   - update status only if evidence supports the change</step>
     <step>   - update entry points to reflect current codebase state</step>
     <step>2. write a description paragraph summarizing the project's purpose and key features</step>
-    <step>3. order features to match the SPEC.md structure</step>
+    <step>3. order rows to match the feature list from locate-spec (the spec's own feature order); when locate-spec found a bounded-context grouping, place each context under its own `## [Context]` heading in the spec's context order, otherwise emit a single flat table</step>
     <step>4. write ROADMAP.md following the defined format</step>
     <step>5. report changes: which features changed status, which entry points were added or removed</step>
     <return>written ROADMAP.md path and summary of changes</return>
@@ -153,15 +188,14 @@ Status may regress when the spec evolves — this is expected and should be note
     </condition>
 
     <condition if="$action == 'update'">
-        <step>2b. <execute name="locate-spec"/></step>
-        <step>3b. <execute name="locate-roadmap"/></step>
+        <step>2b. <execute name="locate-spec"/> (the existing roadmap is already loaded from step 1)</step>
         <condition if="$feature is specified">
-            <step>4b. <execute name="scan-implementation" feature="$feature" deep="$deep"/></step>
+            <step>3b. <execute name="scan-implementation" feature="$feature" deep="$deep"/></step>
         </condition>
         <condition if="$feature is empty">
-            <step>5b. for each feature from spec, <execute name="scan-implementation" feature="$feature" deep="$deep"/> using existing entry points to narrow search scope</step>
+            <step>4b. for each feature from spec, <execute name="scan-implementation" feature="$feature" deep="$deep"/> using existing entry points to narrow search scope</step>
         </condition>
-        <step>6b. <execute name="write-roadmap" features="$scanned-features" existing-roadmap="$existing-roadmap"/></step>
+        <step>5b. <execute name="write-roadmap" features="$scanned-features" existing-roadmap="$existing-roadmap"/></step>
         <return>updated ROADMAP.md with changes summary</return>
     </condition>
 
