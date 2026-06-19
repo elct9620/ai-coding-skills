@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/elct9620/ai-coding-skills/compare/v0.8.1...v0.9.0) (2026-06-19)
+
+
+### Features
+
+* **testing:** guard E2E tests against segmented user journeys ([1a25b5d](https://github.com/elct9620/ai-coding-skills/commit/1a25b5ddedcd72b472207536e32fe65d36632cc6))
+
 ## [0.8.1](https://github.com/elct9620/ai-coding-skills/compare/v0.8.0...v0.8.1) (2026-06-18)
 
 
