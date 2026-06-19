@@ -95,6 +95,20 @@ Each phase transition requires an explicit confirmation statement. Skipping the 
 | Smoke tests | | | ✓ |
 | Regression prevention | | | ✓ |
 
+### User Journey Integrity (E2E)
+
+When an E2E test stands in for a user journey, its value comes from tracing the *whole* path a real user takes — from the entry point they actually start at, to the outcome they came for. A journey proven only in shortcut-stitched segments leaves the most important question unanswered: does the path connect end to end? A half-built feature can show all green when no single test ever walks it.
+
+Three properties keep an E2E test honest:
+
+| Property | What it means | Why it matters |
+|----------|--------------|----------------|
+| Whole path | Drive the journey through its real entry point and real steps. Reaching the goal state by fabricating prerequisites — e.g. `sign_in_as` plus a direct `patch` that skips the page the user would pass through — tests the segments, not the journey | A break between two shortcut-tested segments is invisible: each segment is green, yet no test traverses the seam where the feature is unfinished |
+| Goal outcome | Assert what the user ultimately walks away with — "the existing account is now a member" — rather than a per-step technical output like "show renders the link" or "update redirects to login" | Step outputs are real, observable behaviors, but they are waypoints. A test pinned to a waypoint stays green even when the destination is unreachable |
+| One unbroken test per journey | Each critical journey named in the spec gets at least one test that walks it start to finish, including its prerequisite branches (e.g. *accept while logged in* and *accept while logged out → log in → return → accept*) | Coverage counted at branch or unit level can honestly report "both branches covered" while no single test walks the journey — literally true, contractually wrong |
+
+This trap is subtle because shortcut-segmented tests *are* testing behavior, and branch coverage *is* satisfied — so the usual "test behavior, not implementation" and "check coverage" guards wave them through. The discriminator is the destination: name the outcome the user came for, then ask whether any single test reaches it through the real path. This is the journey-level form of asserting the semantic contract rather than the surface output.
+
 ## TDD Phase Discipline
 
 Each TDD phase must be explicitly confirmed before moving to the next:
@@ -233,6 +247,7 @@ For simple validation tests (e.g., `assert_raises`, single-expression assertions
 | Maintainability | Tests easy to maintain | Fragile or complex tests |
 | No test smells | Clean test code | Test code smells present |
 | No dead code coverage | All tested code has integration paths | Tests exist for unused code |
+| Journey integrity | Each critical journey has one test walking it end to end to its goal outcome | Journey covered only by shortcut-segmented steps or waypoint assertions |
 
 ## Test Naming Convention
 
@@ -254,6 +269,8 @@ Examples:
 | Test Duplication | Same setup repeated | Use test fixtures/factories |
 | Library Testing | Verifies third-party behavior instead of project code | Assert business outcomes at your boundary |
 | Dead Code Testing | Unit tests cover code with no integration path | Remove tests and implementation together |
+| Segmented Journey | A user journey is covered only by shortcut-stitched segments; no test walks it end to end | Add one E2E test through the real entry point and steps, asserting the journey's goal outcome |
+| Waypoint Assertion | E2E asserts an intermediate step's output (page renders, redirect happens) instead of the journey's destination | Reassert against what the user ends up with after the whole flow |
 
 ## Test Double Decision Table
 
