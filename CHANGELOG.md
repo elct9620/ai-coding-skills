@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.1](https://github.com/elct9620/ai-coding-skills/compare/v0.9.0...v0.9.1) (2026-06-25)
+
+
+### Bug Fixes
+
+* **roadmap:** keep Notes as scaffolding pruned on resolution ([c4cba23](https://github.com/elct9620/ai-coding-skills/commit/c4cba2395d89d98d2e8cbd622d4f96d47086f9bb))
+
 ## [0.9.0](https://github.com/elct9620/ai-coding-skills/compare/v0.8.1...v0.9.0) (2026-06-19)
 
 
