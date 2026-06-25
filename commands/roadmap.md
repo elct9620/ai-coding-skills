@@ -61,7 +61,7 @@ finance admins review monthly invoices.
 **Column rules:**
 - **Feature**: status emoji followed by a markdown link whose text matches the feature name and whose href points to the spec source — either `SPEC.md#section-anchor` when defined inline, or the detail document path (e.g. `docs/billing.md`) when the spec has been split out
 - **Entry Points**: a single markdown link to where a reader starts reading the feature's code — the directory (trailing `/`, e.g. `[src/billing/](src/billing/)`) when the feature owns it, or one representative file (e.g. `[src/billing/payment.rb](src/billing/payment.rb)`) when it shares a directory with other features. Keep it to one link; enumerating several files just re-expands the directory and defeats the purpose of a single starting point. Use `—` if none
-- **Notes**: quick context for navigating the feature — technology choices, current gaps, key implementation details; helps locate relevant code when debugging or onboarding; use `—` if nothing to note
+- **Notes**: one scannable line (≤ ~2 sentences) for what someone still needs to know to carry the feature to done — a gap, an unverified result, a constraint not yet visible in the linked spec or code. It is scaffolding, not a record: drop it once the gap closes or the code expresses the point itself, so a ✅ feature usually needs little or `—`
 
 ### Status Emoji
 
@@ -134,7 +134,7 @@ By default this command reads code and tests rather than running them, so "exerc
     <step>   - some behaviors implemented → in progress</step>
     <step>   - no implementation found → pending</step>
     <step>9. collect the directories and files that serve as entry points for this feature</step>
-    <step>10. compose notes summarizing coverage gaps, technology choices, and key findings</step>
+    <step>10. note only what is still outstanding toward done — a remaining gap or an unverified result; skip anything the code already expresses (see the Notes column rule)</step>
     <return>detected status, entry points list, and notes for ROADMAP.md</return>
 </function>
 
@@ -143,7 +143,7 @@ By default this command reads code and tests rather than running them, so "exerc
     <parameter name="features" type="list" description="Features with detected statuses and entry points." required="true"/>
     <parameter name="existing-roadmap" type="object" description="Previously parsed roadmap entries, if any." required="false"/>
     <step>1. for each feature, merge detected status with existing roadmap data:</step>
-    <step>   - preserve manually written notes from existing entries</step>
+    <step>   - keep a note only while it still points to something outstanding; when its concern is resolved or the code now expresses it, drop it rather than preserve it, and rewrite what remains as what is true now instead of appending</step>
     <step>   - update status only if evidence supports the change</step>
     <step>   - update entry points to reflect current codebase state</step>
     <step>2. write a description paragraph summarizing the project's purpose and key features</step>
