@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.10.0](https://github.com/elct9620/ai-coding-skills/compare/v0.9.1...v0.10.0) (2026-07-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** /fix is removed — use /inspect then /write. /review is renamed to /inspect.
+
+### Features
+
+* **commands:** collapse actions onto a discover/act axis ([4b5945e](https://github.com/elct9620/ai-coding-skills/commit/4b5945e7ddad9eef9a686c9f46a6614a3241ac93))
+
 ## [0.9.1](https://github.com/elct9620/ai-coding-skills/compare/v0.9.0...v0.9.1) (2026-06-25)
 
 
