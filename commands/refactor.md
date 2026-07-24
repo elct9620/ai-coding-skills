@@ -126,16 +126,18 @@ The language-specific skills not listed, check all available skills before decid
     <step>5. <execute name="active-skills" smells="$smells" memo="$memo"/></step>
     <step>6. <execute name="investigate" smells="$smells"/></step>
     <step>7. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
-    <step>8. enter the plan mode</step>
     <condition if="insufficient test coverage">
-        <step>9. add tests for untested code before refactoring</step>
+        <step>8. add tests for untested code before refactoring — behavior preservation needs a safety net</step>
     </condition>
-    <step>10. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
-    <step>11. review plan to ensure minimal changes and behavior preservation</step>
-    <condition if="plan too aggressive">
-        <step>12. reduce scope to focus on highest impact improvements</step>
+    <condition if="a prior /inspect has already organized the leads for this work in the current context">
+        <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/> directly from the confirmed goal and inspect's leads — skip re-exploration and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect has already resolved the incompleteness and the goal you set from its leads is the confirmation, so re-confirming a plan is redundant.</step>
     </condition>
-    <step>13. exit plan mode and wait for user confirmation</step>
+    <condition if="no /inspect leads exist — /refactor runs standalone">
+        <step>10. enter the plan mode</step>
+        <step>11. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
+        <step>12. review plan to ensure minimal changes and behavior preservation; reduce scope if too aggressive</step>
+        <step>13. exit plan mode and wait for user confirmation</step>
+    </condition>
     <step>14. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
         <step>15. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>

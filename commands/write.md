@@ -1,6 +1,6 @@
 ---
 name: write
-description: Implement features based on the agent skills.
+description: Implement a new feature or correct a defect based on the agent skills.
 argument-hint: feature|id [--skip-tests]
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
@@ -122,14 +122,16 @@ The language-specific skills not listed, check all available skills before decid
     <step>3. <execute name="design-analyze" overview="$overview"/></step>
     <step>4. <execute name="active-skills" overview="$overview" memo="$memo"/></step>
     <step>5. <execute name="investigate" overview="$overview"/></step>
-    <step>6. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
-    <step>7. enter the plan mode</step>
-    <step>8. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
-    <step>9. review and finalize the implementation plan for minimal change instead of over-engineering</step>
-    <condition if="over-engineering detected">
-        <step>10. refine the plan to avoid over-engineering</step>
+    <condition if="a prior /inspect has already organized the leads for this work in the current context">
+        <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/> directly from the confirmed goal and inspect's leads — skip re-understanding the codebase and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect has already resolved the incompleteness and the goal you set from its leads is the confirmation, so re-confirming a plan is redundant.</step>
     </condition>
-    <step>11. exit plan mode and wait for user confirmation</step>
+    <condition if="no /inspect leads exist — /write runs standalone">
+        <step>7. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
+        <step>8. enter the plan mode</step>
+        <step>9. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
+        <step>10. review and finalize the implementation plan for minimal change instead of over-engineering; refine if over-engineering detected</step>
+        <step>11. exit plan mode and wait for user confirmation</step>
+    </condition>
     <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
         <step>13. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
@@ -140,7 +142,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>16. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
     </condition>
     <step>17. ask user if they want to commit the changes</step>
-    <step>18. suggest running `/review` to check style consistency, test quality, and architecture alignment</step>
+    <step>18. suggest running `/inspect` to check style consistency, test quality, and architecture alignment</step>
     <return>implementation quality report</return>
 </procedure>
 

@@ -1,6 +1,6 @@
 ---
-name: review
-description: Review recent changes for style consistency, test quality, and architectural alignment, then propose refactoring suggestions.
+name: inspect
+description: Explore the current state, surface problems in style consistency, test quality, and architectural alignment, then organize the leads needed to act. Read-only — it does not change code or produce a task plan; you read its leads and set the goal for /write or /refactor.
 argument-hint: [path|module|--staged] [--deep]
 # --deep scans the entire target scope holistically, not just recent diffs
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:architecture), Skill(coding:schema), Skill(coding:security)
@@ -12,7 +12,7 @@ The `<execute name="main">ARGUMENTS</execute>` is entry point for this command.
 
 ## Skills Rubric
 
-To select skills for reviewing changes, consider the following rubric:
+To select skills for inspecting changes, consider the following rubric:
 
 | Skill                       | When to use                                                                    |
 |-----------------------------|--------------------------------------------------------------------------------|
@@ -126,23 +126,23 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of pattern-alignment findings with severity, location, and trigger-fired notes</return>
 </function>
 
-<function name="generate-review-report">
-    <description>Merge all findings, deduplicate, sort by severity, and produce refactoring suggestions for /refactor consumption.</description>
+<function name="organize-leads">
+    <description>Merge all findings, deduplicate, sort by severity, and organize them into leads that carry enough to act on — location, the relevant technique, and the skill — without sequencing them into a task plan. You read these leads and set the goal.</description>
     <parameter name="style-findings" type="list" description="Findings from style consistency check." required="true"/>
     <parameter name="test-findings" type="list" description="Findings from test quality check." required="true"/>
     <parameter name="architecture-findings" type="list" description="Findings from architecture check." required="true"/>
     <parameter name="pattern-findings" type="list" description="Findings from pattern alignment check." required="true"/>
-    <parameter name="active-skills" type="list" description="The skills used in the review." required="true"/>
+    <parameter name="active-skills" type="list" description="The skills used in the inspection." required="true"/>
     <step>1. merge all findings into a single list</step>
     <step>2. deduplicate findings that overlap across checks</step>
     <step>3. sort by severity: high → medium → low</step>
-    <step>4. for each finding, generate a refactoring suggestion with:</step>
+    <step>4. for each finding, record the lead with:</step>
     <step>   - the specific issue and location</step>
-    <step>   - the recommended refactoring technique name (e.g., Extract Method, Rename, Move Class)</step>
+    <step>   - the relevant technique name (e.g., Extract Method, Rename, Move Class)</step>
     <step>   - the corresponding skill to apply (e.g., `coding:refactoring`, `coding:principles`)</step>
-    <step>5. group suggestions by category (style, testing, architecture)</step>
+    <step>5. group leads by category (style, testing, architecture)</step>
     <step>6. produce a summary with counts per severity and category</step>
-    <return>formatted review report with refactoring suggestions ready for /refactor</return>
+    <return>organized leads — findings with location, relevant technique, and skill, grouped by category — enough to set a goal and run /write or /refactor</return>
 </function>
 
 <procedure name="main">
@@ -150,7 +150,7 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="deep" type="boolean" description="When true, scan the entire target scope holistically instead of just recent diffs." required="false"/>
     <step>1. <execute name="collect-changes" target="$target" deep="$deep"/></step>
     <condition if="no changes found and not $deep">
-        <step>2. report no recent changes found and suggest: "No recent changes to review. Run `/review [path] --deep` to perform a holistic review of the codebase or module."</step>
+        <step>2. report no recent changes found and suggest: "No recent changes to inspect. Run `/inspect [path] --deep` to perform a holistic inspection of the codebase or module."</step>
         <return>suggestion to use --deep</return>
     </condition>
     <step>3. <execute name="active-skills" changes="$changes"/></step>
@@ -159,14 +159,14 @@ The language-specific skills not listed, check all available skills before decid
     <step>6. <execute name="check-test-quality" changes="$changes" active-skills="$active-skills"/></step>
     <step>7. <execute name="check-architecture" changes="$changes" active-skills="$active-skills"/></step>
     <step>8. <execute name="check-pattern-alignment" changes="$changes"/></step>
-    <step>9. <execute name="generate-review-report" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
-    <condition if="review report contains high or medium severity findings">
-        <step>10. suggest running `/refactor` with the identified targets to address the findings</step>
+    <step>9. <execute name="organize-leads" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
+    <condition if="the leads contain high or medium severity findings">
+        <step>10. present the leads and suggest: set a goal and run `/write` or `/refactor` on the identified targets to act on them</step>
     </condition>
-    <condition if="review report has no findings and not $deep">
-        <step>11. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/review [path] --deep` for a broader holistic review."</step>
+    <condition if="no leads found and not $deep">
+        <step>11. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/inspect [path] --deep` for a broader holistic inspection."</step>
     </condition>
-    <return>review report with refactoring suggestions</return>
+    <return>organized leads ready to set a goal for /write or /refactor</return>
 </procedure>
 
 ## Task

@@ -1,6 +1,6 @@
 ---
 name: design-forces
-description: Surface design forces and lay out the option space — including framework defaults, scaffolds, and deferring — before committing to Clean Architecture, DDD, or any heavier pattern. Produces a Design Analysis Memo at the start of /write, /refactor, or non-trivial /fix. Make sure to use this skill whenever the user starts a non-trivial feature, restructures code, or asks "do we really need Clean Architecture / DDD / pattern X here".
+description: Surface design forces and lay out the option space — including framework defaults, scaffolds, and deferring — before committing to Clean Architecture, DDD, or any heavier pattern. Produces a Design Analysis Memo at the start of /write or /refactor. Make sure to use this skill whenever the user starts a non-trivial feature, restructures code, or asks "do we really need Clean Architecture / DDD / pattern X here".
 ---
 
 ## Related Skills

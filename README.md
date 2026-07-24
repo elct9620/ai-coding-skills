@@ -28,10 +28,9 @@ This repository is designed as Claude Code Plugin which contains following compo
 ```
 |- /coding-skills
     |- commands/   # Workflow commands (entry points)
-       |- write.md    # Implement new features with TDD
-       |- fix.md      # Diagnose and fix bugs
+       |- inspect.md  # Explore state and surface problems (read-only)
+       |- write.md    # Implement a feature or correct a defect with TDD
        |- refactor.md # Clean up legacy code
-       |- review.md   # Post-implementation quality checks
        |- roadmap.md  # Spec-to-implementation tracking
     |- skills/     # Individual skills with specific knowledge
        |- design-forces/
@@ -57,48 +56,45 @@ Choose the appropriate command based on your task:
 
 | Command     | Purpose              | Arguments                    |
 |-------------|----------------------|------------------------------|
-| `/write`    | Implement features   | `feature\|id [--skip-tests]` |
+| `/inspect`  | Surface problems     | `[path\|module\|--staged] [--deep]` |
+| `/write`    | Implement or correct behavior | `feature\|id [--skip-tests]` |
 | `/refactor` | Clean up code        | `[path\|module]`             |
-| `/fix`      | Fix bugs             | `bug\|issue\|error`          |
-| `/review`   | Review changes       | `[path\|module\|--staged]`   |
 | `/roadmap`  | Track implementation | `[init\|update\|status] [feature]` |
 
 ### Skills per Command
 
-| Skill                     | /write | /refactor | /fix | /review |
-|---------------------------|:------:|:---------:|:----:|:-------:|
-| coding:design-forces      |  ✓†    |    ✓†     | ✓‡   |   ✓§    |
-| coding:testing            |   ✓    |     ✓     |  ✓*  |   ✓*    |
-| coding:refactoring        |   ✓    |     ✓*    |  ✓   |    ✓    |
-| coding:architecture       |   ✓    |     ✓     |  ✓   |    ✓    |
-| coding:principles         |   ✓    |     ✓     |  ✓   |   ✓*    |
-| coding:design-patterns    |   ✓    |     ✓     |  ✓   |    ✓    |
-| coding:domain-modeling    |   ✓    |     -     |  ✓   |    -    |
-| coding:schema             |   ✓    |     ✓     |  ✓   |    ✓    |
-| coding:security           |   ✓    |     ✓     |  ✓   |    ✓    |
+| Skill                     | /inspect | /write | /refactor |
+|---------------------------|:--------:|:------:|:---------:|
+| coding:design-forces      |   ✓§    |  ✓†    |    ✓†     |
+| coding:testing            |   ✓*    |   ✓    |     ✓     |
+| coding:refactoring        |    ✓    |   ✓    |     ✓*    |
+| coding:architecture       |    ✓    |   ✓    |     ✓     |
+| coding:principles         |   ✓*    |   ✓    |     ✓     |
+| coding:design-patterns    |    ✓    |   ✓    |     ✓     |
+| coding:domain-modeling    |    -    |   ✓    |     -     |
+| coding:schema             |    ✓    |   ✓    |     ✓     |
+| coding:security           |    ✓    |   ✓    |     ✓     |
 
 *Core skill for this command (always activated)
 †Runs before active-skills selection to frame the direction
-‡Runs only when the bug crosses layers or involves a design decision
 §Used to check changes against patterns recorded in `docs/architecture.md`
 
 > `/roadmap` is a standalone tracking command and does not use coding skills.
 
 ### When to Use
 
-- **`/write`**: Starting a new feature or adding new functionality
+- **`/inspect`**: Exploring the current state and surfacing problems in style, tests, and architecture — read-only, produces leads you act on
+- **`/write`**: Starting a new feature, adding functionality, or correcting a defect
 - **`/refactor`**: Improving code quality without changing behavior
-- **`/fix`**: Diagnosing and fixing bugs with test verification
-- **`/review`**: Reviewing recent changes for style consistency, test quality, and architecture alignment after `/write` or `/fix`
 - **`/roadmap`**: Tracking spec-to-implementation progress, initializing a roadmap from specs, or checking feature status
 
 ### Recommended Workflow
 
 ```
-/write or /fix → /review → /refactor (if needed)
+/write → /inspect → /refactor (if needed)
 ```
 
-After implementing features (`/write`) or fixing bugs (`/fix`), run `/review` to check quality. If the review report contains findings, use `/refactor` to address them.
+After implementing a feature or correction (`/write`), run `/inspect` to check quality. If the leads contain findings, use `/refactor` to address them.
 
 Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 
