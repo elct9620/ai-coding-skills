@@ -94,7 +94,7 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. identify which changed source files have corresponding test files</step>
     <step>2. check for missing integration test coverage on new or changed behaviors</step>
     <step>2a. check user-journey integrity: for each critical user journey the changes touch, verify one E2E/integration test walks the whole real path — from the user's actual entry point through the real steps — and asserts the journey's goal outcome (what the user ends up with). Treat a journey covered only by shortcut-stitched segments (e.g. `sign_in_as` plus a direct request that skips a page the user passes through) or by waypoint assertions (a step renders, a redirect happens) as missing coverage, not as covered — even when branch and unit coverage report complete, since that satisfies the count while leaving the path unwalked (see coding:testing User Journey Integrity)</step>
-    <step>3. detect test smells: over-mocking, testing implementation details, fragile assertions, test duplication, and assertions that pin only return values for functions with observable side effects (such a test cannot detect semantic-contract drift — e.g. sync-to-deferred execution or a shift in what the return value means — because the return type stays identical while the meaning changes)</step>
+    <step>3. detect test smells: over-mocking, testing implementation details, fragile assertions, test duplication, and assertions that pin only return values for functions with observable side effects (such a test cannot detect a change in the semantic contract — e.g. sync-to-deferred execution or a shift in what the return value means — because the return type stays identical while the meaning changes)</step>
     <step>4. check boundary testing: edge cases, error paths, nil/null handling</step>
     <step>5. check for dead code testing (tests for removed or unreachable code)</step>
     <step>6. verify tests follow AAA pattern and have clear assertions</step>
@@ -116,20 +116,20 @@ The language-specific skills not listed, check all available skills before decid
 </function>
 
 <function name="check-pattern-alignment">
-    <description>Check whether the changes align with patterns recorded in this project. Flags drift from recorded shapes and surfaces revisit triggers that may have fired.</description>
+    <description>Check whether the changes align with patterns recorded in this project. Flags deviation from recorded shapes and surfaces revisit triggers that may have fired.</description>
     <parameter name="changes" type="object" description="The categorized changes." required="true"/>
     <step>1. read `docs/architecture.md` Patterns section and any files under `docs/decisions/`</step>
     <condition if="no recorded patterns exist">
         <step>2. return an empty finding list — nothing to align against yet</step>
     </condition>
     <step>3. for each recorded pattern whose "When to apply" overlaps the changed surface, compare the actual implementation against the pattern's recorded Shape and canonical example</step>
-    <step>4. flag drift with severity (high: implementation contradicts the pattern's Shape; medium: deviation in form but invariants intact; low: stylistic divergence from the canonical example)</step>
+    <step>4. flag deviation with severity (high: implementation contradicts the pattern's Shape; medium: deviation in form but invariants intact; low: stylistic deviation from the canonical example)</step>
     <step>5. for each recorded pattern, check whether any "Revisit if" trigger appears to have fired (e.g. team fragmentation grew, blast radius increased, change rate accelerated) — flag as informational so the team can re-run design-forces deliberately, not as a review failure</step>
     <return>list of pattern-alignment findings with severity, location, and trigger-fired notes</return>
 </function>
 
 <function name="report-alignment">
-    <description>Organize the findings into the alignment report — where the spec, the code, and the reader's understanding diverge — plus the work list for this round and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
+    <description>Organize the findings into the alignment report: whether the spec, the code, and the user's understanding agree; what makes agreement hard to keep; the work list for this round; and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
     <parameter name="style-findings" type="list" description="Findings from style consistency check." required="true"/>
     <parameter name="test-findings" type="list" description="Findings from test quality check." required="true"/>
     <parameter name="architecture-findings" type="list" description="Findings from architecture check." required="true"/>
@@ -137,9 +137,10 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="active-skills" type="list" description="The skills used in the inspection." required="true"/>
     <step>1. merge all findings into a single list and deduplicate what overlaps across checks</step>
     <step>2. for each finding, record the specific issue and location, the relevant technique name (e.g., Extract Method, Rename, Move Class), and the corresponding skill to apply (e.g., `coding:refactoring`, `coding:principles`)</step>
-    <step>3. report the three divergences, one section each: spec against code (what the spec commits to but the code does not do, and what the code does that the spec does not describe), code against understanding (the findings above, plus anything the code now does that a reader would not expect), spec against understanding (what the spec states that no longer matches intent). `SPEC.md` and `ROADMAP.md` carry the spec side; an empty section is itself worth stating</step>
-    <step>4. draw the work list for this round from the divergences, ordering within it by severity</step>
-    <step>5. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves; write "none" when nothing is ambiguous</step>
+    <step>3. report whether each pair agrees, one section each: spec against code, code against the user's understanding, spec against the user's understanding. A pair that agrees still gets its section, saying so. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent and the section says so rather than standing in for them. `SPEC.md` and `ROADMAP.md` carry the spec side, and evidence that crosses the spec belongs here even when it surfaced while reading code</step>
+    <step>4. report what makes agreement hard to keep, drawing on the findings from step 2: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs</step>
+    <step>5. draw the work list for this round from the sections above, ordering within it by severity</step>
+    <step>6. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves; write "none" when nothing is ambiguous</step>
     <return>the alignment report, the work list for this round, and the ambiguities held back from it</return>
 </function>
 
@@ -162,8 +163,8 @@ The language-specific skills not listed, check all available skills before decid
         <step>10. quote that work list verbatim and compare this round's changes against it, reporting whether the work stayed inside it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
     </condition>
     <condition if="no confirmed work list exists — this is the opening round">
-        <step>11. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
-        <condition if="every section is empty and not $deep">
+        <step>11. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further — a side left silent for want of anything they have said is the natural thing for them to answer first. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
+        <condition if="the three pairs agree, nothing makes agreement hard to keep, and not $deep">
             <step>12. add: "Spec, code, and reading agree on the recent changes. Consider running `/inspect [path] --deep` for a broader holistic inspection."</step>
         </condition>
     </condition>
