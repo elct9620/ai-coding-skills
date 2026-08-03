@@ -28,7 +28,7 @@ This repository is designed as Claude Code Plugin which contains following compo
 ```
 |- /coding-skills
     |- commands/   # Workflow commands (entry points)
-       |- inspect.md  # Explore state and surface problems (read-only)
+       |- inspect.md  # Confirm spec, code, and understanding agree (read-only)
        |- write.md    # Implement a feature or correct a defect with TDD
        |- refactor.md # Clean up legacy code
        |- roadmap.md  # Spec-to-implementation tracking
@@ -56,7 +56,7 @@ Choose the appropriate command based on your task:
 
 | Command     | Purpose              | Arguments                    |
 |-------------|----------------------|------------------------------|
-| `/inspect`  | Surface problems     | `[path\|module\|--staged] [--deep]` |
+| `/inspect`  | Confirm spec, code, and understanding agree | `[path\|module\|--staged\|intent] [--deep]` |
 | `/write`    | Implement or correct behavior | `feature\|id [--skip-tests]` |
 | `/refactor` | Clean up code        | `[path\|module]`             |
 | `/roadmap`  | Track implementation | `[init\|update\|status] [feature]` |
@@ -83,7 +83,7 @@ Choose the appropriate command based on your task:
 
 ### When to Use
 
-- **`/inspect`**: Exploring the current state and surfacing problems in style, tests, and architecture — read-only, produces leads you act on
+- **`/inspect`**: Confirming the spec, the code, and your understanding still describe the same system — read-only, converges into the work list for this round
 - **`/write`**: Starting a new feature, adding functionality, or correcting a defect
 - **`/refactor`**: Improving code quality without changing behavior
 - **`/roadmap`**: Tracking spec-to-implementation progress, initializing a roadmap from specs, or checking feature status
@@ -91,10 +91,10 @@ Choose the appropriate command based on your task:
 ### Recommended Workflow
 
 ```
-/write → /inspect → /refactor (if needed)
+/inspect → /write | /refactor → /inspect
 ```
 
-After implementing a feature or correction (`/write`), run `/inspect` to check quality. If the leads contain findings, use `/refactor` to address them.
+Open with `/inspect` to confirm the spec, the code, and your understanding still describe the same system, then clarify until the work list for this round is settled — anything still ambiguous stays out of the list. `/write` or `/refactor` works from that list. Running `/inspect` again afterwards quotes the list back and reports whether the work stayed inside it.
 
 Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 
