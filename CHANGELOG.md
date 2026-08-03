@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.11.0](https://github.com/elct9620/ai-coding-skills/compare/v0.10.0...v0.11.0) (2026-08-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** inspect returns an alignment report, a work list, and ambiguities in place of severity-sorted leads grouped by category.
+
+### Features
+
+* **commands:** turn inspect into a spec-code-understanding alignment check ([ba253a9](https://github.com/elct9620/ai-coding-skills/commit/ba253a919e58825be4bdf64bb7aa7132d4db50fb))
+
+
+### Bug Fixes
+
+* **commands:** keep inspect's blanks short and its limits its own ([944e9e1](https://github.com/elct9620/ai-coding-skills/commit/944e9e10e6d94b99d8aabf4035a4963e43acfb1a))
+* **commands:** stop inspect from speaking for the user ([972df39](https://github.com/elct9620/ai-coding-skills/commit/972df395fb217f6d1ed24acce4e6c13046887607))
+
 ## [0.10.0](https://github.com/elct9620/ai-coding-skills/compare/v0.9.1...v0.10.0) (2026-07-24)
 
 
