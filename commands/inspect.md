@@ -1,7 +1,7 @@
 ---
 name: inspect
-description: Explore the current state, surface problems in style consistency, test quality, and architectural alignment, then organize the leads needed to act. Read-only — it does not change code or produce a task plan; you read its leads and set the goal for /write or /refactor.
-argument-hint: [path|module|--staged] [--deep]
+description: Confirm the spec, the code, and your understanding still describe the same system — surfacing gaps in style consistency, test quality, and architectural alignment along the way — then converge through clarification into the work list for this round. Read-only — it does not change code, and an item stays out of the work list while anything about it is still ambiguous.
+argument-hint: [path|module|--staged|intent] [--deep]
 # --deep scans the entire target scope holistically, not just recent diffs
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:architecture), Skill(coding:schema), Skill(coding:security)
 ---
@@ -29,9 +29,11 @@ The language-specific skills not listed, check all available skills before decid
 ## Definition
 
 <function name="collect-changes">
-    <description>Collect the review scope. In deep mode, collects all files under the target instead of just recent diffs.</description>
-    <parameter name="target" type="string" description="A path, module, or --staged flag. Empty defaults to the latest commit." required="false"/>
+    <description>Collect the inspection scope. In deep mode, collects all files under the target instead of just recent diffs.</description>
+    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed. Empty defaults to the latest commit." required="false"/>
     <parameter name="deep" type="boolean" description="When true, scan all files under the target path (or project root if empty)." required="false"/>
+
+    <step>0. when $target names what the user wants confirmed rather than where to look, keep it as the focus the report opens with and collect the scope as if $target were empty</step>
 
     <condition if="$deep">
         <step>1. use Glob to collect all source and test files under $target (or project root if empty)</step>
@@ -126,27 +128,23 @@ The language-specific skills not listed, check all available skills before decid
     <return>list of pattern-alignment findings with severity, location, and trigger-fired notes</return>
 </function>
 
-<function name="organize-leads">
-    <description>Merge all findings, deduplicate, sort by severity, and organize them into leads that carry enough to act on — location, the relevant technique, and the skill — without sequencing them into a task plan. You read these leads and set the goal.</description>
+<function name="report-alignment">
+    <description>Organize the findings into the alignment report — where the spec, the code, and the reader's understanding diverge — plus the work list for this round and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
     <parameter name="style-findings" type="list" description="Findings from style consistency check." required="true"/>
     <parameter name="test-findings" type="list" description="Findings from test quality check." required="true"/>
     <parameter name="architecture-findings" type="list" description="Findings from architecture check." required="true"/>
     <parameter name="pattern-findings" type="list" description="Findings from pattern alignment check." required="true"/>
     <parameter name="active-skills" type="list" description="The skills used in the inspection." required="true"/>
-    <step>1. merge all findings into a single list</step>
-    <step>2. deduplicate findings that overlap across checks</step>
-    <step>3. sort by severity: high → medium → low</step>
-    <step>4. for each finding, record the lead with:</step>
-    <step>   - the specific issue and location</step>
-    <step>   - the relevant technique name (e.g., Extract Method, Rename, Move Class)</step>
-    <step>   - the corresponding skill to apply (e.g., `coding:refactoring`, `coding:principles`)</step>
-    <step>5. group leads by category (style, testing, architecture)</step>
-    <step>6. produce a summary with counts per severity and category</step>
-    <return>organized leads — findings with location, relevant technique, and skill, grouped by category — enough to set a goal and run /write or /refactor</return>
+    <step>1. merge all findings into a single list and deduplicate what overlaps across checks</step>
+    <step>2. for each finding, record the specific issue and location, the relevant technique name (e.g., Extract Method, Rename, Move Class), and the corresponding skill to apply (e.g., `coding:refactoring`, `coding:principles`)</step>
+    <step>3. report the three divergences, one section each: spec against code (what the spec commits to but the code does not do, and what the code does that the spec does not describe), code against understanding (the findings above, plus anything the code now does that a reader would not expect), spec against understanding (what the spec states that no longer matches intent). `SPEC.md` and `ROADMAP.md` carry the spec side; an empty section is itself worth stating</step>
+    <step>4. draw the work list for this round from the divergences, ordering within it by severity</step>
+    <step>5. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves; write "none" when nothing is ambiguous</step>
+    <return>the alignment report, the work list for this round, and the ambiguities held back from it</return>
 </function>
 
 <procedure name="main">
-    <parameter name="target" type="string" description="A path, module, or --staged flag. Empty defaults to the latest commit." required="false"/>
+    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed. Empty defaults to the latest commit." required="false"/>
     <parameter name="deep" type="boolean" description="When true, scan the entire target scope holistically instead of just recent diffs." required="false"/>
     <step>1. <execute name="collect-changes" target="$target" deep="$deep"/></step>
     <condition if="no changes found and not $deep">
@@ -159,14 +157,17 @@ The language-specific skills not listed, check all available skills before decid
     <step>6. <execute name="check-test-quality" changes="$changes" active-skills="$active-skills"/></step>
     <step>7. <execute name="check-architecture" changes="$changes" active-skills="$active-skills"/></step>
     <step>8. <execute name="check-pattern-alignment" changes="$changes"/></step>
-    <step>9. <execute name="organize-leads" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
-    <condition if="the leads contain high or medium severity findings">
-        <step>10. present the leads and suggest: set a goal and run `/write` or `/refactor` on the identified targets to act on them</step>
+    <step>9. <execute name="report-alignment" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
+    <condition if="a work list confirmed in an earlier round is present in this context">
+        <step>10. quote that work list verbatim and compare this round's changes against it, reporting whether the work stayed inside it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
     </condition>
-    <condition if="no leads found and not $deep">
-        <step>11. recent changes look clean — suggest: "No issues found in recent changes. Consider running `/inspect [path] --deep` for a broader holistic inspection."</step>
+    <condition if="no confirmed work list exists — this is the opening round">
+        <step>11. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
+        <condition if="every section is empty and not $deep">
+            <step>12. add: "Spec, code, and reading agree on the recent changes. Consider running `/inspect [path] --deep` for a broader holistic inspection."</step>
+        </condition>
     </condition>
-    <return>organized leads ready to set a goal for /write or /refactor</return>
+    <return>the alignment report with the work list for this round, or the drift report when a confirmed list already exists</return>
 </procedure>
 
 ## Task

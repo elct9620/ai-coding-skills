@@ -129,10 +129,10 @@ The language-specific skills not listed, check all available skills before decid
     <condition if="insufficient test coverage">
         <step>8. add tests for untested code before refactoring — behavior preservation needs a safety net</step>
     </condition>
-    <condition if="a prior /inspect has already organized the leads for this work in the current context">
-        <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/> directly from the confirmed goal and inspect's leads — skip re-exploration and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect has already resolved the incompleteness and the goal you set from its leads is the confirmation, so re-confirming a plan is redundant.</step>
+    <condition if="a prior /inspect has already converged the work list for this round in the current context">
+        <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/> directly from that work list — skip re-exploration and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect held every ambiguous item out of the work list and the user confirmed what remained, so re-confirming a plan is redundant.</step>
     </condition>
-    <condition if="no /inspect leads exist — /refactor runs standalone">
+    <condition if="no confirmed work list exists — /refactor runs standalone">
         <step>10. enter the plan mode</step>
         <step>11. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
         <step>12. review plan to ensure minimal changes and behavior preservation; reduce scope if too aggressive</step>
@@ -148,6 +148,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>18. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
     </condition>
     <step>19. ask user if they want to commit the changes</step>
+    <step>20. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
     <return>refactoring quality report</return>
 </procedure>
 

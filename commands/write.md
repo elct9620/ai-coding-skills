@@ -122,10 +122,10 @@ The language-specific skills not listed, check all available skills before decid
     <step>3. <execute name="design-analyze" overview="$overview"/></step>
     <step>4. <execute name="active-skills" overview="$overview" memo="$memo"/></step>
     <step>5. <execute name="investigate" overview="$overview"/></step>
-    <condition if="a prior /inspect has already organized the leads for this work in the current context">
-        <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/> directly from the confirmed goal and inspect's leads — skip re-understanding the codebase and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect has already resolved the incompleteness and the goal you set from its leads is the confirmation, so re-confirming a plan is redundant.</step>
+    <condition if="a prior /inspect has already converged the work list for this round in the current context">
+        <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/> directly from that work list — skip re-understanding the codebase and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect held every ambiguous item out of the work list and the user confirmed what remained, so re-confirming a plan is redundant.</step>
     </condition>
-    <condition if="no /inspect leads exist — /write runs standalone">
+    <condition if="no confirmed work list exists — /write runs standalone">
         <step>7. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
         <step>8. enter the plan mode</step>
         <step>9. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
@@ -142,7 +142,7 @@ The language-specific skills not listed, check all available skills before decid
         <step>16. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
     </condition>
     <step>17. ask user if they want to commit the changes</step>
-    <step>18. suggest running `/inspect` to check style consistency, test quality, and architecture alignment</step>
+    <step>18. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
     <return>implementation quality report</return>
 </procedure>
 
