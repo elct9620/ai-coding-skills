@@ -1,8 +1,8 @@
 ---
 name: inspect
-description: Confirm the spec, the code, and your understanding still describe the same system — surfacing gaps in style consistency, test quality, and architectural alignment along the way — then converge through clarification into the work list for this round. Read-only — it does not change code, and an item stays out of the work list while anything about it is still ambiguous.
+description: Prepare for what you have noticed or mean to take on next — reading what is there now, holding it against the spec and against what you have said, surfacing gaps in style consistency, test quality, and architectural alignment along the way — then converging through clarification into the work list for this round. Read-only — it does not change code, and an item stays out of the work list while anything about it is still ambiguous.
 argument-hint: [path|module|--staged|intent] [--deep]
-# --deep scans the entire target scope holistically, not just recent diffs
+# --deep looks harder for what the user cannot see; without it, leads are reported unverified
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Skill(coding:design-forces), Skill(coding:testing), Skill(coding:refactoring), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:architecture), Skill(coding:schema), Skill(coding:security)
 ---
 
@@ -10,162 +10,98 @@ allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git d
 
 The `<execute name="main">ARGUMENTS</execute>` is entry point for this command.
 
-## Skills Rubric
+## How Deep to Read
 
-To select skills for inspecting changes, consider the following rubric:
+You are preparing for something the user has named — what they have noticed, or what they mean to take on next. Being prepared means knowing what is there now, what it sits against, what is still undecided, and what this round should therefore take on. Holding the spec, the code, and the user's understanding against each other is how that readiness gets tested; it is not a survey to be completed for its own sake.
 
-| Skill                       | When to use                                                                    |
-|-----------------------------|--------------------------------------------------------------------------------|
-| `coding:testing`            | Core skill - always required for assessing test quality.                       |
-| `coding:principles`         | Core skill - always required for checking style and principle consistency.      |
-| `coding:refactoring`        | Changes contain code smells or structural issues worth refactoring.            |
-| `coding:design-patterns`    | Changes involve patterns that may be misused or missing.                       |
-| `coding:architecture`       | Changes cross architectural layers, affect dependency direction, or deviate from the recorded structure. |
-| `coding:schema`             | Changes involve database schemas, API contracts, or data serialization.        |
-| `coding:security`           | Changes handle user input, auth, secrets, or cross trust boundaries.           |
+How much to read follows from that. Stop when reading one more file would no longer change what the work list holds or the order it should be taken in — past that point you are auditing the system rather than preparing for the work. This runs before the work starts and the clarification that follows keeps filling it in, so a pass that stops early and says where it stopped serves better than one that tries to be exhaustive.
 
-The language-specific skills not listed, check all available skills before deciding skills to use.
+Anything you would have to trace further to be sure of becomes a **lead** — its location, the question it raises, and why it might matter — recorded as unverified rather than chased. Holding a lead costs one line; chasing it costs the run. Ambiguity keeps an item out of the work list anyway, so digging until it resolves buys nothing here.
+
+Outside the scope, searching comes before reading. Name the question first — *is this how the codebase everywhere else acquires a collaborator?* — and answer it with whatever search the environment offers: a pattern across the tree, a file listing, a history query. A search answers across many files without opening one, so it is the cheaper way to ask anything phrased over the codebase rather than about a particular file. Open a file only when its answer has to be read in context, and when the file is long, search inside it and read the range that answers.
+
+A file you cannot attach a question to stays closed. Size is no guide here — the cheapest files to open are usually the ones with nothing to say.
+
+What a search returns is still reading, not proof. It shows where a pattern matches — not what a match means in its context, and not that nothing else matches. A claim resting on a search therefore stays a lead, and stays phrased at the strength a search supports: *elsewhere the codebase injects its collaborators*, not *this is the only place that does not*.
+
+`--deep` says the user cannot see the thing themselves and is asking you to look harder — for what they have forgotten or overlooked, not only for proof of what is already listed. So it spends effort in two directions: tracing each lead until it can be confirmed or dropped, and taking every promise the spec makes about what is in scope to see whether it holds — following a promise to wherever the code that keeps it lives, because a promise broken outside the diff is exactly what someone cannot see from where they stand. What stays out is code no promise reaches: another area's shape or style is an audit, not preparation.
+
+## Lenses
+
+`coding:testing` and `coding:principles` are always active; every change has a test surface and a style surface. The rest activate only when the scope actually contains what they read for, so an unused lens costs nothing:
+
+| Skill                    | Activates when the scope contains                                              |
+|--------------------------|--------------------------------------------------------------------------------|
+| `coding:refactoring`     | code smells or structural issues worth refactoring                             |
+| `coding:design-patterns` | patterns that may be misused or missing                                        |
+| `coding:architecture`    | crossings of architectural layers, dependency direction, or the recorded structure |
+| `coding:schema`          | database schemas, API contracts, or data serialization                         |
+| `coding:security`        | user input, auth, secrets, or trust boundaries                                  |
+
+Language-specific skills are not listed here; check available skills before deciding.
 
 ## Definition
 
-<function name="collect-changes">
-    <description>Collect the inspection scope. In deep mode, collects all files under the target instead of just recent diffs.</description>
-    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed. Empty defaults to the latest commit." required="false"/>
-    <parameter name="deep" type="boolean" description="When true, scan all files under the target path (or project root if empty)." required="false"/>
-
-    <step>0. when $target names what the user wants confirmed rather than where to look, keep it as the focus the report opens with and collect the scope as if $target were empty</step>
-
-    <condition if="$deep">
-        <step>1. use Glob to collect all source and test files under $target (or project root if empty)</step>
-        <step>2. categorize files into: source, test, config, docs</step>
-        <step>3. use `git log --oneline -10` on the scope to understand recent evolution</step>
-        <return>categorized list of all files in scope with recent evolution context</return>
-    </condition>
-
-    <condition if="not $deep">
-        <step>1. determine the diff source based on the target argument:</step>
-        <condition if="$target == '--staged'">
-            <step>2a. use `git diff --staged` to collect staged changes</step>
-        </condition>
-        <condition if="$target is a path or module">
-            <step>2b. use `git diff HEAD -- $target` and `git log --oneline -5 -- $target` to collect recent changes for the path</step>
-        </condition>
-        <condition if="$target is empty">
-            <step>2c. use `git show HEAD` to collect the latest commit changes</step>
-        </condition>
-        <step>3. list all changed files from the diff output</step>
-        <step>4. categorize files into: source, test, config, docs</step>
-        <step>5. use `git log --oneline -5` on the changed files to understand recent context</step>
-        <return>categorized list of changed files with diff content and recent context</return>
-    </condition>
+<function name="collect-scope">
+    <description>Settle where to look before anything is read at depth. Scope comes from the target alone — depth is a separate axis.</description>
+    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed." required="false"/>
+    <step>1. whatever place the target names is the scope, be it source, notes, a record of earlier rounds, or a scratch directory: `--staged` → `git diff --staged`; a path → `git diff HEAD -- $target`, or what stands under it when it carries no pending changes; empty → `git show HEAD`</step>
+    <step>2. a sentence naming what the user wants confirmed usually carries its own scope: the places it names are the scope, what it tells you to read first is read first, and what it already decides is not reopened, since deciding is theirs; what it claims about how things are stays open to the evidence, and a claim the evidence contradicts is the finding the code-against-understanding section exists for. When it names no place, search out the parts it is about instead of falling back to the latest commit</step>
+    <step>3. use ask question tool for whatever the target leaves unsettled, and only for that — asking what the user already answered wastes the round trip that reading the wrong scope was going to cost</step>
+    <step>4. categorize what is in scope into source, test, config, docs</step>
+    <return>the settled scope, with diff content when it came from changes</return>
 </function>
 
-<function name="active-skills">
-    <description>According to the changes, determine which skills are needed and activate them.</description>
-    <parameter name="changes" type="object" description="The categorized changes from collect-changes." required="true"/>
-    <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the changes with rubric of available skills</step>
-    <step>3. always include `coding:testing` and `coding:principles` as core skills</step>
-    <step>4. select additional skills based on change categories and content</step>
-    <loop for="skill in $selected-skills">
-        <step>5. use Skill($skill) to activate and load its knowledge</step>
+<function name="read-leads">
+    <description>Read the scope once through the active lenses and record what does not line up. Depth is bounded by the stopping rule in "How Deep to Read".</description>
+    <parameter name="scope" type="object" description="The categorized scope." required="true"/>
+    <step>1. activate the lenses the scope calls for and load them with Skill()</step>
+    <step>2. read the scope itself, and whatever states the intended behaviour for it — a spec and roadmap where the project keeps them, otherwise the notes and records it keeps instead</step>
+    <step>3. outside the scope, name the open question and search for its answer; read a neighbouring file only when the search cannot settle it, and only until it is settled</step>
+    <step>4. record each thing that does not line up as a lead: location, the question it raises, severity, and the technique or skill that would address it (e.g. Extract Method via `coding:refactoring`)</step>
+    <step>5. mark every lead unverified — this pass reads, it does not prove</step>
+    <return>the leads, each unverified</return>
+</function>
+
+<function name="spend-depth">
+    <description>Spend the effort --deep asks for: on the leads already held, and on what the default pass left unread. Only runs under --deep.</description>
+    <parameter name="leads" type="list" description="The unverified leads." required="true"/>
+    <parameter name="scope" type="object" description="The settled scope." required="true"/>
+    <loop for="lead in $leads">
+        <step>1. trace the lead from what it points at until it can be confirmed or dropped; a confirmed lead loses its unverified mark and carries the evidence — file and line — that confirmed it</step>
     </loop>
-    <return>list of activated skills with their knowledge loaded</return>
-</function>
-
-<function name="check-style-consistency">
-    <description>Compare changes against existing codebase conventions for style consistency.</description>
-    <parameter name="changes" type="object" description="The categorized changes." required="true"/>
-    <parameter name="active-skills" type="list" description="The activated skills." required="true"/>
-    <step>1. scan unchanged neighboring code to establish existing conventions (naming, structure, error handling, module organization)</step>
-    <step>2. compare changed code against established conventions</step>
-    <step>3. check naming consistency (variables, functions, classes, files)</step>
-    <step>4. check structural consistency (module organization, file placement)</step>
-    <step>5. check error handling consistency (exception types, error messages, recovery patterns)</step>
-    <step>6. check import/dependency organization consistency</step>
-    <step>7. flag deviations with severity (high: breaks convention, medium: inconsistent, low: minor style difference)</step>
-    <return>list of style consistency findings with severity and location</return>
-</function>
-
-<function name="check-test-quality">
-    <description>Assess test quality for the changed code including coverage, test smells, and boundary testing.</description>
-    <parameter name="changes" type="object" description="The categorized changes." required="true"/>
-    <parameter name="active-skills" type="list" description="The activated skills." required="true"/>
-    <step>1. identify which changed source files have corresponding test files</step>
-    <step>2. check for missing integration test coverage on new or changed behaviors</step>
-    <step>2a. check user-journey integrity: for each critical user journey the changes touch, verify one E2E/integration test walks the whole real path — from the user's actual entry point through the real steps — and asserts the journey's goal outcome (what the user ends up with). Treat a journey covered only by shortcut-stitched segments (e.g. `sign_in_as` plus a direct request that skips a page the user passes through) or by waypoint assertions (a step renders, a redirect happens) as missing coverage, not as covered — even when branch and unit coverage report complete, since that satisfies the count while leaving the path unwalked (see coding:testing User Journey Integrity)</step>
-    <step>3. detect test smells: over-mocking, testing implementation details, fragile assertions, test duplication, and assertions that pin only return values for functions with observable side effects (such a test cannot detect a change in the semantic contract — e.g. sync-to-deferred execution or a shift in what the return value means — because the return type stays identical while the meaning changes)</step>
-    <step>4. check boundary testing: edge cases, error paths, nil/null handling</step>
-    <step>5. check for dead code testing (tests for removed or unreachable code)</step>
-    <step>6. verify tests follow AAA pattern and have clear assertions</step>
-    <step>7. flag issues with severity (high: missing coverage, medium: test smell, low: minor improvement)</step>
-    <return>list of test quality findings with severity and location</return>
-</function>
-
-<function name="check-architecture">
-    <description>Verify architectural alignment including layer boundaries, dependency direction, and circular dependencies.</description>
-    <parameter name="changes" type="object" description="The categorized changes." required="true"/>
-    <parameter name="active-skills" type="list" description="The activated skills." required="true"/>
-    <step>1. identify the architectural layer of each changed file (Entity, Use Case, Interface Adapter, Framework)</step>
-    <step>2. check dependency direction: dependencies must point inward (outer layers depend on inner layers)</step>
-    <step>3. detect potential circular dependencies introduced by the changes</step>
-    <step>4. verify new classes/modules are placed in the correct architectural layer</step>
-    <step>5. check for layer violations (e.g., Entity importing from Framework, Use Case depending on concrete adapter)</step>
-    <step>6. flag issues with severity (high: layer violation, medium: questionable placement, low: minor concern)</step>
-    <return>list of architecture findings with severity and location</return>
-</function>
-
-<function name="check-pattern-alignment">
-    <description>Check whether the changes align with patterns recorded in this project. Flags deviation from recorded shapes and surfaces revisit triggers that may have fired.</description>
-    <parameter name="changes" type="object" description="The categorized changes." required="true"/>
-    <step>1. read `docs/architecture.md` Patterns section and any files under `docs/decisions/`</step>
-    <condition if="no recorded patterns exist">
-        <step>2. return an empty finding list — nothing to align against yet</step>
-    </condition>
-    <step>3. for each recorded pattern whose "When to apply" overlaps the changed surface, compare the actual implementation against the pattern's recorded Shape and canonical example</step>
-    <step>4. flag deviation with severity (high: implementation contradicts the pattern's Shape; medium: deviation in form but invariants intact; low: stylistic deviation from the canonical example)</step>
-    <step>5. for each recorded pattern, check whether any "Revisit if" trigger appears to have fired (e.g. team fragmentation grew, blast radius increased, change rate accelerated) — flag as informational so the team can re-run design-forces deliberately, not as a review failure</step>
-    <return>list of pattern-alignment findings with severity, location, and trigger-fired notes</return>
+    <step>2. then check each promise the spec makes about the scope against what the code does, opening whatever keeps that promise even when it sits outside the diff. Whoever asked for depth cannot see it themselves, so the point is to find what they missed — but a promise is what makes a distant file worth opening, and code no promise reaches stays closed</step>
+    <step>3. record anything new the same way read-leads does, and mark it verified only where it was traced rather than searched</step>
+    <return>the confirmed leads, whatever the deeper reading turned up, and a one-line list of what was checked and found to be nothing</return>
 </function>
 
 <function name="report-alignment">
-    <description>Organize the findings into the alignment report: whether the spec, the code, and the user's understanding agree; what makes agreement hard to keep; the work list for this round; and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
-    <parameter name="style-findings" type="list" description="Findings from style consistency check." required="true"/>
-    <parameter name="test-findings" type="list" description="Findings from test quality check." required="true"/>
-    <parameter name="architecture-findings" type="list" description="Findings from architecture check." required="true"/>
-    <parameter name="pattern-findings" type="list" description="Findings from pattern alignment check." required="true"/>
-    <parameter name="active-skills" type="list" description="The skills used in the inspection." required="true"/>
-    <step>1. merge all findings into a single list and deduplicate what overlaps across checks</step>
-    <step>2. for each finding, record the specific issue and location, the relevant technique name (e.g., Extract Method, Rename, Move Class), and the corresponding skill to apply (e.g., `coding:refactoring`, `coding:principles`)</step>
-    <step>3. report whether each pair agrees, one section each: spec against code, code against the user's understanding, spec against the user's understanding. A pair that agrees still gets its section, saying so in a line. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent and the section says so, also in a line, rather than standing in for them. An empty result is stated, never argued: a blank defended at length reads as a blank in doubt. `SPEC.md` and `ROADMAP.md` carry the spec side, and evidence that crosses the spec belongs here even when it surfaced while reading code</step>
-    <step>4. report what makes agreement hard to keep, drawing on the findings from step 2: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs. This command reads rather than runs, so judge coverage by reading and note where that leaves a result unconfirmed — what you could not execute is a limit of the inspection, not a fault in the code</step>
-    <step>5. draw the work list for this round from the sections above, ordering within it by severity</step>
-    <step>6. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work that would rest on how it resolves; write "none" when nothing is ambiguous</step>
+    <description>Organize the leads into the alignment report: whether the spec, the code, and the user's understanding agree; what makes agreement hard to keep; the work list for this round; and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
+    <parameter name="leads" type="list" description="The leads, verified or not." required="true"/>
+    <step>1. merge the leads and deduplicate what overlaps across lenses; carry each one's unverified mark into the report so the reader knows which conclusions rest on reading alone</step>
+    <step>2. report whether each pair agrees, one section each: spec against code, code against the user's understanding, spec against the user's understanding. A pair that agrees still gets its section, saying so in a line. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent and the section says so, also in a line, rather than standing in for them. An empty result is stated, never argued: a blank defended at length reads as a blank in doubt. whatever states intended behaviour carries the spec side — a spec document where one exists, otherwise the notes or records the project keeps it in — and evidence that crosses it belongs here even when it surfaced while reading code</step>
+    <step>3. report what makes agreement hard to keep: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs. This command reads rather than runs, so judge coverage by reading and note where that leaves a result unconfirmed — what you could not execute is a limit of the inspection, not a fault in the code. Name here what was searched but never opened: the reader can only tell where this list stops if the unread parts of the scope are stated</step>
+    <step>4. draw the work list for this round from the sections above, ordering within it by severity</step>
+    <step>5. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work whose shape would change with the resolution. Work that merely stands near an unsettled question is not held: a finding with one clear fix keeps its place at its own severity however much is unsettled around it. Write "none" when nothing is ambiguous</step>
     <return>the alignment report, the work list for this round, and the ambiguities held back from it</return>
 </function>
 
 <procedure name="main">
-    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed. Empty defaults to the latest commit." required="false"/>
-    <parameter name="deep" type="boolean" description="When true, scan the entire target scope holistically instead of just recent diffs." required="false"/>
-    <step>1. <execute name="collect-changes" target="$target" deep="$deep"/></step>
-    <condition if="no changes found and not $deep">
-        <step>2. report no recent changes found and suggest: "No recent changes to inspect. Run `/inspect [path] --deep` to perform a holistic inspection of the codebase or module."</step>
-        <return>suggestion to use --deep</return>
+    <parameter name="target" type="string" description="A path, module, --staged flag, or a sentence naming what the user wants confirmed." required="false"/>
+    <parameter name="deep" type="boolean" description="When true, verify each lead with evidence instead of reporting it unverified." required="false"/>
+    <step>1. <execute name="collect-scope" target="$target"/></step>
+    <step>2. <execute name="read-leads" scope="$scope"/></step>
+    <condition if="$deep">
+        <step>3. <execute name="spend-depth" leads="$leads" scope="$scope"/></step>
     </condition>
-    <step>3. <execute name="active-skills" changes="$changes"/></step>
-    <step>4. scan unchanged neighboring code to establish codebase conventions</step>
-    <step>5. <execute name="check-style-consistency" changes="$changes" active-skills="$active-skills"/></step>
-    <step>6. <execute name="check-test-quality" changes="$changes" active-skills="$active-skills"/></step>
-    <step>7. <execute name="check-architecture" changes="$changes" active-skills="$active-skills"/></step>
-    <step>8. <execute name="check-pattern-alignment" changes="$changes"/></step>
-    <step>9. <execute name="report-alignment" style-findings="$style-findings" test-findings="$test-findings" architecture-findings="$architecture-findings" pattern-findings="$pattern-findings" active-skills="$active-skills"/></step>
+    <step>4. <execute name="report-alignment" leads="$leads"/></step>
     <condition if="a work list confirmed in an earlier round is present in this context">
-        <step>10. quote that work list verbatim and compare this round's changes against it, reporting whether the work stayed inside it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
+        <step>5. quote that work list verbatim and compare this round's changes against it, reporting whether the work stayed inside it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
     </condition>
     <condition if="no confirmed work list exists — this is the opening round">
-        <step>11. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further — a side left silent for want of anything they have said is the natural thing for them to answer first. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
-        <condition if="the three pairs agree, nothing makes agreement hard to keep, and not $deep">
-            <step>12. add: "Spec, code, and reading agree on the recent changes. Consider running `/inspect [path] --deep` for a broader holistic inspection."</step>
+        <step>6. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further — a side left silent for want of anything they have said is the natural thing for them to answer first. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
+        <condition if="leads remain unverified and not $deep">
+            <step>7. add one line offering `/inspect [same target] --deep` to trace them</step>
         </condition>
     </condition>
     <return>the alignment report with the work list for this round, or the drift report when a confirmed list already exists</return>
