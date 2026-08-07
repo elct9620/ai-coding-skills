@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.12.0](https://github.com/elct9620/ai-coding-skills/compare/v0.11.0...v0.12.0) (2026-08-07)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** --deep no longer widens the scope to every file under the target; it spends evidence inside the scope the target sets. Inspect may also ask before reading when the target leaves the scope unsettled.
+
+### Features
+
+* **commands:** bound inspect's depth by what it prepares for ([761ed95](https://github.com/elct9620/ai-coding-skills/commit/761ed95e41d1554f582145e63ab59728c9ccaf3e))
+
 ## [0.11.0](https://github.com/elct9620/ai-coding-skills/compare/v0.10.0...v0.11.0) (2026-08-03)
 
 
