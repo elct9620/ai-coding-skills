@@ -38,6 +38,53 @@ Every conclusion is stated at the strength of the evidence behind it. Reading is
 
 Language-specific skills are not listed here; check available skills before deciding.
 
+## The Report
+
+Whoever reads this is deciding what the round takes on, and that decision needs the whole shape first — how many findings, how bad, how well backed — before any one of them is worth reading closely. So the shape comes first and the reasoning follows it, rather than leaving the reader to assemble the shape out of the reasoning.
+
+Most of what a finding carries is the same every time: where it is, how severe, what backs it, and a line saying what it is. That part sits well in a row. What differs is the reasoning that makes a claim non-obvious — the coupling that makes a fix larger than it looks, the counter-evidence that keeps a rule from being overdrawn — and that is what the prose beneath the row is for. State a finding in full once and refer to it by id after, so the work list and the ambiguities stay short.
+
+Two or three sentences is usually the whole of that prose. This report opens a round of clarification rather than closing it, so what is easy to reach from the row is better left for the reader to reach, and a finding whose shape genuinely turns on its reasoning is where the extra sentences should go instead. Keep the sentence that would change what the reader does; drop the one that confirms what the row already told them. An item under Still ambiguous is sized the same way — the question, and what its answer would change.
+
+This shape usually serves:
+
+```markdown
+# /inspect [--deep] — <what was inspected>
+
+Scope: … · Spec: … · Lenses: …
+Stopped at: … · Searched but never opened: …
+
+| Pair | Verdict |
+|---|---|
+| Spec ↔ Code | 4 promises, 1 kept — F1 F2 F6 |
+| Code ↔ You | silent — you have said nothing this session |
+| Spec ↔ You | silent — same reason |
+
+| # | Sev | Evidence | Where | Finding |
+|---|---|---|---|---|
+| F1 | High | traced | `links_controller.rb:19` | expired links answer 404; the spec promises 410 |
+| F4 | Med | traced | `expiry_policy.rb:3` | a collaborator the main caller never uses |
+| F6 | Med | unrun | `code_generator.rb:3` | `l` appears to survive in ALPHABET |
+
+**Work list:** F1 → F2 → F5 ｜ **Held back:** F3, F9
+
+## Spec against code
+### F1 — expired links answer 404 · High · traced
+<only what the row cannot carry>
+
+## What makes agreement hard to keep
+### F4 — …
+
+## Still ambiguous — held out of the work list
+<each in full: what is unsettled, and what its resolution would change>
+```
+
+The Evidence column is where the ladder above lands. Every finding names what backs it, so a row with nothing to put there is a finding that has not been established yet — which is easier to notice in a column than in a paragraph. A pair that agrees or stays silent is finished by its row; only a pair that diverges earns prose below.
+
+Reach for an ASCII diagram when a finding runs through several places and prose would have to walk the reader through them in order — a request path that branches, a promise kept across three files. Where one line of prose says it, one line of prose is better.
+
+Depart from this where the report is better for it: a pass with one finding needs no index, and a claim a cell would make sound firmer than its evidence belongs in prose.
+
 ## Definition
 
 <function name="collect-scope">
@@ -76,9 +123,9 @@ Language-specific skills are not listed here; check available skills before deci
 <function name="report-alignment">
     <description>Organize the leads into the alignment report: whether the spec, the code, and the user's understanding agree; what makes agreement hard to keep; the work list for this round; and whatever is still ambiguous. Ambiguity keeps an item out of the work list.</description>
     <parameter name="leads" type="list" description="The leads, verified or not." required="true"/>
-    <step>1. merge the leads and deduplicate what overlaps across lenses. Every finding carries what backs it — traced, read, searched, or unrun — with no finding left unmarked, so that a conclusion resting on less than it sounds like cannot pass unnoticed</step>
-    <step>2. report whether each pair agrees, one section each: spec against code, code against the user's understanding, spec against the user's understanding. A pair that agrees still gets its section, saying so in a line. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent and the section says so, also in a line, rather than standing in for them. An empty result is stated, never argued: a blank defended at length reads as a blank in doubt. whatever states intended behaviour carries the spec side — a spec document where one exists, otherwise the notes or records the project keeps it in — and evidence that crosses it belongs here even when it surfaced while reading code</step>
-    <step>3. report what makes agreement hard to keep: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs. This command reads rather than runs, so judge coverage by reading and note where that leaves a result unconfirmed — what you could not execute is a limit of the inspection, not a fault in the code. Name here what was searched but never opened: the reader can only tell where this list stops if the unread parts of the scope are stated</step>
+    <step>1. merge the leads and deduplicate what overlaps across lenses, then index them as "The Report" lays out</step>
+    <step>2. give each pair its verdict: spec against code, code against the user's understanding, spec against the user's understanding. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent rather than spoken for. An empty result is stated, never argued: a blank defended at length reads as a blank in doubt. whatever states intended behaviour carries the spec side — a spec document where one exists, otherwise the notes or records the project keeps it in — and evidence that crosses it belongs here even when it surfaced while reading code</step>
+    <step>3. report what makes agreement hard to keep: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs. This command reads rather than runs, so judge coverage by reading and note where that leaves a result unconfirmed — what you could not execute is a limit of the inspection, not a fault in the code. What was searched but never opened is named with the scope, since the reader can only tell where this list stops once the unread parts are stated</step>
     <step>4. draw the work list for this round from the sections above, ordering within it by severity</step>
     <step>5. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work whose shape would change with the resolution. Work that merely stands near an unsettled question is not held: a finding with one clear fix keeps its place at its own severity however much is unsettled around it. Write "none" when nothing is ambiguous</step>
     <return>the alignment report, the work list for this round, and the ambiguities held back from it</return>
