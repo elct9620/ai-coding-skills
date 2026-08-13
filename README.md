@@ -15,7 +15,7 @@ I use Ruby, TypeScript/JavaScript, and Golang the most. And love Clean Architect
 | ----         | ---------               |
 | Architecture | Clean Architecture      |
 | Design       | Domain-Driven Design    |
-| Workflow     | Test-Driven Development |
+| Workflow     | Explore first, tests as the net |
 | Principles   | SOLID, KISS, DRY        |
 | Coding       | Design Patterns         |
 | Coding       | Refactoring             |
@@ -29,7 +29,7 @@ This repository is designed as Claude Code Plugin which contains following compo
 |- /coding-skills
     |- commands/   # Workflow commands (entry points)
        |- inspect.md  # Confirm spec, code, and understanding agree (read-only)
-       |- write.md    # Implement a feature or correct a defect with TDD
+       |- write.md    # Implement a feature or correct a defect
        |- refactor.md # Clean up legacy code
        |- roadmap.md  # Spec-to-implementation tracking
     |- skills/     # Individual skills with specific knowledge
@@ -57,7 +57,7 @@ Choose the appropriate command based on your task:
 | Command     | Purpose              | Arguments                    |
 |-------------|----------------------|------------------------------|
 | `/inspect`  | Confirm spec, code, and understanding agree | `[path\|module\|--staged\|intent] [--deep]` |
-| `/write`    | Implement or correct behavior | `feature\|id [--skip-tests]` |
+| `/write`    | Implement or correct behavior | `feature\|id`                |
 | `/refactor` | Clean up code        | `[path\|module]`             |
 | `/roadmap`  | Track implementation | `[init\|update\|status] [feature]` |
 
@@ -94,7 +94,7 @@ Choose the appropriate command based on your task:
 /inspect → /write | /refactor → /inspect
 ```
 
-Open with `/inspect` to confirm the spec, the code, and your understanding still describe the same system, then clarify until the work list for this round is settled — anything still ambiguous stays out of the list. `/write` or `/refactor` works from that list. Running `/inspect` again afterwards quotes the list back and reports whether the work stayed inside it.
+Open with `/inspect` to confirm the spec, the code, and your understanding still describe the same system, then clarify until the work list for this round is settled — anything still ambiguous stays out of the list, and any limit you set along the way is recorded as the round's constraints. `/write` or `/refactor` works from that list and stays inside those bounds. Running `/inspect` again afterwards quotes both back and reports whether the work stayed inside them.
 
 Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 

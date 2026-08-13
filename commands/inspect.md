@@ -53,6 +53,7 @@ This shape usually serves:
 
 Scope: … · Spec: … · Lenses: …
 Stopped at: … · Searched but never opened: …
+Constraints: …
 
 | Pair | Verdict |
 |---|---|
@@ -78,6 +79,8 @@ Stopped at: … · Searched but never opened: …
 ## Still ambiguous — held out of the work list
 <each in full: what is unsettled, and what its resolution would change>
 ```
+
+`Constraints` carries the limits the user set while clarifying — how heavy a solution is wanted, what must not be touched. These are boundary conditions for the round rather than findings, which is why the line sits with the scope and carries no evidence mark: nothing backs it but the user having said it. Only what they said goes there, and the line stays empty when they set none. Work downstream stays inside it, and a later round can only check that the bounds were kept because they were written down here.
 
 The Evidence column is where the ladder above lands. Every finding names what backs it, so a row with nothing to put there is a finding that has not been established yet — which is easier to notice in a column than in a paragraph. A pair that agrees or stays silent is finished by its row; only a pair that diverges earns prose below.
 
@@ -127,8 +130,9 @@ Depart from this where the report is better for it: a pass with one finding need
     <step>2. give each pair its verdict: spec against code, code against the user's understanding, spec against the user's understanding. You are none of the three — the spec and the code can be read, but the user's understanding is knowable only from what they have said (this inspection's intent, earlier conversation, a work list they confirmed), so when they have said nothing that side is silent rather than spoken for. An empty result is stated, never argued: a blank defended at length reads as a blank in doubt. whatever states intended behaviour carries the spec side — a spec document where one exists, otherwise the notes or records the project keeps it in — and evidence that crosses it belongs here even when it surfaced while reading code</step>
     <step>3. report what makes agreement hard to keep: behaviour no test can pin down, code that contradicts its own naming or comments, conventions that cost a reader effort. This is your reading of the code rather than anyone's stated position, which is why it sits apart from the three pairs. This command reads rather than runs, so judge coverage by reading and note where that leaves a result unconfirmed — what you could not execute is a limit of the inspection, not a fault in the code. What was searched but never opened is named with the scope, since the reader can only tell where this list stops once the unread parts are stated</step>
     <step>4. draw the work list for this round from the sections above, ordering within it by severity</step>
-    <step>5. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work whose shape would change with the resolution. Work that merely stands near an unsettled question is not held: a finding with one clear fix keeps its place at its own severity however much is unsettled around it. Write "none" when nothing is ambiguous</step>
-    <return>the alignment report, the work list for this round, and the ambiguities held back from it</return>
+    <step>5. record the limits the user has set as the round's constraints — in this inspection's intent, in the conversation before it, or in answering here. These come from what they said and nowhere else, and the line stays empty where they set none. The work list says what this round takes on; the constraints say within what bounds, so work downstream has both to go on and a later round has something to check it against</step>
+    <step>6. list separately whatever is still ambiguous — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work whose shape would change with the resolution. Work that merely stands near an unsettled question is not held: a finding with one clear fix keeps its place at its own severity however much is unsettled around it. Write "none" when nothing is ambiguous</step>
+    <return>the alignment report, the work list and constraints for this round, and the ambiguities held back from it</return>
 </function>
 
 <procedure name="main">
@@ -141,15 +145,15 @@ Depart from this where the report is better for it: a pass with one finding need
     </condition>
     <step>4. <execute name="report-alignment" leads="$leads"/></step>
     <condition if="a work list confirmed in an earlier round is present in this context">
-        <step>5. quote that work list verbatim and compare this round's changes against it, reporting whether the work stayed inside it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
+        <step>5. quote that work list and its constraints verbatim and compare this round's changes against both — whether the work stayed inside the list, and whether it stayed inside the bounds. Work can finish every item and still overshoot: a solution heavier than was wanted breaks no item on the list, so the constraints are the only place that catches it. Nobody is waiting to answer here, so ask nothing: drift or a fresh ambiguity stops the run and is reported for the user to resolve</step>
     </condition>
     <condition if="no confirmed work list exists — this is the opening round">
-        <step>6. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further — a side left silent for want of anything they have said is the natural thing for them to answer first. Each answer resolves ambiguities and redraws the list; the user decides when it is settled enough to run `/write` or `/refactor`</step>
+        <step>6. present the alignment report, the work list, and the ambiguities, then invite the user to confirm it or ask further — a side left silent for want of anything they have said is the natural thing for them to answer first. Each answer resolves ambiguities and redraws the list; an answer that sets a limit rather than settling an item belongs in the constraints instead. The user decides when it is settled enough to run `/write` or `/refactor`</step>
         <condition if="leads remain unverified and not $deep">
             <step>7. add one line offering `/inspect [same target] --deep` to trace them</step>
         </condition>
     </condition>
-    <return>the alignment report with the work list for this round, or the drift report when a confirmed list already exists</return>
+    <return>the alignment report with the work list and constraints for this round, or the drift report when a confirmed list already exists</return>
 </procedure>
 
 ## Task

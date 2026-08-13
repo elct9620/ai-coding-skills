@@ -1,7 +1,7 @@
 ---
 name: write
 description: Implement a new feature or correct a defect based on the agent skills.
-argument-hint: feature|id [--skip-tests]
+argument-hint: feature|id
 allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, Edit, Skill(coding:design-forces), Skill(coding:architecture), Skill(coding:domain-modeling), Skill(coding:principles), Skill(coding:design-patterns), Skill(coding:refactoring), Skill(coding:testing), Skill(coding:schema), Skill(coding:security)
 ---
 
@@ -47,11 +47,11 @@ The language-specific skills not listed, check all available skills before decid
 </function>
 
 <function name="active-skills">
-    <description>According to the feature requirements and the confirmed memo direction, determine which skills are needed and activate them.</description>
+    <description>According to the feature requirements and the confirmed direction, determine which skills are needed and activate them.</description>
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
-    <parameter name="memo" type="string" description="The Design Analysis Memo with the confirmed direction." required="true"/>
+    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /write runs standalone, the inspection's constraints when it follows /inspect." required="true"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the overview with rubric of available skills, biased by the memo's chosen direction (a no-extra-structure direction may need fewer heavy skills; a direction that calls for layers or partitioning will activate `architecture` and, where the domain is thick, `domain-modeling`)</step>
+    <step>2. analyze the overview with rubric of available skills, biased by the confirmed direction (a direction asking for no extra structure needs fewer heavy skills; one calling for layers or partitioning activates `architecture` and, where the domain is thick, `domain-modeling`)</step>
     <step>3. select the skills that are most relevant to the chosen direction</step>
     <loop for="skill in $selected-skills">
         <step>4. use Skill($skill) to activate and load its knowledge</step>
@@ -72,35 +72,21 @@ The language-specific skills not listed, check all available skills before decid
     <description>Create an implementation plan for the feature using the active skills.</description>
     <parameter name="completed-overview" type="string" description="The completed overview of the feature and current codebase context." required="true"/>
     <parameter name="active-skills" type="list" description="The active skills for implementation." required="true"/>
-    <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
-    <condition if="not $skip-tests">
-        <step>1. review the feature requirements and create integration test cases to verify components work together</step>
-        <step>2. add unit test cases for edge cases and complex logic if necessary</step>
-        <step>3. depend on the test cases, break down the implementation into smaller tasks</step>
-    </condition>
-    <condition if="$skip-tests">
-        <step>4. break down the implementation into smaller tasks</step>
-    </condition>
-    <step>5. for each task, determine which active skill to apply</step>
-    <step>6. sequence the tasks outside-in: start from user-facing layers (controllers, presenters, API endpoints), then work inward to use cases, and finally to entities and infrastructure — defer schema and storage decisions until the domain model shape is clear from use case needs</step>
+    <step>1. name the integration test cases that will verify the components work together, and unit cases only for edge cases those cannot practically reach</step>
+    <step>2. break the implementation into tasks along the design's own seams; where a confirmed work list already names them, those are the tasks. Tests cover the design rather than carve it, so letting the test cases decide the breakdown would hand the shape of the code to whatever the first case happened to assume. A seam carries no verdict of its own, though, so name for each task which promises it makes good on — drawn from the spec, or from whatever states the intended behavior where no spec exists — or, where the task changes structure rather than behavior, which promises it has to leave standing. A task that can name neither has nothing to be judged complete against, and reporting that serves better than calling it done</step>
+    <step>3. for each task, determine which active skill to apply</step>
+    <step>4. sequence the tasks outside-in: start from user-facing layers (controllers, presenters, API endpoints), then work inward to use cases, and finally to entities and infrastructure — defer schema and storage decisions until the domain model shape is clear from use case needs</step>
     <return>implementation plan for the feature</return>
 </function>
 
 <function name="execute-task">
-    <description>Execute a single task from the plan using TDD approach.</description>
+    <description>Execute a single task from the plan.</description>
     <parameter name="task" type="string" description="The task to execute." required="true"/>
     <parameter name="skill" type="string" description="The skill to apply for this task." required="true"/>
-    <parameter name="skip-tests" type="boolean" description="Whether to skip test-first approach." required="false" default="false"/>
-    <condition if="not $skip-tests">
-        <step>1. write failing test for the task (Red) — if you feel the urge to verify language/API behavior with `node -e` / `ruby -e` / `python -c` before writing code, that urge is telling you to add a test case for that assumption instead; see `coding:testing` Verification Discipline</step>
-        <step>2. implement minimum code to pass the test (Green)</step>
-        <step>3. refactor the code while keeping tests passing (Refactor)</step>
-    </condition>
-    <condition if="$skip-tests">
-        <step>4. implement the task directly</step>
-        <step>5. refactor if necessary</step>
-    </condition>
-    <step>6. invoke the skill to verify completion rubric</step>
+    <step>1. implement the task together with the tests that cover the promises it names — if you feel the urge to verify language/API behavior with `node -e` / `ruby -e` / `python -c` before writing code, that urge is telling you to add a test case for that assumption instead; see `coding:testing` Verification Discipline</step>
+    <step>2. with the task standing complete and the suite green, prove the net holds as `coding:testing` describes — break one of the promises the task names, watch a test object, restore, confirm the diff matches. A suite nobody has challenged says only that the code passes its own tests</step>
+    <step>3. refactor while the suite stays green</step>
+    <step>4. invoke the skill to verify completion rubric</step>
     <return>completed task with skill verification result</return>
 </function>
 
@@ -116,33 +102,34 @@ The language-specific skills not listed, check all available skills before decid
 
 <procedure name="main">
     <parameter name="feature" type="string" description="The feature to implement." required="true"/>
-    <parameter name="skip-tests" type="boolean" description="Whether to skip test case creation." required="false" default="false"/>
     <step>1. <execute name="overview" feature="$feature"/></step>
-    <step>2. use ask question tool to clarify scope of the feature</step>
-    <step>3. <execute name="design-analyze" overview="$overview"/></step>
-    <step>4. <execute name="active-skills" overview="$overview" memo="$memo"/></step>
-    <step>5. <execute name="investigate" overview="$overview"/></step>
     <condition if="a prior /inspect has already converged the work list for this round in the current context">
-        <step>6. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/> directly from that work list — skip re-understanding the codebase and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect held every ambiguous item out of the work list and the user confirmed what remained, so re-confirming a plan is redundant.</step>
+        <step>2. take that work list as the plan's source and its constraints as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate. Each of the three settles something — what the user wants, which shape the work should take, whether the approach is whole — that the inspection settled with the user present. Put again to an empty room, they either stall the run or get answered on the user's behalf</step>
+        <step>3. <execute name="active-skills" overview="$overview" direction="$constraints"/></step>
+        <step>4. <execute name="investigate" overview="$overview"/></step>
+        <step>5. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills"/></step>
     </condition>
     <condition if="no confirmed work list exists — /write runs standalone">
-        <step>7. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
-        <step>8. enter the plan mode</step>
-        <step>9. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills" skip-tests="$skip-tests"/></step>
-        <step>10. review and finalize the implementation plan for minimal change instead of over-engineering; refine if over-engineering detected</step>
-        <step>11. exit plan mode and wait for user confirmation</step>
+        <step>6. use ask question tool to clarify scope of the feature</step>
+        <step>7. <execute name="design-analyze" overview="$overview"/></step>
+        <step>8. <execute name="active-skills" overview="$overview" direction="$memo"/></step>
+        <step>9. <execute name="investigate" overview="$overview"/></step>
+        <step>10. deeply understand the project codebase related to the feature, stay within project boundaries and do not read library or framework source code</step>
+        <step>11. enter the plan mode</step>
+        <step>12. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills"/></step>
+        <step>13. review and finalize the implementation plan for minimal change instead of over-engineering; refine if over-engineering detected</step>
+        <step>14. exit plan mode and wait for user confirmation</step>
     </condition>
-    <step>12. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>15. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>13. <execute name="execute-task" task="$task" skill="$task.skills" skip-tests="$skip-tests"/></step>
-        <step>14. collect task result for quality report and update task status</step>
+        <step>16. <execute name="execute-task" task="$task" skill="$task.skills"/></step>
+        <step>17. collect task result for quality report and update task status</step>
     </loop>
-    <step>15. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
-    <condition if="$memo proposed a Patterns-section entry or ADR">
-        <step>16. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
+    <step>18. <execute name="quality-report" active-skills="$active-skills" task-results="$task-results"/></step>
+    <condition if="the confirmed direction proposed a Patterns-section entry or ADR">
+        <step>19. name the proposal in the report rather than writing it — `docs/architecture.md` and `docs/decisions/` are read by people, and a record laid down without them is one they have to rewrite</step>
     </condition>
-    <step>17. ask user if they want to commit the changes</step>
-    <step>18. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
+    <step>20. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
     <return>implementation quality report</return>
 </procedure>
 

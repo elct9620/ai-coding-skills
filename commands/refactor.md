@@ -52,11 +52,11 @@ The language-specific skills not listed, check all available skills before decid
 </function>
 
 <function name="active-skills">
-    <description>According to the identified code smells and the confirmed memo direction, determine which skills are needed and activate them.</description>
+    <description>According to the identified code smells and the confirmed direction, determine which skills are needed and activate them.</description>
     <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
-    <parameter name="memo" type="string" description="The Design Analysis Memo with the confirmed direction." required="true"/>
+    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /refactor runs standalone, the inspection's constraints when it follows /inspect." required="true"/>
     <step>1. discover available skills from system-reminder</step>
-    <step>2. analyze the smells with rubric of available skills, biased by the memo's chosen direction</step>
+    <step>2. analyze the smells with rubric of available skills, biased by the confirmed direction</step>
     <step>3. select the skills that address the identified problems</step>
     <step>4. always include `coding:refactoring` as the core skill</step>
     <step>5. if any smell involves cross-class refactoring (Move Method, Extract Class), include `coding:architecture` to validate the structure and dependency direction against the recorded or chosen shape</step>
@@ -112,7 +112,7 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. compare original smells with current code state</step>
     <step>2. list resolved smells and remaining issues</step>
     <step>3. for each active skill, invoke skill to verify completion rubric</step>
-    <step>4. confirm all tests still pass AND that the assertions actually exercise the semantic contract (return-value meaning, observable side effects at return, error model); a green test suite that only pins return values is not evidence of behavior preservation</step>
+    <step>4. confirm all tests still pass, and that they would have objected had the behavior moved — breaking one of the promises the work had to leave standing is how that gets shown, as `coding:testing` describes. A green suite that only pins return values, leaving the semantic contract (return-value meaning, observable side effects at return, error model) unasserted, is not evidence of behavior preservation</step>
     <step>5. summarize code quality improvements</step>
     <return>refactoring quality report with before/after comparison</return>
 </function>
@@ -120,35 +120,40 @@ The language-specific skills not listed, check all available skills before decid
 <procedure name="main">
     <parameter name="target" type="string" description="The path or module to refactor. Empty for whole project." required="false"/>
     <step>1. <execute name="analyze-smells" target="$target"/></step>
-    <step>2. check whether the user's request is actually a refactor: if it would change the semantic contract (return-value meaning, completion timing, error model, delivery or ordering guarantees) while keeping signatures intact, name it as a behavior change and confirm scope with the user before continuing — do not proceed under the refactor frame</step>
-    <step>3. use ask question tool to confirm refactoring scope and priorities</step>
-    <step>4. <execute name="design-analyze" smells="$smells"/></step>
-    <step>5. <execute name="active-skills" smells="$smells" memo="$memo"/></step>
-    <step>6. <execute name="investigate" smells="$smells"/></step>
-    <step>7. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
-    <condition if="insufficient test coverage">
-        <step>8. add tests for untested code before refactoring — behavior preservation needs a safety net</step>
-    </condition>
+    <step>2. check whether the user's request is actually a refactor: if it would change the semantic contract (return-value meaning, completion timing, error model, delivery or ordering guarantees) while keeping signatures intact, name it as a behavior change and put it back to the user — the run stops there rather than proceeding under the refactor frame, which reaches them whether or not anyone is waiting to answer</step>
     <condition if="a prior /inspect has already converged the work list for this round in the current context">
-        <step>9. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/> directly from that work list — skip re-exploration and the plan-confirmation gate. That gate exists to confirm an approach that might be incomplete; inspect held every ambiguous item out of the work list and the user confirmed what remained, so re-confirming a plan is redundant.</step>
+        <step>3. take that work list as the plan's source and its constraints as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate — the inspection settled all three with the user present, and putting them again to an empty room either stalls the run or answers on the user's behalf</step>
+        <step>4. <execute name="active-skills" smells="$smells" direction="$constraints"/></step>
     </condition>
     <condition if="no confirmed work list exists — /refactor runs standalone">
-        <step>10. enter the plan mode</step>
-        <step>11. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
-        <step>12. review plan to ensure minimal changes and behavior preservation; reduce scope if too aggressive</step>
-        <step>13. exit plan mode and wait for user confirmation</step>
+        <step>5. use ask question tool to confirm refactoring scope and priorities</step>
+        <step>6. <execute name="design-analyze" smells="$smells"/></step>
+        <step>7. <execute name="active-skills" smells="$smells" direction="$memo"/></step>
     </condition>
-    <step>14. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
+    <step>8. <execute name="investigate" smells="$smells"/></step>
+    <step>9. verify test coverage for the target area, stay within project boundaries and do not read library or framework source code</step>
+    <condition if="insufficient test coverage">
+        <step>10. add tests for untested code before refactoring — behavior preservation needs a safety net</step>
+    </condition>
+    <condition if="a confirmed work list is in hand from a prior /inspect">
+        <step>11. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/> directly from it</step>
+    </condition>
+    <condition if="no confirmed work list exists — /refactor runs standalone">
+        <step>12. enter the plan mode</step>
+        <step>13. <execute name="create-refactoring-plan" smells="$smells" active-skills="$active-skills"/></step>
+        <step>14. review plan to ensure minimal changes and behavior preservation; reduce scope if too aggressive</step>
+        <step>15. exit plan mode and wait for user confirmation</step>
+    </condition>
+    <step>16. create tasks from the plan using TaskCreate tool, so progress can be tracked</step>
     <loop for="task in $plan.tasks">
-        <step>15. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
-        <step>16. collect task result for quality report and update task status</step>
+        <step>17. <execute name="execute-refactoring" task="$task" skill="$task.skill"/></step>
+        <step>18. collect task result for quality report and update task status</step>
     </loop>
-    <step>17. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
-    <condition if="$memo proposed a Patterns-section entry or ADR">
-        <step>18. ask the user whether to append the proposed entry to `docs/architecture.md` Patterns section, or create the ADR in `docs/decisions/`; apply if confirmed</step>
+    <step>19. <execute name="quality-report" original-smells="$smells" active-skills="$active-skills" task-results="$task-results"/></step>
+    <condition if="the confirmed direction proposed a Patterns-section entry or ADR">
+        <step>20. name the proposal in the report rather than writing it — `docs/architecture.md` and `docs/decisions/` are read by people, and a record laid down without them is one they have to rewrite</step>
     </condition>
-    <step>19. ask user if they want to commit the changes</step>
-    <step>20. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
+    <step>21. suggest running `/inspect` to confirm the spec, the code, and the reader's understanding still agree after this work</step>
     <return>refactoring quality report</return>
 </procedure>
 

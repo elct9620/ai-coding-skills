@@ -1,6 +1,6 @@
 ---
 name: testing
-description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for every new feature, behavior change, or bug fix. Covers unit, integration, and E2E test selection. Make sure to use this skill whenever the user asks to add tests, fix a bug (tests should come first), implement a feature with test coverage, or asks about what kind of tests to write — even for small one-line changes or trivial-looking fixes.
+description: Write tests that hold as a regression net — integration-first, AAA structure, and proof the net catches a real break. Use for every new feature, behavior change, or bug fix. Covers unit, integration, and E2E test selection. Make sure to use this skill whenever the user asks to add tests, fix a bug (tests should come first), implement a feature with test coverage, or asks about what kind of tests to write — even for small one-line changes or trivial-looking fixes.
 ---
 
 ## Related Skills
@@ -35,25 +35,24 @@ description: Write tests using TDD (Red-Green-Refactor) and AAA pattern. Use for
 | Component works alone but fails together | Missing integration test coverage |
 | Module has no integration test path | Verify the module serves a real user need; if it does, add the missing integration path |
 
-### TDD Cycle (Red-Green-Refactor)
+### Proving the Net Holds
 
-```
-┌─────────┐
-│   RED   │ ← Write failing test → confirm: "Test fails because [reason]"
-└────┬────┘
-     ↓
-┌─────────┐
-│  GREEN  │ ← Write minimal code → confirm: "All tests now pass"
-└────┬────┘
-     ↓
-┌─────────┐
-│REFACTOR │ ← Improve code → confirm: "Tests still pass after refactoring"
-└────┬────┘
-     ↓
-   (repeat)
-```
+A suite running green proves the code passes the tests, not that the tests would notice if the code broke. Where the same hand wrote the code, wrote the tests, and reports the result, green is self-issued and carries no more weight than the claim itself.
 
-Each phase transition requires an explicit confirmation statement. Skipping the confirmation — especially at GREEN — breaks the feedback loop that makes TDD valuable. Without "all tests pass," you cannot be sure the fix actually works.
+What settles it is breaking the code on purpose and watching a test object. Take a promise the spec makes about the scope, change the code so that promise is violated — 410 becomes 404, a guard disappears, a boundary moves one step — then run the suite.
+
+| Baseline | With the break in | After restoring | Reading |
+|----------|-------------------|-----------------|---------|
+| Green | Red | Diff matches | The net holds for that promise |
+| Green | Green | Diff matches | Nothing was watching — the missing test is the finding |
+| Red | — | — | Nothing follows; the baseline has to be green first |
+| Green | Red | Diff differs | Restoration failed — the tree is dirty, stop and say so |
+
+The break comes from a promise, not from whichever operator is nearest to hand. A change invented against the code alone may well be an improvement, and then a red test means the tests have pinned the wrong behavior — a red light indistinguishable from success while meaning its opposite. Where the scope carries no promise worth breaking, report the net as unverified rather than inventing one: an unverified net is a smaller problem than a false all-clear.
+
+Restoration needs evidence of its own. A suite back to green shows behavior returned, not that the text did, so take the diff before the break and after restoring and require them to match.
+
+This is what a red light is worth once no one is watching it happen: not that a test was written before the code, but that a real break was seen to be caught.
 
 ### Testing Trophy
 
@@ -109,18 +108,6 @@ Three properties keep an E2E test honest:
 
 This trap is subtle because shortcut-segmented tests *are* testing behavior, and branch coverage *is* satisfied — so the usual "test behavior, not implementation" and "check coverage" guards wave them through. The discriminator is the destination: name the outcome the user came for, then ask whether any single test reaches it through the real path. This is the journey-level form of asserting the semantic contract rather than the surface output.
 
-## TDD Phase Discipline
-
-Each TDD phase must be explicitly confirmed before moving to the next:
-
-| Phase | Action | Confirmation |
-|-------|--------|-------------|
-| **RED** | Write failing test | State: "Test fails because [reason]" |
-| **GREEN** | Write minimal fix | State: "All tests now pass" |
-| **REFACTOR** | Improve code | State: "Tests still pass after refactoring" |
-
-The GREEN phase is not just writing the fix — you must confirm that tests pass. Without this confirmation, the cycle is incomplete and regressions can slip through unnoticed.
-
 ## Verification Discipline
 
 When you are about to implement a feature and think *"let me try a one-liner to see if this approach works"* or *"let me check what this API returns for the edge case first"* — stop. That uncertainty is a missing test case. Encode the assumption as an assertion in the test file, run the test, and let it answer.
@@ -153,7 +140,7 @@ The dividing line: if the thing you want to verify is about your code's correctn
 
 ## Working with Legacy Code (No Existing Tests)
 
-When facing code with zero test coverage, testing requires a different entry strategy than greenfield TDD.
+When facing code with zero test coverage, testing requires a different entry strategy than greenfield work.
 
 ### Characterization Tests
 
@@ -187,7 +174,7 @@ Legacy code often has barriers to testing. Common patterns and workarounds:
 
 1. **Write characterization tests first** — capture current behavior with integration-level tests
 2. **Identify seams** — find points where you can alter behavior without editing the code (subclass, extract method, wrap)
-3. **Make the change** — add new feature or fix bug using TDD
+3. **Make the change** — add the feature or fix the defect, with the tests that cover it
 4. **Verify no regressions** — all characterization tests still pass
 
 ## Test Structure (AAA Pattern)
@@ -248,6 +235,7 @@ For simple validation tests (e.g., `assert_raises`, single-expression assertions
 | No test smells | Clean test code | Test code smells present |
 | No dead code coverage | All tested code has integration paths | Tests exist for unused code |
 | Journey integrity | Each critical journey has one test walking it end to end to its goal outcome | Journey covered only by shortcut-segmented steps or waypoint assertions |
+| Net proven | A spec promise was broken on purpose and a test objected, or the net is reported unverified | Green was never challenged |
 
 ## Test Naming Convention
 
