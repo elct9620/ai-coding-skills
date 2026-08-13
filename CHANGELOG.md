@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.14.0](https://github.com/elct9620/ai-coding-skills/compare/v0.13.0...v0.14.0) (2026-08-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** --skip-tests is gone. It bundled the process and the safety net into a single switch, so avoiding the former meant discarding the latter; with the process gone the switch had nothing left to turn off.
+
+### Features
+
+* **commands:** prove the test net instead of staging the writing of it ([b250c7a](https://github.com/elct9620/ai-coding-skills/commit/b250c7a1ce79c2a38eadb792a0c028b26c875a08))
+
 ## [0.13.0](https://github.com/elct9620/ai-coding-skills/compare/v0.12.0...v0.13.0) (2026-08-07)
 
 
