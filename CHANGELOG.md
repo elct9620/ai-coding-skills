@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.15.0](https://github.com/elct9620/ai-coding-skills/compare/v0.14.0...v0.15.0) (2026-08-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** the report's three-pair table gives way to the whole and a gap table, and `Constraints` becomes `Bounds` plus `References`. /write and /refactor take both when they follow /inspect.
+
+### Features
+
+* **commands:** give the work list an order a reader can act on ([8657926](https://github.com/elct9620/ai-coding-skills/commit/8657926707396d63925816ff956b53cfa19f875a))
+* **commands:** take in the whole before reading any part of it closely ([a27a974](https://github.com/elct9620/ai-coding-skills/commit/a27a974bed02939bb7fcd9114156d8cd8cfca66d))
+
 ## [0.14.0](https://github.com/elct9620/ai-coding-skills/compare/v0.13.0...v0.14.0) (2026-08-13)
 
 
