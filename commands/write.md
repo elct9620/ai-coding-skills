@@ -49,7 +49,7 @@ The language-specific skills not listed, check all available skills before decid
 <function name="active-skills">
     <description>According to the feature requirements and the confirmed direction, determine which skills are needed and activate them.</description>
     <parameter name="overview" type="string" description="The overview of the feature and current codebase context." required="true"/>
-    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /write runs standalone, the inspection's constraints when it follows /inspect." required="true"/>
+    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /write runs standalone, the inspection's bounds and references when it follows /inspect." required="true"/>
     <step>1. discover available skills from system-reminder</step>
     <step>2. analyze the overview with rubric of available skills, biased by the confirmed direction (a direction asking for no extra structure needs fewer heavy skills; one calling for layers or partitioning activates `architecture` and, where the domain is thick, `domain-modeling`)</step>
     <step>3. select the skills that are most relevant to the chosen direction</step>
@@ -104,8 +104,8 @@ The language-specific skills not listed, check all available skills before decid
     <parameter name="feature" type="string" description="The feature to implement." required="true"/>
     <step>1. <execute name="overview" feature="$feature"/></step>
     <condition if="a prior /inspect has already converged the work list for this round in the current context">
-        <step>2. take that work list as the plan's source and its constraints as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate. Each of the three settles something — what the user wants, which shape the work should take, whether the approach is whole — that the inspection settled with the user present. Put again to an empty room, they either stall the run or get answered on the user's behalf</step>
-        <step>3. <execute name="active-skills" overview="$overview" direction="$constraints"/></step>
+        <step>2. take that work list as the plan's source and its bounds and references as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate. Each of the three settles something — what the user wants, which shape the work should take, whether the approach is whole — that the inspection settled with the user present. Put again to an empty room, they either stall the run or get answered on the user's behalf</step>
+        <step>3. <execute name="active-skills" overview="$overview" direction="$bounds-and-references"/></step>
         <step>4. <execute name="investigate" overview="$overview"/></step>
         <step>5. <execute name="create-plan" completed-overview="$overview" active-skills="$active-skills"/></step>
     </condition>

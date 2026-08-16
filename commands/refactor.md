@@ -54,7 +54,7 @@ The language-specific skills not listed, check all available skills before decid
 <function name="active-skills">
     <description>According to the identified code smells and the confirmed direction, determine which skills are needed and activate them.</description>
     <parameter name="smells" type="list" description="The list of identified code smells." required="true"/>
-    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /refactor runs standalone, the inspection's constraints when it follows /inspect." required="true"/>
+    <parameter name="direction" type="string" description="The confirmed direction: a Design Analysis Memo when /refactor runs standalone, the inspection's bounds and references when it follows /inspect." required="true"/>
     <step>1. discover available skills from system-reminder</step>
     <step>2. analyze the smells with rubric of available skills, biased by the confirmed direction</step>
     <step>3. select the skills that address the identified problems</step>
@@ -122,8 +122,8 @@ The language-specific skills not listed, check all available skills before decid
     <step>1. <execute name="analyze-smells" target="$target"/></step>
     <step>2. check whether the user's request is actually a refactor: if it would change the semantic contract (return-value meaning, completion timing, error model, delivery or ordering guarantees) while keeping signatures intact, name it as a behavior change and put it back to the user — the run stops there rather than proceeding under the refactor frame, which reaches them whether or not anyone is waiting to answer</step>
     <condition if="a prior /inspect has already converged the work list for this round in the current context">
-        <step>3. take that work list as the plan's source and its constraints as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate — the inspection settled all three with the user present, and putting them again to an empty room either stalls the run or answers on the user's behalf</step>
-        <step>4. <execute name="active-skills" smells="$smells" direction="$constraints"/></step>
+        <step>3. take that work list as the plan's source and its bounds and references as the confirmed direction, then skip the scope question, the design memo, and the plan-confirmation gate — the inspection settled all three with the user present, and putting them again to an empty room either stalls the run or answers on the user's behalf</step>
+        <step>4. <execute name="active-skills" smells="$smells" direction="$bounds-and-references"/></step>
     </condition>
     <condition if="no confirmed work list exists — /refactor runs standalone">
         <step>5. use ask question tool to confirm refactoring scope and priorities</step>

@@ -83,7 +83,7 @@ Choose the appropriate command based on your task:
 
 ### When to Use
 
-- **`/inspect`**: Confirming the spec, the code, and your understanding still describe the same system — read-only, converges into the work list for this round
+- **`/inspect`**: Confirming what still stands between the code and the goal you named — read-only, takes in the whole before reading any part of it closely, converges into the work list for this round
 - **`/write`**: Starting a new feature, adding functionality, or correcting a defect
 - **`/refactor`**: Improving code quality without changing behavior
 - **`/roadmap`**: Tracking spec-to-implementation progress, initializing a roadmap from specs, or checking feature status
@@ -94,7 +94,7 @@ Choose the appropriate command based on your task:
 /inspect → /write | /refactor → /inspect
 ```
 
-Open with `/inspect` to confirm the spec, the code, and your understanding still describe the same system, then clarify until the work list for this round is settled — anything still ambiguous stays out of the list, and any limit you set along the way is recorded as the round's constraints. `/write` or `/refactor` works from that list and stays inside those bounds. Running `/inspect` again afterwards quotes both back and reports whether the work stayed inside them.
+Open with `/inspect` to take in the whole the work sits in and confirm what still stands between it and the goal you named, then clarify until the work list for this round is settled — anything still unknown stays out of the list, any limit you set along the way is recorded as the round's bounds, and anything you point at as the way to do the work is recorded as its references. `/write` or `/refactor` works from that list and stays inside both. Running `/inspect` again afterwards quotes them back and reports whether the work stayed inside them.
 
 Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 
