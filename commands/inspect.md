@@ -66,7 +66,7 @@ The whole: … · Read closely: … · Seen but not opened: …
 
 **Work list**
 
-| Order | # | This step | Why it sits here |
+| Order | # | The work | Why it sits here |
 |---|---|---|---|
 | 1 | G4 | drop `l` from the alphabet | nothing else can be trusted while codes are still wrong |
 | 2 | G1 | answer 410 for expired links | the promise the goal named |
@@ -82,6 +82,8 @@ The whole: … · Read closely: … · Seen but not opened: …
 ```
 
 `The whole` is what width bought — how the project got to here and what state it is in, in a line or two. It sits above the findings because it is what makes them rankable: without it a reader has a list, with it they have a list they can weigh.
+
+The work list is one continuous run, and converging it is where the stopping belongs: the clarification happens here with the user present, and once they confirm it `/write` or `/refactor` takes it end to end with nobody left to ask. `Order` is therefore what has to hold before the next item can be done — a dependency inside one run rather than a gate to pause at — and an item whose shape would still turn on an answer is not an item yet; it waits under Still unknown until the answer comes.
 
 `Bounds` carries the limits the user set while clarifying — how heavy a solution is wanted, what must not be touched — and `References` whatever they pointed at as the way to do the work. Both sit with the goal and carry no evidence mark, since nothing backs them but the user having said so. Work downstream follows both, and departing from a reference is a finding that needs saying rather than a choice made quietly; a later round can only check they were kept because they were written here.
 
@@ -133,7 +135,7 @@ Depart from this where the report is better for it: a pass with one finding need
     <step>2. state the whole in the line or two the width bought, and name what was read closely against what was seen but never opened — the reader can only tell where this list stops once the unread parts are stated</step>
     <step>3. say what still stands between the code and the goal. The goal is the user's and it is the newest thing they have said, so where a README, a note, or a roadmap says otherwise, that record is carrying an earlier decision: it belongs in the work list as a line to bring up to date, not in the report as a position to argue against. What they have claimed about how things are stays open to the evidence, and evidence that contradicts a claim is worth reporting — but as a gap between here and where they mean to get, rather than as a verdict on who was right</step>
     <step>4. add what would block or undo the goal from outside what it touches — a broken test net under the work, a boundary that will not hold the change. This is your reading rather than anyone's stated position. This command reads rather than runs, so judge coverage by reading and mark where that leaves a result unconfirmed: what you could not execute is a limit of the inspection, not a fault in the code</step>
-    <step>5. draw the work list for this round from the sections above. Order it by what has to hold before the next item can be done, and by severity where nothing forces the order; each item carries the reason it sits where it does, because an order whose reason is left out is one the reader can only trust or re-derive, and the list is what they take away</step>
+    <step>5. draw the work list for this round from the sections above, sized so it can be taken end to end without anyone being asked anything partway. Order it by what has to hold before the next item can be done, and by severity where nothing forces the order; each item carries the reason it sits where it does, because an order whose reason is left out is one the reader can only trust or re-derive, and the list is what they take away</step>
     <step>6. record the limits the user set as the round's bounds and whatever they pointed at as its references, taking both from what they said and nowhere else, and leaving either line empty where they set none</step>
     <step>7. list separately whatever is still unknown — an item whose scope, cause, or desired outcome is unsettled — and hold it out of the work list until it resolves, along with any work whose shape would change with the resolution. Work that merely stands near an unsettled question is not held: a finding with one clear fix keeps its place at its own severity however much is unsettled around it. Write "none" when nothing is unknown</step>
     <return>the round's report, the work list with its bounds and references, and the unknowns held back from it</return>
@@ -152,7 +154,7 @@ Depart from this where the report is better for it: a pass with one finding need
         <step>5. quote that work list with its bounds and references verbatim and compare this round's changes against all three. Work can finish every item and still overshoot — a solution heavier than was wanted breaks no item on the list — so the bounds are the only place that catches it. Nobody is waiting to answer here, so ask nothing: drift or a fresh unknown stops the run and is reported for the user to resolve</step>
     </condition>
     <condition if="no confirmed work list exists — this is the opening round">
-        <step>6. present the report, the work list, and the unknowns, then invite the user to confirm it or ask further. Each answer resolves an unknown and redraws the list; an answer that sets a limit rather than settling an item belongs in the bounds instead. The user decides when it is settled enough to run `/write` or `/refactor`</step>
+        <step>6. present the report, the work list, and the unknowns, then invite the user to confirm it or ask further. Each answer resolves an unknown and redraws the list; an answer that sets a limit rather than settling an item belongs in the bounds instead. The user decides when it is settled enough to run `/write` or `/refactor`, and what they settle is a run that goes through to the end — so speak of the list that way, since *I will confirm at 2* or *we will know once 5 is done* offers a gate that does not exist and parks a question where nobody will be left to answer it. Answer from the report and the list as they stand, and where that cannot be done, say so and move the item into the unknowns</step>
         <condition if="leads remain unverified and not $deep">
             <step>7. add one line offering `/inspect [same target] --deep` to trace them</step>
         </condition>
