@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.15.1](https://github.com/elct9620/ai-coding-skills/compare/v0.15.0...v0.15.1) (2026-08-26)
+
+
+### Bug Fixes
+
+* **commands:** load inspect's standing lenses unconditionally ([df3eeed](https://github.com/elct9620/ai-coding-skills/commit/df3eeed98bf20a10b2c9031adcc1fbd49948395a))
+* **commands:** make inspect's work list one continuous run ([19ec5f0](https://github.com/elct9620/ai-coding-skills/commit/19ec5f07505dfbace4ceed9b9f2de7695fd54c9f))
+
 ## [0.15.0](https://github.com/elct9620/ai-coding-skills/compare/v0.14.0...v0.15.0) (2026-08-16)
 
 
