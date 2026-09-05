@@ -61,6 +61,31 @@ If any of these shift, update the contract explicitly (rename, change return typ
 
 ## Common Refactoring Techniques
 
+### Blast Radius
+
+How much a technique disturbs is a property of the technique, not of the situation it is used in. Read in this order, the cheapest technique that actually solves the problem is found before the expensive ones are considered — which is the difference between a change someone can review and a change they have to take on trust.
+
+| Radius | Technique | What it disturbs |
+|--------|-----------|------------------|
+| 1 | Remove Dead Code | Nothing — provided every caller was searched for and none exists |
+| 2 | Replace Magic Number | Literals inside one file; no caller sees a difference |
+| 3 | Simplify Conditional | The inside of one method; no boundary is crossed |
+| 4 | Replace with Existing | The block itself, which starts calling something this codebase already names |
+| 5 | Rename | Every call site, but mechanically and with no behavioural surface |
+| 6 | Extract Method | Adds one named thing; callers unchanged |
+| 7 | Extract Class | Adds a file; the original class's callers may follow |
+| 8 | Extract Interface | Adds a file and touches every type declaration |
+| 9 | Replace Conditional with Polymorphism | Adds several types; the branch leaves every caller |
+| 10 | Inject Dependency | Every construction site |
+| 11 | Move Method | Two classes, and the dependency direction between them |
+| 12 | Replace Inheritance with Delegation | The inheritance chain and every caller that relied on it |
+
+**Existing** means a thing this codebase already names — a helper, a method, a class someone can go and read. Rewriting a working loop into a language builtin reuses nothing and names nothing new; it is a rewrite, and a rewrite of code that no item on the list complains about is churn however idiomatic the result reads. Code that merely could have been written another way is not a defect, so it belongs on no rung — note it and leave it.
+
+Radius 1 is where a comment that restates its code belongs, and where a comment explaining why an earlier attempt was wrong belongs: correct code is its own evidence, so the explanation is residue of how it got here rather than a statement of what is now true.
+
+The tables below group the same techniques by kind, which is what to read once the radius has narrowed the field.
+
 ### Code Organization
 
 | Technique | When to Use | Before → After |
@@ -69,6 +94,7 @@ If any of these shift, update the contract explicitly (rename, change return typ
 | Extract Class | Class has multiple responsibilities | One class → Two classes |
 | Move Method | Method uses another class more | A.method() → B.method() |
 | Rename | Name doesn't reveal intent | `d` → `elapsedDays` |
+| Replace with Existing | This codebase already names something that does it | Hand-rolled block → call to what is already here |
 
 ### Simplification
 

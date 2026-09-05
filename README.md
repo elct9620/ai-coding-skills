@@ -46,9 +46,9 @@ This repository is designed as Claude Code Plugin which contains following compo
 
 ## Methodology
 
-The command as entry which defines the workflow, then adaptively select necessary skills to complete the task.
+Commands are the process — what a run does and in what order. Skills are the knowledge — what you need to know to do it. A command reaches for a skill through a lightweight index; each skill's own Applicability Rubric decides whether it fits.
 
-For example, the `/write` command uses `architecture` to follow a structure already recorded in `docs/architecture.md`, or — when the design forces call for it — to decide a structural shape (Clean Architecture, DDD, DCI, or another). It defaults to adding no extra structure when the forces are quiet.
+The three commands form a funnel. `/inspect` opens the option space and closes it with the user present, producing the round's work list. `/write` then asks only how small the implementation's scope can be, and `/refactor` only how small the change can be — each climbing a ladder of what already exists and stopping at the first rung that answers. Heavier knowledge is opened at the last rung and not before, so work that a lower rung answers never pays for it.
 
 ## Command Usage Matrix
 
@@ -76,8 +76,8 @@ Choose the appropriate command based on your task:
 | coding:security           |    ✓    |   ✓    |     ✓     |
 
 *Core skill for this command (always activated)
-†Runs before active-skills selection to frame the direction
-§Used to check changes against patterns recorded in `docs/architecture.md`
+†Opened only when an item reaches the ladder's last rung carrying a structural commitment
+§The round where the option space is open — a direction confirmed here becomes the work list's references
 
 > `/roadmap` is a standalone tracking command and does not use coding skills.
 
