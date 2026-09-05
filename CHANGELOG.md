@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.16.0](https://github.com/elct9620/ai-coding-skills/compare/v0.15.1...v0.16.0) (2026-09-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* **commands:** `/write` and `/refactor` no longer produce a Design Analysis Memo on every run. The memo now comes from `/inspect`, or from the rare item that reaches the last rung carrying a structural commitment.
+
+### Features
+
+* **commands:** climb to the smallest change instead of reopening the option space ([b19ff29](https://github.com/elct9620/ai-coding-skills/commit/b19ff29e2cd9e4999e152f5e3434f8c31589d5e5))
+
 ## [0.15.1](https://github.com/elct9620/ai-coding-skills/compare/v0.15.0...v0.15.1) (2026-08-26)
 
 
