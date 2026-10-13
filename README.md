@@ -21,74 +21,47 @@ I use Ruby, TypeScript/JavaScript, and Golang the most. And love Clean Architect
 | Coding       | Refactoring             |
 | Coding       | Security                |
 
+
 ## Structure
 
-This repository is designed as Claude Code Plugin which contains following components:
+The plugin ships three skills and one command; each skill keeps its knowledge in `references/`.
 
 ```
-|- /coding-skills
-    |- commands/   # Workflow commands (entry points)
-       |- inspect.md  # Confirm spec, code, and understanding agree (read-only)
-       |- write.md    # Implement a feature or correct a defect
-       |- refactor.md # Clean up legacy code
-       |- roadmap.md  # Spec-to-implementation tracking
-    |- skills/     # Individual skills with specific knowledge
-       |- design-forces/
-       |- testing/
-       |- architecture/
-       |- domain-modeling/
-       |- design-patterns/
-       |- refactoring/
-       |- principles/
-       |- schema/
-       |- security/
+coding-skills/
+├── skills/
+│   ├── inspect/      # Analyze shape and names (read-only)
+│   │   └── references/   structure, forces, naming
+│   ├── write/        # Implement, fix, or refactor
+│   │   └── references/   smallest-change, testing, domain, boundaries
+│   └── onboard/      # Maintain AGENTS.md
+└── commands/
+    └── roadmap.md    # Spec-to-implementation tracking
 ```
 
 ## Methodology
 
-Commands are the process — what a run does and in what order. Skills are the knowledge — what you need to know to do it. A command reaches for a skill through a lightweight index; each skill's own Applicability Rubric decides whether it fits.
+Each skill answers one question and prints output that can be checked.
 
-The three commands form a funnel. `/inspect` opens the option space and closes it with the user present, producing the round's work list. `/write` then asks only how small the implementation's scope can be, and `/refactor` only how small the change can be — each climbing a ladder of what already exists and stopping at the first rung that answers. Heavier knowledge is opened at the last rung and not before, so work that a lower rung answers never pays for it.
+| Skill | Question | Checkable output |
+|---|---|---|
+| `/inspect` | Are the shape and the names right? | `Verdict:` line |
+| `/write` | Is it done right, the right way? | `Result:` line |
+| `/onboard` | Does a newcomer need this line? | Path and loading checks |
 
-## Command Usage Matrix
+Skills state principles and an output contract, not steps. Knowledge the model already has stays a keyword; references hold only where this project differs from common practice.
 
-Choose the appropriate command based on your task:
+## Skill Usage Matrix
 
-| Command     | Purpose              | Arguments                    |
-|-------------|----------------------|------------------------------|
-| `/inspect`  | Confirm spec, code, and understanding agree | `[path\|module\|--staged\|intent] [--deep]` |
-| `/write`    | Implement or correct behavior | `feature\|id`                |
-| `/refactor` | Clean up code        | `[path\|module]`             |
-| `/roadmap`  | Track implementation | `[init\|update\|status] [feature]` |
+Invoke each by name with the `coding:` prefix, such as `/coding:inspect`.
 
-### Skills per Command
+| Name | Use for | Arguments |
+|---|---|---|
+| `inspect` | Plan a round, or review finished work | `[path\|--staged\|intent] [--deep]` |
+| `write` | Build a feature, fix a defect, refactor | `[feature\|finding\|path]` |
+| `onboard` | Create or prune `AGENTS.md` | `[what changed]` |
+| `roadmap` | Track spec-to-implementation progress | `[init\|update\|status] [feature]` |
 
-| Skill                     | /inspect | /write | /refactor |
-|---------------------------|:--------:|:------:|:---------:|
-| coding:design-forces      |   ✓§    |  ✓†    |    ✓†     |
-| coding:testing            |   ✓*    |   ✓    |     ✓     |
-| coding:refactoring        |    ✓    |   ✓    |     ✓*    |
-| coding:architecture       |    ✓    |   ✓    |     ✓     |
-| coding:principles         |   ✓*    |   ✓    |     ✓     |
-| coding:design-patterns    |    ✓    |   ✓    |     ✓     |
-| coding:domain-modeling    |    -    |   ✓    |     -     |
-| coding:schema             |    ✓    |   ✓    |     ✓     |
-| coding:security           |    ✓    |   ✓    |     ✓     |
-
-*Core skill for this command (always activated)
-†Opened only when an item reaches the ladder's last rung carrying a structural commitment
-§The round where the option space is open — a direction confirmed here becomes the work list's references
-
-> `/roadmap` is a standalone tracking command and does not use coding skills.
-
-### When to Use
-
-- **`/inspect`**: Confirming what still stands between the code and the goal you named — read-only, takes in the whole before reading any part of it closely, converges into the work list for this round
-- **`/write`**: Starting a new feature, adding functionality, or correcting a defect
-- **`/refactor`**: Improving code quality without changing behavior
-- **`/roadmap`**: Tracking spec-to-implementation progress, initializing a roadmap from specs, or checking feature status
-
-### Recommended Workflow
+## Recommended Workflow
 
 Plan with the user present, then let `/goal` run the work list to the end.
 
@@ -112,23 +85,27 @@ Each layer carries one kind of statement, so the goal stays short.
 Every line under "Done when" maps to output that `/write` and `/inspect` print, so the evaluator judges results rather than steps.
 
 ```
-/goal Finish the work list confirmed by /inspect.
+/goal Finish the work list confirmed by /coding:inspect.
 
-- Implement each item with /write, then review it with /inspect; hand findings back to /write.
-- Follow the working agreement in AGENTS.md.
+- Implement each item with /coding:write, then review it with /coding:inspect; hand findings back to /coding:write.
+- Follow the Working Agreement in AGENTS.md.
 - Actions that need my approval, such as pushing, are outside this goal.
 
 Done when:
 - The test suite passes.
-- The final /inspect covers the whole round and reports no open High finding.
-- The final /inspect reports no drift between the specs and the code.
+- The final /coding:inspect covers the whole round and reports no open High finding.
+- The final /coding:inspect reports no drift between the specs and the code.
 ```
-
-Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 
 ## Usage
 
-To use this coding skills, install from the marketplace or use `claude plugin add` in Claude Code. Then choose the command which most fits the task.
+Install from the marketplace or with `claude plugin add`, then start a round with `/coding:inspect`.
+
+```
+/coding:onboard
+/coding:inspect add expiry to share links
+/goal Finish the work list confirmed by /coding:inspect. ...
+```
 
 ## License
 
