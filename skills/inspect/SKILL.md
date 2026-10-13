@@ -26,8 +26,8 @@ In checking, each drift from the confirmed list is one of two kinds:
 
 | Kind | Example | Handling |
 |---|---|---|
-| Verifiable | A formula, an algorithm, or a convention the docs settle | Verify it, then hand the finding to `/write` |
-| Preference | The user asked for A; the work did B | Hold it for the user; never decide it |
+| Verifiable | The specs, the Bounds, a formula, or a convention settles it | Verify it, then hand the finding to `/write` |
+| Preference | The work list left a choice open, and the work made it | Hold it for the user; never decide it |
 
 ## Principles
 

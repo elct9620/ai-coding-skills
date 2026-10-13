@@ -1,0 +1,59 @@
+{
+  "skill_name": "inspect",
+  "evals": [
+    {
+      "id": 1,
+      "name": "drift-kinds",
+      "hypothesis": "H2, H8: checking sends a drift the specs or Bounds settle back to /write, and holds a choice the work list left open for the user.",
+      "setup": "evals/files/drift-kinds/setup.sh",
+      "prompt": "/coding:inspect Check the round /coding:write just finished in the last commit. Earlier in this conversation I confirmed this work list:\n\n| Order | # | The work |\n|---|---|---|\n| 1 | G1 | take the member discount off the order total |\n| 2 | G2 | page the order list |\n| 3 | G3 | export orders as CSV |\n\nBounds: page the order list by page number (`?page=2`), 20 orders a page.\nReferences: docs/spec.md",
+      "expected_output": "Three drifts: the discount applied after tax (spec settles it, back to /write), cursor paging (Bounds settle it, back to /write), cancelled orders left out of the CSV (open choice, held for the user). Report opens with a neutral conclusion table.",
+      "prediction": "Baseline passes 1, 3, 5 and 10; it treats every drift alike, so 2, 4 and 6 are unstable, and it has no conclusion table (7, 8).",
+      "expectations": [
+        "The report states that the member discount is taken off after tax, against docs/spec.md.",
+        "The report hands the discount-and-tax fix to /write instead of asking the user to decide it.",
+        "The report states that the order list pages by a cursor (`after_id`) instead of the page number the Bounds set.",
+        "The report hands the paging fix to /write instead of asking the user to decide it.",
+        "The report states that the CSV export leaves out cancelled orders, a choice the work list did not settle.",
+        "The report holds the cancelled-orders choice for the user, without judging it right or wrong and without telling /write to change it.",
+        "The report opens with a conclusion table before the findings table.",
+        "The conclusion states facts only and does not say whether the round may end or is unfinished.",
+        "Every finding id in the report appears together with a phrase saying what it is.",
+        "The run changes no file in the repository."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "naming",
+      "hypothesis": "H3, H9: the names lens catches names whose word class hides their role, and keeps names a convention fixes.",
+      "setup": "evals/files/naming/setup.sh",
+      "prompt": "/coding:inspect The last commit adds the project class. Check it before I build the translation workflow on top of it.",
+      "expected_output": "Flags `Held` (bare participle as a type), `translated` (an action named as a participle), `running` (a question that does not read as one), and `get_title` (`get_` on a query); keeps `inherited` and `to_s`.",
+      "prediction": "Baseline catches `get_title` and maybe `translated`; it misses `Held` and `running`, and never reads naming.md.",
+      "expectations": [
+        "The report flags `translated` as a name that hides an action that writes a file.",
+        "The report flags the class name `Held` as a bare participle that does not say what the type is.",
+        "The report flags `running` as a yes-or-no question that does not read as one in Ruby, such as `running?`.",
+        "The report flags `get_title` for its `get_` prefix on a query.",
+        "The report does not list `inherited` as a naming problem.",
+        "The report does not list `to_s` as a naming problem.",
+        "The run reads the skill's references/naming.md."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "contexts",
+      "hypothesis": "H4: with contexts, the lenses apply inside each one and only the interfaces between them are checked.",
+      "setup": "evals/files/contexts/setup.sh",
+      "prompt": "/coding:inspect Next I want to add order tracking to Shipping. Prepare for it.",
+      "expected_output": "Flags `Shipment.from_order` reaching into `Sales::Order` internals instead of using the `OrderPlaced` event; treats `Customer` and `Recipient` as separate by design.",
+      "prediction": "Baseline flags the instance_variable_get leak; in some runs it also proposes merging Customer and Recipient as duplication.",
+      "expectations": [
+        "The report flags `Shipment.from_order` reading `@customer` out of `Sales::Order` with `instance_variable_get`.",
+        "The report ties that finding to the boundary between the contexts, such as using the `OrderPlaced` event instead.",
+        "The report does not propose merging `Sales::Customer` and `Shipping::Recipient` or call them duplicated.",
+        "The report does not call the different names `Customer` and `Recipient` an inconsistency."
+      ]
+    }
+  ]
+}

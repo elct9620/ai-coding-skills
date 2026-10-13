@@ -1,2 +1,3 @@
 *-workspace/
 tmp/
+__pycache__/

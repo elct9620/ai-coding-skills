@@ -1,0 +1,38 @@
+{
+  "skill_name": "write",
+  "evals": [
+    {
+      "id": 1,
+      "name": "held-decision",
+      "hypothesis": "H5, H8, H9: an item only the user can decide is reported and set aside while the rest of the round finishes.",
+      "setup": "evals/files/held-decision/setup.sh",
+      "prompt": "/coding:write Take the work list I confirmed earlier in this conversation:\n\n| Order | # | The work |\n|---|---|---|\n| 1 | G1 | list notes by tag |\n| 2 | G2 | notify the team when a note is pinned |\n| 3 | G3 | pinning a note twice puts it in the pinned list twice |\n\nBounds: none.\nReferences: docs/spec.md\n\nThis round runs unattended under /goal; nobody is around to answer questions.",
+      "expected_output": "G1 and G3 done with tests; G2 not built because the notification channel is the user's decision, reported and set aside; the report opens with a conclusion table listing it.",
+      "prediction": "Baseline finishes G1 and G3 but either invents a channel for G2 (4 fails) or ends asking the user (5 passes only in prose); it has no conclusion table (6).",
+      "expectations": [
+        "Listing notes by tag is implemented and a test covers it.",
+        "Pinning a note twice keeps it in the pinned list once, and a test covers it.",
+        "Every test in outputs/repo passes.",
+        "No notification channel — email, chat, webhook, or a stand-in notifier — is implemented for G2.",
+        "The report names G2 as waiting on the user's decision and states the open question, such as which channel notifies the team.",
+        "The report opens with a conclusion table that has a row for decisions held for the user.",
+        "The run reads the skill's references/smallest-change.md or references/testing.md."
+      ]
+    },
+    {
+      "id": 2,
+      "name": "shared-defect",
+      "hypothesis": "H6: a defect is fixed where its cause lives, covering every caller (regression check; the old /write had this too).",
+      "setup": "evals/files/shared-defect/setup.sh",
+      "prompt": "/coding:write Invoices show $10.5 for an amount of 1005 cents; it should read $10.05.",
+      "expected_output": "The fix lands in MoneyFormat.dollars, a test pins the padded cents, and the report notes receipts share the fix.",
+      "prediction": "Baseline passes all four; this eval guards against a regression, not for a delta.",
+      "expectations": [
+        "The fix is made in `MoneyFormat.dollars`, not in `Invoice`.",
+        "A test asserts that 1005 cents formats as `$10.05`.",
+        "The report notes that receipts use the same formatter and are fixed too.",
+        "Every test in outputs/repo passes."
+      ]
+    }
+  ]
+}

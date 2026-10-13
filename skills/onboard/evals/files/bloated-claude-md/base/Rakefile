@@ -1,0 +1,11 @@
+require "rake/testtask"
+
+Rake::TestTask.new(:test) { |t| t.libs << "lib"; t.pattern = "test/**/*_test.rb" }
+
+desc "Import the bank CSV files under data/ into the ledger"
+task(:import) { ruby "-Ilib", "-e", "require 'ledger_sync/app'; LedgerSync::App.build.import" }
+
+desc "Print the balance of every account"
+task(:balance) { ruby "-Ilib", "-e", "require 'ledger_sync/app'; LedgerSync::App.build.balance" }
+
+task default: :test
