@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.17.0](https://github.com/elct9620/ai-coding-skills/compare/v0.16.0...v0.17.0) (2026-10-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **skills:** /refactor and the coding:testing, coding:refactoring,
+* **skills:** coding:architecture and coding:design-forces are removed; their guidance lives under the inspect skill's references.
+
+### Features
+
+* **skills:** add onboard to maintain AGENTS.md as session onboarding ([d02cc64](https://github.com/elct9620/ai-coding-skills/commit/d02cc645eed25470a9e5504fdfaaeb20c81de428))
+* **skills:** fix onboard's AGENTS.md sections and bound each against growth ([91f02f9](https://github.com/elct9620/ai-coding-skills/commit/91f02f971394a1ee6c87260a76f7c415b0b0de4d))
+* **skills:** restore inspect's goal-gap question and open both reports with a conclusion ([86dae8f](https://github.com/elct9620/ai-coding-skills/commit/86dae8fc5f10867cc2490686791a45f928088e15))
+* **skills:** rewrite inspect as a principle-based skill on shape and names ([d59eb44](https://github.com/elct9620/ai-coding-skills/commit/d59eb442988d7533d2c1c96967921137b78db017))
+* **skills:** rewrite write as a principle-based skill and merge refactor into it ([1a97790](https://github.com/elct9620/ai-coding-skills/commit/1a977905b6437dc22701ce406d2b48bbb3742d25))
+
+
+### Bug Fixes
+
+* **skills:** allow state fields named by participles and stop forcing ids into every mention ([91a60dc](https://github.com/elct9620/ai-coding-skills/commit/91a60dc06de1720ff917c5bff45cec6b513553b5))
+* **skills:** let inspect choose the record for decisions write flags ([d28ede3](https://github.com/elct9620/ai-coding-skills/commit/d28ede3d8d3a5c898b3999fe0cae7b9de38af362))
+* **skills:** tighten the rules eval runs broke, and exempt held decisions from spec drift ([93eb4a5](https://github.com/elct9620/ai-coding-skills/commit/93eb4a5d9f196e352933f75670f6c3d65fdac135))
+
 ## [0.16.0](https://github.com/elct9620/ai-coding-skills/compare/v0.15.1...v0.16.0) (2026-09-05)
 
 
