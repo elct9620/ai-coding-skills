@@ -47,7 +47,7 @@ Some items only the user can decide: a structural choice, a preference, a contra
 
 ## References
 
-Open a reference when the work contains what it covers.
+Open `references/smallest-change.md` and `references/testing.md` before the first item. Open `references/design.md` when the work contains what it covers.
 
 | Reference | Open when the work involves |
 |---|---|
@@ -58,7 +58,7 @@ Open a reference when the work contains what it covers.
 ## Communication
 
 - Write in the user's language. Explain each term at first use, and restate a concept when returning to it.
-- Name an item by its id together with a phrase saying what it is, never the id alone.
+- Every mention of an item id, in tables and prose alike, carries a phrase saying what it is.
 - Use a diagram where structure carries meaning: flow, layers, tree (before → after), sequence, or pseudocode.
 - Draw diagrams with Unicode box-drawing characters and English labels.
 - Keep one point per sentence and one topic per paragraph.

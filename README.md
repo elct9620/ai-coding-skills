@@ -92,8 +92,8 @@ Each "Done when" line maps to a row of the conclusion table that `/write` and `/
 
 Done when:
 - The final /coding:write conclusion shows each item done or held for me, and the tests passing.
-- The final /coding:inspect conclusion shows no High findings, specs and code agreeing,
-  and full coverage.
+- The final /coding:inspect conclusion shows no High findings, full coverage, and specs and
+  code agreeing apart from gaps a held decision leaves.
 - Every decision held for me is listed in a conclusion.
 ```
 

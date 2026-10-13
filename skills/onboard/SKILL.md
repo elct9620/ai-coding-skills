@@ -21,7 +21,7 @@ Every session starts as a capable newcomer: it reads code fluently and knows not
 
 ### Intent
 
-The code cannot tell why it exists. Only the user can define the intent, so ask for it and write their words down. When the project keeps an intent document, point to it instead of copying it.
+The code cannot tell why it exists. Only the user can define the intent, so ask for it and write their words down. Until they answer, the section holds a marked question, never a guessed purpose. When the project keeps an intent document, point to it instead of copying it.
 
 ### How We Work
 
@@ -38,7 +38,7 @@ Name the workflow skills here, so `/goal` can point to this section: `/coding:wr
 
 ### Index
 
-Each row names a file or directory and what reading it teaches — a composition root, a main router, the specs, the architecture document.
+Each row names a file or directory and what reading it teaches about the whole — a composition root, a main router, the specs, the architecture document. A row never lists the commands a file holds.
 
 ```markdown
 | Path | What you learn here |

@@ -27,7 +27,7 @@ In checking, each drift from the confirmed list is one of two kinds:
 | Kind | Example | Handling |
 |---|---|---|
 | Verifiable | The specs, the Bounds, a formula, or a convention settles it | Verify it, then hand the finding to `/write` |
-| Preference | The work list left a choice open, and the work made it | Hold it for the user; never decide it |
+| Preference | The work list left a choice open, and the work made it | Hold it for the user: list the options without leaning toward one |
 
 ## Principles
 
@@ -72,14 +72,14 @@ When the project divides into contexts — areas with their own vocabulary and r
 ## Communication
 
 - Write in the user's language. Explain each term at first use, and restate a concept when returning to it.
-- Name a finding by its id together with a phrase saying what it is, never the id alone.
+- Every mention of a finding id, in tables and prose alike, carries a phrase saying what it is.
 - Use a diagram where structure carries meaning: flow, layers, tree (before → after), sequence, or pseudocode.
 - Draw diagrams with Unicode box-drawing characters and English labels.
 - Keep one point per sentence and one topic per paragraph; add two or three sentences under a finding only when its row cannot carry the reasoning.
 
 ## Output
 
-The report opens with its conclusion. The conclusion states facts only and never says whether the round may end; `/goal` reads its four rows, so keep them in this order.
+The report opens with its conclusion. The conclusion states facts only and never says whether the round may end; `/goal` reads its four rows, so keep them in this order. The conclusion table is the only summary: the report closes without a verdict on the round.
 
 ```markdown
 # /inspect [--deep] — <what this round is for>
@@ -89,7 +89,7 @@ The report opens with its conclusion. The conclusion states facts only and never
 | Check | Result |
 |---|---|
 | High findings | <count; each as id + phrase> |
-| Specs and code | <agree, or what differs> |
+| Specs and code | <agree, or what differs; mark each gap a held decision leaves> |
 | Decisions held for the user | <count; each as id + phrase> |
 | Coverage | <full, or what was skipped> — <command or range read> |
 
