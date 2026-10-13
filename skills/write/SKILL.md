@@ -7,7 +7,7 @@ allowed-tools: Read, Grep, Glob, Edit, Write, Bash(git status:*), Bash(git log:*
 
 ## Purpose
 
-`/write` answers one question: **is it done right, and done the right way?** Right is the implementation: the behavior the specs promise, at the smallest scope that works. The right way is the process: tests that hold, the project's Working Agreement, and nothing reopened that `/inspect` settled. Shape and names belong to `/inspect`.
+`/write` answers one question: **is it done right, and done the right way?** Right is the implementation: the behavior the specs promise, at the smallest scope that works. The right way is the process: tests that hold, How We Work in `AGENTS.md`, and nothing reopened that `/inspect` settled. Shape and names belong to `/inspect`.
 
 ## Sources
 
@@ -40,7 +40,7 @@ A refactor that would change the contract — return meaning, completion timing,
 - Write what is true now. A corrected attempt needs no comment about the wrong one.
 - Reach for a design pattern or an abstraction only for a variation that exists today.
 - Follow `docs/architecture.md` and the References. A departure is reported, not taken quietly.
-- Follow the Working Agreement in `AGENTS.md` for commits, specs, and documents.
+- Follow How We Work in `AGENTS.md` for commits, specs, and documents.
 
 ## References
 

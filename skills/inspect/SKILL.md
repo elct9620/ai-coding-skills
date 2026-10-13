@@ -29,7 +29,7 @@ In Review mode the findings go back to `/write`. Drift from the work list, its b
 - State each claim at the strength of its evidence. A false all-clear is worse than a miss.
 - What the user decided is given. A README or spec that disagrees with the newest goal is an update to make.
 - An item that still turns on an answer stays out of the work list, under Still unknown.
-- Follow the Working Agreement in `AGENTS.md` for where specs live and how the project reviews.
+- Follow How We Work in `AGENTS.md` for where specs live and how the project reviews.
 
 `--deep` means the user cannot see the problem. Trace each lead until it is confirmed or dropped, and follow each promise the goal relies on into the code that keeps it, even outside the diff.
 

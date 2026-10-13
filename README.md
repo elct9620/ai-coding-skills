@@ -87,7 +87,7 @@ Every line under "Done when" maps to output that `/write` and `/inspect` print, 
 /goal Finish the work list confirmed by /coding:inspect.
 
 - Implement each item with /coding:write, then review it with /coding:inspect; hand findings back to /coding:write.
-- Follow the Working Agreement in AGENTS.md.
+- Follow How We Work in AGENTS.md.
 - Actions that need my approval, such as pushing, are outside this goal.
 
 Done when:

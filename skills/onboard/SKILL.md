@@ -1,64 +1,82 @@
 ---
 name: onboard
-description: Maintain AGENTS.md as the onboarding every new session reads first — only what the code cannot tell, how this project works, and where to look first to grasp the whole. Use when creating AGENTS.md (usually after /init), pruning it, or bringing it up to date after the project changed.
+description: Maintain AGENTS.md as the onboarding every new session reads first — the project's intent, how we work, and an index of where to look first. Use when creating AGENTS.md (usually after /init), pruning it, or bringing it up to date after the project changed.
 argument-hint: [what changed]
 allowed-tools: Read, Grep, Glob, Edit, Write, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(ls:*), Bash(test:*), Bash(wc:*)
 ---
 
 ## Purpose
 
-Every session starts as a capable newcomer: it reads code fluently and knows nothing the code does not say. `AGENTS.md` is what it reads before anything else, and it loads into every session, so each line has to be worth its cost every time. This skill answers one question per line: **would a newcomer need this, and could they get it from the code?**
+Every session starts as a capable newcomer: it reads code fluently and knows nothing the code does not say. `AGENTS.md` is what it reads first, in every session, so each line has to be worth that cost every time. This skill answers one question per line: **would a newcomer need this, and could they get it from the code?**
+
+## Sections
+
+`AGENTS.md` has exactly three sections, in this order. Each has a fixed shape, because lists, tables, and paragraphs all grow when nothing bounds them.
+
+| Section | Holds | Shape |
+|---|---|---|
+| `## Intent` | Why the project exists and for whom | At most three sentences, or one sentence pointing to an intent document |
+| `## How We Work` | Decisions every change follows, commands the tooling does not list, what moves together | One line per rule; an upkeep table |
+| `## Index` | Where to look first to grasp the whole | A two-column table, at most ten rows |
+
+### Intent
+
+The code cannot tell why it exists. Only the user can define the intent, so ask for it and write their words down. When the project keeps an intent document, point to it instead of copying it.
+
+### How We Work
+
+A rule is one line a reader can act on. A command belongs here only when the tool's own catalog — `rake -T`, `package.json` scripts, `make help` — does not show it. What must change together goes in a two-column table:
+
+```markdown
+| When this changes | Also update |
+|---|---|
+| A behavior or an interface | `.spec/` first; `sumi verify` reports no difference |
+| A module, layer, or dependency | `docs/architecture.md` |
+```
+
+Name the workflow skills here, so `/goal` can point to this section: `/coding:write` implements, `/coding:inspect` reviews.
+
+### Index
+
+Each row names a file or directory and what reading it teaches — a composition root, a main router, the specs, the architecture document.
+
+```markdown
+| Path | What you learn here |
+|---|---|
+| `src/app.ts` | Where every module is wired together |
+| `docs/architecture.md` | Layers and the rules between them |
+```
+
+When ten rows cannot cover the project, give a large directory its own `AGENTS.md`. Claude Code loads it when work reaches that directory.
 
 ## Principles
 
-- The reader already knows the language, the framework, and the common practice. A line earns its place by what differs from that.
-- What the code cannot tell comes from the user. Ask for it; reading more code only finds what was already derivable.
-- Write what is true now. A line that explains how the project got here belongs in the history, not here.
-- Every line is concrete enough to check: a command that runs, a path that exists, a rule whose outcome can be observed.
-- Fewer lines are followed more reliably. Stay under 200, and prefer removing a line to adding a qualifier.
+- The reader already knows the language, the framework, and common practice. A line earns its place by what differs.
+- A list that will drift keeps its intent and a pointer to the document that owns it.
+- What the code already shows stays out; how the system behaves lives in the specs.
+- Write what is true now. How the project got here belongs in its history.
+- Prefer removing a line to adding a qualifier.
 
-## Contents
+## Writing
 
-`AGENTS.md` holds three kinds of content, each with its own test.
+Write `AGENTS.md` in ASD-STE100 style, in the user's language:
 
-| Section | A line stays when | Check |
-|---|---|---|
-| `## Context` | the code cannot tell it — a decision, a constraint, an environment quirk | reading the code would not reach it |
-| `## Working Agreement` | it says how work is done here, including commands | the command runs; the rule's outcome is observable |
-| `## Where to Start` | one file unfolds most of the whole — a composition root, a main router, an architecture doc | the path exists and leads to most modules |
-
-What belongs elsewhere stays out: how the system should behave lives in the specs, and conventions the code already shows live in the code.
-
-The Working Agreement is where `/goal` points, so it names the workflow in one line each:
-
-```markdown
-## Working Agreement
-
-- Implement with `/coding:write`; review with `/coding:inspect`.
-- Run `bundle exec rspec` before committing.
-- Keep specs in `docs/specs/` current with the code; merge or remove stale ones.
-```
+- The whole file stays within 100 lines.
+- A sentence stays under 25 words; an instruction under 20, one instruction per sentence.
+- A paragraph holds one topic, at most six sentences.
+- A table cell holds a term or a short phrase, at most 15 words.
+- Active voice and simple tenses; one word for one meaning.
 
 ## Loading
 
-Claude Code reads `AGENTS.md` only when no `CLAUDE.md` or `CLAUDE.local.md` sits in the working directory or above it. When either exists, `CLAUDE.md` must import the file with `@AGENTS.md`, or this onboarding silently stops loading. Claude-specific lines go below that import in `CLAUDE.md`.
-
-## Communication
-
-Write `AGENTS.md` and the report in ASD-STE100 style, in the user's language:
-
-- One instruction per sentence, in the imperative; the condition comes before it.
-- Instructions stay under 20 words; descriptions under 25.
-- Active voice and simple tenses.
-- One word for one meaning; reuse that word everywhere.
-- One topic per paragraph, at most six sentences.
+Claude Code reads `AGENTS.md` only when no `CLAUDE.md` or `CLAUDE.local.md` sits in the working directory or above it. This skill edits `AGENTS.md` only. When a `CLAUDE.md` exists without an `@AGENTS.md` import, report it; the user decides the fix.
 
 ## Output
 
 Report the change so each claim can be checked:
 
 1. Show the diff to `AGENTS.md`.
-2. For each removed line, name why: derivable from code, stale, or belongs in the specs.
-3. List every path under Where to Start with the result of checking that it exists.
-4. State the line count.
-5. State the loading result: read directly, imported by `CLAUDE.md`, or not loaded — and what fixes the last case.
+2. For each removed line, name why: derivable from code, stale, a drifting list, or belongs in the specs.
+3. List every path in the Index with the result of checking that it exists.
+4. State the line count against the 100-line limit, and the Index row count against ten.
+5. State the loading result: read directly, imported by `CLAUDE.md`, or not loaded.
