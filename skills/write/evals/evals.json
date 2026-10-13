@@ -41,11 +41,11 @@
       "setup": "evals/files/naming-in-code/setup.sh",
       "prompt": "/coding:write Implement the behaviors in docs/spec.md that the code does not cover yet.",
       "expected_output": "Four behaviors with tests; new names such as `languages`, `lines_for(language)`, `translating?`, `review`/`unreviewed_segments`, with no bare `translated` or `reviewed` as a method or value.",
-      "prediction": "Both versions are likely to reach for `translated(language)` or `reviewed` in some runs; write does not load naming.md, so this may show a gap rather than a delta.",
+      "prediction": "Both versions record review state in a `reviewed` field, which the convention allows; the check is whether a method or type hides its role behind a bare participle.",
       "expectations": [
         "Every test in outputs/repo passes.",
         "Each of the four uncovered behaviors in docs/spec.md has a test.",
-        "No new method, type, or variable is a bare participle such as `translated` or `reviewed`; a participle beside a noun or a Ruby predicate ending in `?` is fine.",
+        "No new method or type is named by a bare participle such as `translated(language)`; a participle beside a noun, a field or variable recording a state (`reviewed`), or a Ruby predicate ending in `?` is fine.",
         "No new method starts with `get_`."
       ]
     }

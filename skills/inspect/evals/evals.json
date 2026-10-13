@@ -18,7 +18,7 @@
         "The report holds the cancelled-orders choice for the user, without judging it right or wrong and without telling /write to change it.",
         "The report opens with a conclusion table before the findings table.",
         "The conclusion states facts only and does not say whether the round may end or is unfinished.",
-        "Every finding id in the report appears together with a phrase saying what it is.",
+        "Each finding id is introduced with a phrase saying what it is.",
         "The run changes no file in the repository."
       ]
     },

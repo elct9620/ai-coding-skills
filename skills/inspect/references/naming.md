@@ -18,7 +18,7 @@ A name is right when its call site reads as a phrase: `player.name`, `player.att
 
 ## Participles
 
-A bare `-ed` or `-ing` hides the role: a reader cannot tell a query from a question or an action. Use one only after a verb (`release_queued`), beside a noun (`running_router`, `StepFailed`), as an enum state (`Running`), as a dictionary noun (`heading`), or where a convention fixes it (`sorted()` in Swift).
+A bare `-ed` or `-ing` hides the role: a reader cannot tell a query from a question or an action. Use one only after a verb (`release_queued`), beside a noun (`running_router`, `StepFailed`), as a field or variable recording a state (`expired`, `reviewed`), as an enum state (`Running`), as a dictionary noun (`heading`), or where a convention fixes it (`sorted()` in Swift).
 
 ## Contexts
 

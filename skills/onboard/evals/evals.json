@@ -6,7 +6,10 @@
       "name": "bloated-claude-md",
       "hypothesis": "H7, H8: onboard writes the three bounded sections, asks for the intent instead of inventing it, and reports CLAUDE.md shadowing AGENTS.md without editing it.",
       "setup": "evals/files/bloated-claude-md/setup.sh",
-      "configs": ["with_skill", "without_skill"],
+      "configs": [
+        "with_skill",
+        "without_skill"
+      ],
       "prompt": "/coding:onboard Create AGENTS.md for this repository.",
       "baseline_prompt": "Create AGENTS.md for this repository.",
       "expected_output": "AGENTS.md with Intent, How We Work, and Index; at most 100 lines; an Index of at most ten existing paths; no command `rake -T` already lists; the intent left to the user; CLAUDE.md untouched and the loading problem reported.",
@@ -17,7 +20,7 @@
         "The Index section is a two-column table with at most ten rows.",
         "Every path in the Index exists in outputs/repo.",
         "The Intent section states no purpose or audience the repository itself does not state; it asks the user or leaves a marked place for them.",
-        "AGENTS.md does not list `rake test`, `rake import`, or `rake balance`, which `rake -T` already shows.",
+        "AGENTS.md does not copy the command catalog `rake -T` already shows; a rule that names a command, such as running the tests before a commit, is fine.",
         "outputs/repo/CLAUDE.md is unchanged from the original commit.",
         "The report says that CLAUDE.md keeps AGENTS.md from loading, or that CLAUDE.md lacks an `@AGENTS.md` import."
       ]

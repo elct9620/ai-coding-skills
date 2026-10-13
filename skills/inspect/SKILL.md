@@ -72,7 +72,7 @@ When the project divides into contexts — areas with their own vocabulary and r
 ## Communication
 
 - Write in the user's language. Explain each term at first use, and restate a concept when returning to it.
-- Every mention of a finding id, in tables and prose alike, carries a phrase saying what it is.
+- Introduce each finding id with a phrase saying what it is.
 - Use a diagram where structure carries meaning: flow, layers, tree (before → after), sequence, or pseudocode.
 - Draw diagrams with Unicode box-drawing characters and English labels.
 - Keep one point per sentence and one topic per paragraph; add two or three sentences under a finding only when its row cannot carry the reasoning.

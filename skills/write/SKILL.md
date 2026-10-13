@@ -58,7 +58,7 @@ Open `references/smallest-change.md` and `references/testing.md` before the firs
 ## Communication
 
 - Write in the user's language. Explain each term at first use, and restate a concept when returning to it.
-- Every mention of an item id, in tables and prose alike, carries a phrase saying what it is.
+- Introduce each item id with a phrase saying what it is.
 - Use a diagram where structure carries meaning: flow, layers, tree (before → after), sequence, or pseudocode.
 - Draw diagrams with Unicode box-drawing characters and English labels.
 - Keep one point per sentence and one topic per paragraph.
