@@ -75,7 +75,7 @@ Every report has this shape. `/goal` checks the last line, so keep its format ex
 | G1 | Defect | existing `ExpiryPolicy` | 410 for expired → `links_spec.rb:42` | held |
 
 Departures: <from References or the recorded structure, or "none">
-Proposed records: <Patterns entry or ADR to write, or "none">
+Decisions to record: <a structural decision likely to recur, or "none">
 
 Result: Items <done>/<total> · Tests `<command>` → <pass | fail> · Net held <n>/<total>
 ```

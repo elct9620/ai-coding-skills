@@ -21,7 +21,6 @@ I use Ruby, TypeScript/JavaScript, and Golang the most. And love Clean Architect
 | Coding       | Refactoring             |
 | Coding       | Security                |
 
-
 ## Structure
 
 The plugin ships three skills and one command; each skill keeps its knowledge in `references/`.

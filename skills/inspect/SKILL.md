@@ -43,7 +43,7 @@ Both lenses always apply. Open a reference only when the scope contains what it 
 | Shape, open decision | Is a structural commitment still open — CA, DDD, a pattern, a scaffold? | `references/forces.md` |
 | Names | Does each word mean one thing, match the codebase, and carry its intent? | `references/naming.md` |
 
-In Review mode also check what `/write` owns, from its output: an item built new where something existing answered it, a test net that was never proven, a change that breaks the specs.
+In Review mode also check what `/write` owns, from its output: an item built new where something existing answered it, a test net that was never proven, a change that breaks the specs. For each decision `/write` flags to record, propose the record `references/structure.md` matches to its weight.
 
 ## Evidence
 
