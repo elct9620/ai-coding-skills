@@ -1,7 +1,7 @@
 require_relative "customer"
 
 module Sales
-  OrderPlaced = Struct.new(:order_id, :recipient_name, :address, keyword_init: true)
+  OrderPlaced = Struct.new(:order_id, :name, :address, :phone, keyword_init: true)
 
   class Order
     attr_reader :id
@@ -12,7 +12,7 @@ module Sales
     end
 
     def place
-      OrderPlaced.new(order_id: @id, recipient_name: @customer.name, address: @customer.address)
+      OrderPlaced.new(order_id: @id, name: @customer.name, address: @customer.address, phone: @customer.phone)
     end
   end
 end

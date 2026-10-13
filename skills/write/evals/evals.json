@@ -6,15 +6,15 @@
       "name": "held-decision",
       "hypothesis": "H5, H8, H9: an item only the user can decide is reported and set aside while the rest of the round finishes.",
       "setup": "evals/files/held-decision/setup.sh",
-      "prompt": "/coding:write Take the work list I confirmed earlier in this conversation:\n\n| Order | # | The work |\n|---|---|---|\n| 1 | G1 | list notes by tag |\n| 2 | G2 | notify the team when a note is pinned |\n| 3 | G3 | pinning a note twice puts it in the pinned list twice |\n\nBounds: none.\nReferences: docs/spec.md\n\nThis round runs unattended under /goal; nobody is around to answer questions.",
-      "expected_output": "G1 and G3 done with tests; G2 not built because the notification channel is the user's decision, reported and set aside; the report opens with a conclusion table listing it.",
-      "prediction": "Baseline finishes G1 and G3 but either invents a channel for G2 (4 fails) or ends asking the user (5 passes only in prose); it has no conclusion table (6).",
+      "prompt": "/coding:write Take the work list I confirmed earlier in this conversation:\n\n| Order | # | The work |\n|---|---|---|\n| 1 | G1 | list notes by tag |\n| 2 | G2 | keep notes across restarts, shared by the whole team |\n| 3 | G3 | pinning a note twice puts it in the pinned list twice |\n\nBounds: none.\nReferences: docs/spec.md",
+      "expected_output": "G1 and G3 done with tests; G2 not built because where a team-shared notebook lives is the user's decision, reported and set aside; the report opens with a conclusion table listing it.",
+      "prediction": "A local JSON or PStore file looks like a sensible default, so the baseline builds one for G2 in some runs (4 fails) or stops to ask before finishing G1 and G3.",
       "expectations": [
         "Listing notes by tag is implemented and a test covers it.",
         "Pinning a note twice keeps it in the pinned list once, and a test covers it.",
         "Every test in outputs/repo passes.",
-        "No notification channel — email, chat, webhook, or a stand-in notifier — is implemented for G2.",
-        "The report names G2 as waiting on the user's decision and states the open question, such as which channel notifies the team.",
+        "No persistence — a file, a database, or any store — is implemented for G2.",
+        "The report names G2 as waiting on the user's decision and states the open question, such as where the team's shared notebook lives.",
         "The report opens with a conclusion table that has a row for decisions held for the user.",
         "The run reads the skill's references/smallest-change.md or references/testing.md."
       ]
@@ -32,6 +32,21 @@
         "A test asserts that 1005 cents formats as `$10.05`.",
         "The report notes that receipts use the same formatter and are fixed too.",
         "Every test in outputs/repo passes."
+      ]
+    },
+    {
+      "id": 3,
+      "name": "naming-in-code",
+      "hypothesis": "H3: names /write introduces show their role; no bare participle names a method, type, or value.",
+      "setup": "evals/files/naming-in-code/setup.sh",
+      "prompt": "/coding:write Implement the behaviors in docs/spec.md that the code does not cover yet.",
+      "expected_output": "Four behaviors with tests; new names such as `languages`, `lines_for(language)`, `translating?`, `review`/`unreviewed_segments`, with no bare `translated` or `reviewed` as a method or value.",
+      "prediction": "Both versions are likely to reach for `translated(language)` or `reviewed` in some runs; write does not load naming.md, so this may show a gap rather than a delta.",
+      "expectations": [
+        "Every test in outputs/repo passes.",
+        "Each of the four uncovered behaviors in docs/spec.md has a test.",
+        "No new method, type, or variable is a bare participle such as `translated` or `reviewed`; a participle beside a noun or a Ruby predicate ending in `?` is fine.",
+        "No new method starts with `get_`."
       ]
     }
   ]

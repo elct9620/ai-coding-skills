@@ -1,3 +1,3 @@
 module Sales
-  Customer = Struct.new(:name, :email, :address, :preferences, keyword_init: true)
+  Customer = Struct.new(:name, :email, :address, :phone, keyword_init: true)
 end

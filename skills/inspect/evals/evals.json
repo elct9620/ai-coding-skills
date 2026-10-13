@@ -29,7 +29,7 @@
       "setup": "evals/files/naming/setup.sh",
       "prompt": "/coding:inspect The last commit adds the project class. Check it before I build the translation workflow on top of it.",
       "expected_output": "Flags `Held` (bare participle as a type), `translated` (an action named as a participle), `running` (a question that does not read as one), and `get_title` (`get_` on a query); keeps `inherited` and `to_s`.",
-      "prediction": "Baseline catches `get_title` and maybe `translated`; it misses `Held` and `running`, and never reads naming.md.",
+      "prediction": "Regression check: iteration 1 showed the baseline catches these textbook names too; only reading naming.md differs.",
       "expectations": [
         "The report flags `translated` as a name that hides an action that writes a file.",
         "The report flags the class name `Held` as a bare participle that does not say what the type is.",
@@ -43,14 +43,14 @@
     {
       "id": 3,
       "name": "contexts",
-      "hypothesis": "H4: with contexts, the lenses apply inside each one and only the interfaces between them are checked.",
+      "hypothesis": "H4: with contexts visible only from directories and vocabulary, the lenses apply inside each one and only the interfaces between them are checked.",
       "setup": "evals/files/contexts/setup.sh",
       "prompt": "/coding:inspect Next I want to add order tracking to Shipping. Prepare for it.",
-      "expected_output": "Flags `Shipment.from_order` reaching into `Sales::Order` internals instead of using the `OrderPlaced` event; treats `Customer` and `Recipient` as separate by design.",
-      "prediction": "Baseline flags the instance_variable_get leak; in some runs it also proposes merging Customer and Recipient as duplication.",
+      "expected_output": "Flags `Shipment.from_order` reaching into `Sales::Order` internals; treats `Customer` and `Recipient` as separate by design despite their overlapping fields.",
+      "prediction": "With no recorded rule and overlapping fields, the baseline proposes merging Customer and Recipient in some runs (3, 4) and may miss the event as the boundary (2).",
       "expectations": [
         "The report flags `Shipment.from_order` reading `@customer` out of `Sales::Order` with `instance_variable_get`.",
-        "The report ties that finding to the boundary between the contexts, such as using the `OrderPlaced` event instead.",
+        "The report ties that finding to the boundary between the contexts, such as building the shipment from the `OrderPlaced` event instead.",
         "The report does not propose merging `Sales::Customer` and `Shipping::Recipient` or call them duplicated.",
         "The report does not call the different names `Customer` and `Recipient` an inconsistency."
       ]
