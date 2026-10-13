@@ -37,10 +37,9 @@ Some items only the user can decide: a structural choice, a preference, a contra
 
 - Keep the whole in view. Before each change, re-check the scope and the files around it: callers, siblings, the convention, `git log`. A change judged from one file is judged blind.
 - Climb before writing: something that exists usually answers the item. The smallest change in the wrong place is a second defect.
-- Build outside-in: the user-facing layer first, storage decisions last.
+- Build inside the shape `/inspect` settled, outside-in — `references/design.md`.
 - Check an API against its official documentation first; read its source only when the documentation does not settle it.
-- Turn doubt about behavior into a test. A one-off `node -e` or `ruby -e` leaves no net behind.
-- Prove the net: break one promise on purpose, watch a test fail, restore it, and confirm the diff matches.
+- Write tests with the code, turn doubt into a test, and prove the net — `references/testing.md`.
 - Let names carry intent. Comment a library's public API, or a value that references something external; otherwise write none.
 - Write what is true now. A corrected attempt needs no comment about the wrong one.
 - Reach for a design pattern or an abstraction only for a variation that exists today.
@@ -54,7 +53,7 @@ Open a reference when the work contains what it covers.
 |---|---|
 | `references/smallest-change.md` | Every item — the climb, defect location, refactoring order |
 | `references/testing.md` | Every item — the test net and its proof |
-| `references/design.md` | Business rules, domain objects, schemas, API contracts, external input, or auth |
+| `references/design.md` | Building inside a shape: domain objects, layers, boundaries, auth |
 
 ## Communication
 

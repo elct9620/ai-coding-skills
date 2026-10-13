@@ -48,7 +48,7 @@ In checking, each drift from the confirmed list is one of two kinds:
 |---|---|---|
 | Shape | Is structure earned, does it follow the record, do dependencies point inward? | `references/structure.md` |
 | Shape, still open | Is a structural choice — CA, DDD, a pattern — still undecided? | `references/forces.md` |
-| Names | Does each word mean one thing, match the codebase, and carry its intent? | `references/naming.md` |
+| Names | Does the call site read as a phrase, following the convention? | `references/naming.md` |
 
 Shape includes the principles visible at that level: dependency direction, module boundaries, layers nobody needs, one concept in one place. Detail-level principles and how tests are written belong to `/write`. In checking, read `/write`'s report for an unproven test net or something rebuilt that already existed.
 

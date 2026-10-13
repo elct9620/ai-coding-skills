@@ -16,7 +16,7 @@ Break a promise from the specs on purpose — 410 becomes 404, a guard disappear
 | Green | Red | Diff matches | Held |
 | Green | Green | Diff matches | Missing — a test is owed |
 | Red | — | — | Make the baseline green first |
-| Green | Red | Diff differs | Restoration failed — stop and report |
+| Green | Red | Diff differs | Restoration failed — report and hold the item |
 
 The break comes from a promise, not the nearest operator. With no promise worth breaking, the net is Unverified.
 
