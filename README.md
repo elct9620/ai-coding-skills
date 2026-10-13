@@ -43,8 +43,8 @@ Each skill answers one question and prints output that can be checked.
 
 | Skill | Question | Checkable output |
 |---|---|---|
-| `/inspect` | Are the shape and the names right? | `Verdict:` line |
-| `/write` | Is it done right, the right way? | `Result:` line |
+| `/inspect` | What still stands between the code and the goal? | Conclusion table |
+| `/write` | Is it done right, the right way? | Conclusion table |
 | `/onboard` | Does a newcomer need this line? | Path and loading checks |
 
 Skills state principles and an output contract, not steps. Knowledge the model already has stays a keyword; references hold only where this project differs from common practice.
@@ -81,7 +81,7 @@ Each layer carries one kind of statement, so the goal stays short.
 
 ### Goal Template
 
-Every line under "Done when" maps to output that `/write` and `/inspect` print, so the evaluator judges results rather than steps.
+Each "Done when" line maps to a row of the conclusion table that `/write` and `/inspect` print first. The evaluator judges results, not steps.
 
 ```
 /goal Finish the work list confirmed by /coding:inspect.
@@ -91,9 +91,9 @@ Every line under "Done when" maps to output that `/write` and `/inspect` print, 
 - Actions that need my approval, such as pushing, are outside this goal.
 
 Done when:
-- The test suite passes.
-- The final /coding:inspect covers the whole round and reports no open High finding.
-- The final /coding:inspect reports no drift between the specs and the code.
+- The final /coding:write conclusion shows every item done and the tests passing.
+- The final /coding:inspect conclusion shows no High findings, specs and code agreeing,
+  no decisions held for the user, and full coverage.
 ```
 
 ## Usage
