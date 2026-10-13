@@ -21,16 +21,21 @@ Track the items with TaskCreate so progress stays visible.
 
 ## Kinds of work
 
-| Kind | Holds when | Reference |
-|---|---|---|
-| Feature | Each promise it makes has a test | `references/smallest-change.md` |
-| Defect | The fix sits where the cause lives and covers every caller that reaches it | `references/smallest-change.md` |
-| Refactor | The semantic contract is unchanged | `references/smallest-change.md` |
+| Kind | Holds when |
+|---|---|
+| Feature | Each promise it makes has a test |
+| Defect | The fix sits where the cause lives and covers every caller that reaches it |
+| Refactor | The semantic contract is unchanged |
 
-A refactor that would change the contract — return meaning, completion timing, error model, side effects at return — is a behavior change. Stop and report it instead of continuing as a refactor.
+A refactor that would change the contract is a behavior change. Hold it for the user instead of continuing as a refactor.
+
+## Held for the User
+
+Some items only the user can decide: a structural choice, a preference, a contract change. Follow the References and `docs/architecture.md` first. When they do not settle it, run `/inspect` to look for the user's preference. When only the user can decide, report the item, set it aside, and continue with the rest; a running `/goal` cannot stop to ask.
 
 ## Principles
 
+- Keep the whole in view. Before each change, re-check the scope and the files around it: callers, siblings, the convention, `git log`. A change judged from one file is judged blind.
 - Climb before writing: something that exists usually answers the item. The smallest change in the wrong place is a second defect.
 - Build outside-in: the user-facing layer first, storage decisions last.
 - Check an API against its official documentation first; read its source only when the documentation does not settle it.
@@ -39,7 +44,6 @@ A refactor that would change the contract — return meaning, completion timing,
 - Let names carry intent. Comment a library's public API, or a value that references something external; otherwise write none.
 - Write what is true now. A corrected attempt needs no comment about the wrong one.
 - Reach for a design pattern or an abstraction only for a variation that exists today.
-- Follow `docs/architecture.md` and the References. A departure is reported, not taken quietly.
 - Follow How We Work in `AGENTS.md` for commits, specs, and documents.
 
 ## References
@@ -50,8 +54,7 @@ Open a reference when the work contains what it covers.
 |---|---|
 | `references/smallest-change.md` | Every item — the climb, defect location, refactoring order |
 | `references/testing.md` | Every item — the test net and its proof |
-| `references/domain.md` | Business rules, invariants, or domain objects |
-| `references/boundaries.md` | Schemas, API contracts, external input, auth, or secrets |
+| `references/design.md` | Business rules, domain objects, schemas, API contracts, external input, or auth |
 
 ## Communication
 
@@ -63,7 +66,7 @@ Open a reference when the work contains what it covers.
 
 ## Output
 
-The report opens with its conclusion. The conclusion states facts only and never says whether the round may end; `/goal` reads its three rows, so keep them in this order.
+The report opens with its conclusion. The conclusion states facts only and never says whether the round may end; `/goal` reads its four rows, so keep them in this order.
 
 ```markdown
 # /write — <what this round built>
@@ -75,6 +78,7 @@ The report opens with its conclusion. The conclusion states facts only and never
 | Items | <done> of <total>; each open one as id + phrase |
 | Tests | `<command actually run>` → <pass, or what failed> |
 | Test net | proven for <n> of <total>; each other one as id + phrase |
+| Decisions held for the user | <count; each as id + phrase> |
 
 | Item | Kind | Stopped at | Promises → tests | Net |
 |---|---|---|---|---|

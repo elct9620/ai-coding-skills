@@ -31,7 +31,7 @@ coding-skills/
 │   ├── inspect/      # Analyze shape and names (read-only)
 │   │   └── references/   structure, forces, naming
 │   ├── write/        # Implement, fix, or refactor
-│   │   └── references/   smallest-change, testing, domain, boundaries
+│   │   └── references/   smallest-change, testing, design
 │   └── onboard/      # Maintain AGENTS.md
 └── commands/
     └── roadmap.md    # Spec-to-implementation tracking
@@ -91,9 +91,10 @@ Each "Done when" line maps to a row of the conclusion table that `/write` and `/
 - Actions that need my approval, such as pushing, are outside this goal.
 
 Done when:
-- The final /coding:write conclusion shows every item done and the tests passing.
+- The final /coding:write conclusion shows each item done or held for me, and the tests passing.
 - The final /coding:inspect conclusion shows no High findings, specs and code agreeing,
-  no decisions held for the user, and full coverage.
+  and full coverage.
+- Every decision held for me is listed in a conclusion.
 ```
 
 ## Usage
