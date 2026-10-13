@@ -90,11 +90,39 @@ Choose the appropriate command based on your task:
 
 ### Recommended Workflow
 
+Plan with the user present, then let `/goal` run the work list to the end.
+
 ```
-/inspect → /write | /refactor → /inspect
+/inspect ──confirm──▶ /goal ┬─▶ /write ─▶ /inspect ─┐
+ (plan)    work list        │      ▲    findings    │
+                            │      └────────────────┘
+                            └─▶ done: outcome criteria hold
 ```
 
-Open with `/inspect` to take in the whole the work sits in and confirm what still stands between it and the goal you named, then clarify until the work list for this round is settled — anything still unknown stays out of the list, any limit you set along the way is recorded as the round's bounds, and anything you point at as the way to do the work is recorded as its references. `/write` or `/refactor` works from that list and stays inside both. Running `/inspect` again afterwards quotes them back and reports whether the work stayed inside them.
+Each layer carries one kind of statement, so the goal stays short.
+
+| Layer | Holds | Checked by |
+|---|---|---|
+| `AGENTS.md` | How this project works | The agent, as guidance |
+| `/goal` | This round's outcome | The goal evaluator |
+| Hooks | Irreversible actions | The harness, before the action |
+
+### Goal Template
+
+Every line under "Done when" maps to output that `/write` and `/inspect` print, so the evaluator judges results rather than steps.
+
+```
+/goal Finish the work list confirmed by /inspect.
+
+- Implement each item with /write, then review it with /inspect; hand findings back to /write.
+- Follow the working agreement in AGENTS.md.
+- Actions that need my approval, such as pushing, are outside this goal.
+
+Done when:
+- The test suite passes.
+- The final /inspect covers the whole round and reports no open High finding.
+- The final /inspect reports no drift between the specs and the code.
+```
 
 Use `/roadmap init` to create a tracking index from your SPEC.md, then `/roadmap status` to check progress as you implement.
 
