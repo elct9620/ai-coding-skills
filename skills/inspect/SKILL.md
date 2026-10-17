@@ -20,7 +20,7 @@ A **work list** is the table of what this round does, in order. It is **confirme
 | Planning | No confirmed work list in this conversation | Asks the user, converges on a work list |
 | Checking | A confirmed work list exists | Asks nothing; compares the work with the list, its Bounds, and its References |
 
-In planning, each answer settles an unknown or sets a bound, and the list is redrawn. A confirmed list runs to the end without stopping, so offer no checkpoints inside it.
+In planning, each answer settles an unknown or sets a bound, and the list is redrawn. Show the redrawn list and stop: answers are not approval, even when each takes the recommendation and nothing is still unknown. Once approved, the list runs to the end without stopping, so offer no checkpoints inside it.
 
 In checking, each drift from the confirmed list is one of two kinds:
 

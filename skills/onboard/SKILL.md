@@ -16,7 +16,7 @@ Every session starts as a capable newcomer: it reads code fluently and knows not
 | Section | Holds | Shape |
 |---|---|---|
 | `## Intent` | Why the project exists and for whom | At most three sentences, or one sentence pointing to an intent document |
-| `## How We Work` | Decisions every change follows, commands the tooling does not list, what moves together | One line per rule; an upkeep table |
+| `## How We Work` | Decisions every change follows, commands the tooling does not list, what moves together | A rule table of at most five topics; an upkeep table |
 | `## Index` | Where to look first to grasp the whole | A two-column table, at most ten rows |
 
 ### Intent
@@ -25,7 +25,17 @@ The code cannot tell why it exists. Only the user can define the intent, so ask 
 
 ### How We Work
 
-A rule is one line a reader can act on. A command belongs here only when the tool's own catalog — `rake -T`, `package.json` scripts, `make help` — does not show it. What must change together goes in a two-column table:
+A rule is a short phrase a reader can act on. Rules sit in a two-column table, grouped by the area of work they govern:
+
+```markdown
+| Topic | Rule |
+|---|---|
+| Data | The ledger is append-only; never commit `data/` |
+| Commits | Run `rake` first; write messages in English |
+| Workflow | `/coding:write` implements; `/coding:inspect` reviews |
+```
+
+A topic names an area most changes touch, so five cover the project. A rule that needs a sixth topic is narrow enough for the code, the specs, or a nested `AGENTS.md`. A command belongs here only when the tool's own catalog — `rake -T`, `package.json` scripts, `make help` — does not show it. What must change together goes in a two-column table:
 
 ```markdown
 | When this changes | Also update |
@@ -34,7 +44,7 @@ A rule is one line a reader can act on. A command belongs here only when the too
 | A module, layer, or dependency | `docs/architecture.md` |
 ```
 
-Name the workflow skills here, so `/goal` can point to this section: `/coding:write` implements, `/coding:inspect` reviews.
+Name the workflow skills in a Workflow row, so `/goal` can point to this section.
 
 ### Index
 
@@ -64,7 +74,7 @@ Write `AGENTS.md` in ASD-STE100 style, in the user's language:
 - The whole file stays within 100 lines.
 - A sentence stays under 25 words; an instruction under 20, one instruction per sentence.
 - A paragraph holds one topic, at most six sentences.
-- A table cell holds a term or a short phrase, at most 15 words.
+- A table cell holds a term or short phrases, at most 15 words each; a Rule cell holds at most three rules.
 - Active voice and simple tenses; one word for one meaning.
 
 ## Loading
