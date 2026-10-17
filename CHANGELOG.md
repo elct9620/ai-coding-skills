@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.17.1](https://github.com/elct9620/ai-coding-skills/compare/v0.17.0...v0.17.1) (2026-10-17)
+
+
+### Bug Fixes
+
+* **skills:** keep inspect planning waiting after answers, and table onboard's rules ([6fcd559](https://github.com/elct9620/ai-coding-skills/commit/6fcd5595444b305090778144be9880ce763b6ce1))
+
 ## [0.17.0](https://github.com/elct9620/ai-coding-skills/compare/v0.16.0...v0.17.0) (2026-10-13)
 
 
