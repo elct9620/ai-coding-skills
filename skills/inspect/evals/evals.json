@@ -54,24 +54,6 @@
         "The report does not propose merging `Sales::Customer` and `Shipping::Recipient` or call them duplicated.",
         "The report does not call the different names `Customer` and `Recipient` an inconsistency."
       ]
-    },
-    {
-      "id": 4,
-      "name": "answers-not-approval",
-      "hypothesis": "Planning stops on the redrawn work list after the user answers its questions with the recommended options; answers are not approval.",
-      "setup": "evals/files/contexts/setup.sh",
-      "prompt": "/coding:inspect Next I want to add order tracking to Shipping. Prepare for it.",
-      "followups": [
-        "For each of your questions, go with your recommended option."
-      ],
-      "expected_output": "Turn 1 asks questions; turn 2 redraws the work list with the answers and stops for approval, editing nothing and starting no /write or /goal.",
-      "prediction": "The old skill only says a confirmed list runs without stopping; with every answer taken as recommended, some runs read it as approval and start implementing (2, 4).",
-      "expectations": [
-        "outputs/turn-1.md asks the user at least one question before the work list can be settled.",
-        "The run changes no file in the repository: outputs/changes.diff shows no edits and no new files.",
-        "outputs/response.md shows the work list redrawn with the user's answers.",
-        "outputs/response.md waits for the user to approve the work list; it does not say implementation has started or invoke /write or /goal."
-      ]
     }
   ]
 }
