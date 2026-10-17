@@ -4,10 +4,11 @@
     {
       "id": 1,
       "name": "bloated-claude-md",
-      "hypothesis": "H7, H8: onboard writes the three bounded sections, asks for the intent instead of inventing it, and reports CLAUDE.md shadowing AGENTS.md without editing it.",
+      "hypothesis": "H7, H8: onboard writes the three bounded sections, keeps How We Work in a topic table, asks for the intent instead of inventing it, and reports CLAUDE.md shadowing AGENTS.md without editing it.",
       "setup": "evals/files/bloated-claude-md/setup.sh",
       "configs": [
         "with_skill",
+        "old_skill",
         "without_skill"
       ],
       "prompt": "/coding:onboard Create AGENTS.md for this repository.",
@@ -19,6 +20,7 @@
         "outputs/repo/AGENTS.md has at most 100 lines.",
         "The Index section is a two-column table with at most ten rows.",
         "Every path in the Index exists in outputs/repo.",
+        "How We Work holds its rules in a two-column table of topic and rule with at most five rows, not in a bulleted list.",
         "The Intent section states no purpose or audience the repository itself does not state; it asks the user or leaves a marked place for them.",
         "AGENTS.md does not copy the command catalog `rake -T` already shows; a rule that names a command, such as running the tests before a commit, is fine.",
         "outputs/repo/CLAUDE.md is unchanged from the original commit.",

@@ -44,20 +44,30 @@ def run_one(skill_dir, eval_def, config, run_index, iteration_dir, scratch):
     repo.mkdir()
     subprocess.run(["bash", str(skill_dir / eval_def["setup"]), str(repo)], check=True,
                    capture_output=True)
-    prompt = eval_def["prompt"] if config == "with_skill" else eval_def.get("baseline_prompt", eval_def["prompt"])
-    cmd = ["claude", "-p", prompt, "--plugin-dir", str(PLUGINS[config]),
-           "--output-format", "stream-json", "--verbose", "--allowedTools", ALLOWED_TOOLS]
+    prompt = eval_def["prompt"] if config != "without_skill" else eval_def.get("baseline_prompt", eval_def["prompt"])
+    # Each follow-up resumes the session as the user's next turn; the last turn's answer is the response.
+    turns, result, session = [prompt, *eval_def.get("followups", [])], {}, None
     with open(run_dir / "transcript.jsonl", "w") as transcript:
-        proc = subprocess.run(cmd, cwd=repo, stdout=transcript, stderr=subprocess.PIPE,
-                              text=True, timeout=RUN_TIMEOUT)
-    result = {}
-    for line in open(run_dir / "transcript.jsonl"):
-        try:
-            event = json.loads(line)
-        except json.JSONDecodeError:
-            continue
-        if event.get("type") == "result":
-            result = event
+        for number, turn in enumerate(turns, 1):
+            cmd = ["claude", "-p", turn, "--plugin-dir", str(PLUGINS[config]),
+                   "--output-format", "stream-json", "--verbose", "--allowedTools", ALLOWED_TOOLS]
+            if session:
+                cmd += ["--resume", session]
+            start = transcript.tell()
+            proc = subprocess.run(cmd, cwd=repo, stdout=transcript, stderr=subprocess.PIPE,
+                                  text=True, timeout=RUN_TIMEOUT)
+            transcript.flush()
+            with open(run_dir / "transcript.jsonl") as written:
+                written.seek(start)
+                for line in written:
+                    try:
+                        event = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if event.get("type") == "result":
+                        result, session = event, event.get("session_id")
+            if len(turns) > 1:
+                (outputs / f"turn-{number}.md").write_text(result.get("result", "") or proc.stderr)
     (outputs / "response.md").write_text(result.get("result", "") or proc.stderr)
     (outputs / "changes.diff").write_text(subprocess.run(
         ["git", "add", "-A", "-n", "."], cwd=repo, capture_output=True, text=True).stdout
@@ -134,7 +144,10 @@ def main():
     parser.add_argument("--parallel", type=int, default=4)
     parser.add_argument("--evals", nargs="*", help="eval names to run; all when omitted")
     parser.add_argument("--scratch", default=tempfile.gettempdir())
+    parser.add_argument("--old-plugin", help="plugin directory for old_skill; the release baseline when omitted")
     args = parser.parse_args()
+    if args.old_plugin:
+        PLUGINS["old_skill"] = Path(args.old_plugin).resolve()
 
     skill_dir = ROOT / "skills" / args.skill
     spec = json.loads((skill_dir / "evals" / "evals.json").read_text())
