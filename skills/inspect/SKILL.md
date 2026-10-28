@@ -1,13 +1,13 @@
 ---
 name: inspect
-description: Find what still stands between the code and a goal, always checking its shape (structure, layers, dependency direction) and its names. Converges on a work list with the user, or checks finished work against the work list the user confirmed. Read-only.
+description: Find what still stands between the code and a goal, always checking its shape (structure, layers, dependency direction) and its names. Converges on a work list with the user, or checks finished work against the work list the user confirmed. Changes no code.
 argument-hint: [path|--staged|intent] [--deep]
-allowed-tools: Read, Grep, Glob, Bash(git status:*), Bash(git log:*), Bash(git diff:*), Bash(git show:*), WebSearch, WebFetch
+allowed-tools: Read, Grep, Glob, Bash, WebSearch, WebFetch
 ---
 
 ## Purpose
 
-`/inspect` answers one question: **what still stands between the code and the goal?** Two lenses always apply: shape — structure, layers, dependency direction — and names. How the code is written in detail belongs to `/write`. This skill reads and reports; it changes nothing.
+`/inspect` answers one question: **what still stands between the code and the goal?** Two lenses always apply: shape — structure, layers, dependency direction — and names. How the code is written in detail belongs to `/write`. This skill reads, runs what settles a fact — tests, a benchmark, a query — and reports; it changes no code.
 
 The target sets the goal: `--staged` is the staged diff, a path is its pending changes or its contents, a sentence states the intent, and nothing means the last commit.
 
@@ -20,7 +20,9 @@ A **work list** is the table of what this round does, in order. It is **confirme
 | Planning | No confirmed work list in this conversation | Asks the user, converges on a work list |
 | Checking | A confirmed work list exists | Asks nothing; compares the work with the list, its Bounds, and its References |
 
-In planning, each answer settles an unknown or sets a bound, and the list is redrawn. Show the redrawn list and stop: answers are not approval, even when each takes the recommendation and nothing is still unknown. Once approved, the list runs to the end without stopping, so offer no checkpoints inside it.
+In planning, an unknown is one of two kinds. What the record, the code, the documentation, or a run can settle, settle before reporting; only what the user alone can decide goes to them. Each answer settles an unknown or sets a bound, and the list is redrawn. Show the redrawn list and stop: answers are not approval, even when each takes the recommendation and nothing is still unknown. Once approved, the list runs to the end without stopping, so offer no checkpoints inside it.
+
+Each item is a change, and the check that proves it rides inside that item. No item waits on a person or on a result still to come: an action that needs the user's hands or approval sits outside the list. When only the finished work can produce the result that would choose an item's shape, ask the user for the criterion now.
 
 In checking, each drift from the confirmed list is one of two kinds:
 
@@ -37,7 +39,8 @@ In checking, each drift from the confirmed list is one of two kinds:
 - A direction is not a destination. When the goal is "cleaner", first offer what arriving would look like.
 - State each claim at the strength of its evidence. A false all-clear is worse than a miss.
 - What the user decided is given. A README or spec that disagrees with the newest goal is an update to make.
-- An item that still turns on an answer stays out of the work list, under Still unknown.
+- Ask only after reading or running what could answer the question; a question the code can answer is not the user's.
+- An item that still turns on the user's answer stays out of the work list, under Still unknown.
 - Follow How We Work in `AGENTS.md` for where specs live and how the project reviews.
 
 `--deep` means the user cannot see the problem. Trace each lead until it is confirmed or dropped, and follow each promise the goal relies on into the code that keeps it.
@@ -61,7 +64,8 @@ When the project divides into contexts — areas with their own vocabulary and r
 | Traced | Followed through the code to file and line |
 | Read | Seen in the code, not followed |
 | Searched | A search matched; meaning and completeness unknown |
-| Unrun | Needs execution to know; this skill does not run code |
+| Ran | Executed; the output settles it |
+| Unrun | Needs execution to know and was not run; name the command that settles it |
 
 | Severity | Means |
 |---|---|
@@ -97,6 +101,7 @@ The report opens with its conclusion. The conclusion states facts only and never
 - Bounds: …
 - References: …
 - Opened: <files read closely>
+- Ran: <commands run and what they showed, or "none">
 - Not opened: <parts seen in the width but not read>
 
 | # | Severity | Evidence | Where | What stands between here and the goal |
@@ -107,7 +112,7 @@ The report opens with its conclusion. The conclusion states facts only and never
 | Order | # | The work | Why it sits here |
 |---|---|---|---|
 
-**Still unknown:** <each question and what its answer changes, or "none">
+**Still unknown:** <each question only the user can decide, and what its answer changes, or "none">
 ```
 
 Bounds are limits the user set; References are what they pointed at as the way to work. Both come only from what they said. In planning, end with one line offering `--deep` when leads remain unverified.

@@ -28,7 +28,7 @@ The plugin ships three skills and one command; each skill keeps its knowledge in
 ```
 coding-skills/
 ├── skills/
-│   ├── inspect/      # Analyze shape and names (read-only)
+│   ├── inspect/      # Analyze shape and names (changes no code)
 │   │   └── references/   structure, forces, naming
 │   ├── write/        # Implement, fix, or refactor
 │   │   └── references/   smallest-change, testing, design
