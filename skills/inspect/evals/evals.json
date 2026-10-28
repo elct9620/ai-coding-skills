@@ -54,6 +54,24 @@
         "The report does not propose merging `Sales::Customer` and `Shipping::Recipient` or call them duplicated.",
         "The report does not call the different names `Customer` and `Recipient` an inconsistency."
       ]
+    },
+    {
+      "id": 4,
+      "name": "settle-first",
+      "hypothesis": "Planning settles what the code or a run can settle before reporting, asks only what the user alone decides, and keeps measuring and waiting out of the work list.",
+      "setup": "evals/files/settle-first/setup.sh",
+      "prompt": "/coding:inspect The monthly report is slow. I suspect `Formatter.new` on every row is the cost and we may need to cache formatters, but I'm not sure it's worth it. Prepare this round.",
+      "expected_output": "Runs the benchmark, finds the per-row `categories.find` lookup is the cost (formatter is ~2 ms of ~0.6 s), notes `FormatterCache` already exists, and gives a work list of changes with no measuring step, no waiting on the user, and no question the repo settles.",
+      "prediction": "The old skill says it does not run code, so it leaves the cost unrun and turns it into a measuring item or a question (1, 2, 4); 3 and 6 may pass for both.",
+      "expectations": [
+        "The response reports timings it obtained by running the benchmark or a Ruby timing command in this run.",
+        "The response identifies the per-row `@categories.find` lookup as the main cost, rather than `Formatter.new`.",
+        "The response notes that `FormatterCache` already exists in lib/formatter_cache.rb.",
+        "No work list item consists only of measuring, benchmarking, profiling, or confirming something.",
+        "No work list item waits on the user (to notify, approve, choose, or run something) or on a measurement result still to come.",
+        "Still unknown contains no question that the repository or a run of its benchmark could answer, such as whether formatter creation is the cost or whether to measure first.",
+        "The run changes no file in the repository."
+      ]
     }
   ]
 }
