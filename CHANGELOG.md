@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/elct9620/ai-coding-skills/compare/v0.17.1...v0.18.0) (2026-10-28)
+
+
+### Features
+
+* **skills:** let inspect settle facts by running before it asks ([e8b9b70](https://github.com/elct9620/ai-coding-skills/commit/e8b9b706f1d4120ad9975dfa3c1d2ee15ad1cab4))
+
 ## [0.17.1](https://github.com/elct9620/ai-coding-skills/compare/v0.17.0...v0.17.1) (2026-10-17)
 
 
